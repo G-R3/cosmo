@@ -1,9 +1,12 @@
 import type { NextPage } from "next";
 import { trpc } from "../utils/trpc";
 import Navbar from "../components/Navbar";
+import Link from "next/link";
 
 const Home: NextPage = () => {
-  const postQuery = trpc.useQuery(["post.all"]);
+  const postQuery = trpc.useQuery(["post.all"], {
+    staleTime: 1000 * 60 * 60 * 24, // 24 hours in ms
+  });
 
   if (postQuery.isLoading) {
     return <div>Loading...</div>;
@@ -36,14 +39,13 @@ const Home: NextPage = () => {
             <div className="flex justify-between mt-3">
               <div className="flex justify-center items-center gap-2">
                 <button>Upvote</button>
-                <span>123</span>
+                <span>Vote</span>
                 <button>Downvote</button>
               </div>
-              <div className="flex gap-5">
-                <button>Share</button>
-                <button>Save</button>
-                <button>100 Comment</button>
-              </div>
+
+              <Link href={`/post/${post.slug}`}>
+                <a>100 Comment</a>
+              </Link>
             </div>
           </div>
         ))}
