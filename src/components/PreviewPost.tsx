@@ -8,8 +8,9 @@ interface Props {
 
 const PreviewPost: React.FC<Props> = ({ title, content }) => {
   return (
-    <section className="px-4 py-2 border-2 border-neutral">
+    <section className="p-5 bg-neutral rounded-md">
       <h1 className="text-2xl">{title}</h1>
+      <small className="mb-3 mt-1 block">Post by Tuxedoed 10 hours ago</small>
       <ReactMarkdown
         // eslint-disable-next-line react/no-children-prop
         children={content}
@@ -34,6 +35,15 @@ const PreviewPost: React.FC<Props> = ({ title, content }) => {
         }}
         className="min-w-full prose rounded-md"
       />
+      <div className="flex justify-between mt-3">
+        <div className="flex justify-center items-center gap-2">
+          <button>Upvote</button>
+          <span>Vote</span>
+          <button>Downvote</button>
+        </div>
+
+        <a>100 Comments</a>
+      </div>
     </section>
   );
 };
