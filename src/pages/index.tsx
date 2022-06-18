@@ -25,7 +25,7 @@ const Home: NextPage = () => {
         {posts?.map((post) => (
           <div
             key={post.id}
-            className="bg-neutral w-full max-w-3xl rounded-md p-5"
+            className="bg-neutral border-2 border-transparent hover:border-accent w-full max-w-3xl rounded-md p-5 transition-all"
           >
             <h2 className="text-xl font-semibold">{post.title}</h2>
             <span className="flex gap-2 mb-3">
