@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Markdown from "../../components/Markdown";
 import { trpc } from "../../utils/trpc";
 
 const Post = () => {
@@ -21,8 +22,8 @@ const Post = () => {
     <div className="max-w-3xl mx-auto">
       <section className="p-5 bg-neutral">
         <h1 className="text-2xl">{post?.title}</h1>
-        <small className="mb-3">Post by Tuxedoed 10 hours ago</small>
-        <p className="mt-5 mb-10">{post?.content}</p>
+        <small className="mb-3 mt-1 block">Post by Tuxedoed 10 hours ago</small>
+        <Markdown content={post.content ? post.content : ""} />
         <div className="flex justify-between mt-3">
           <div className="flex justify-center items-center gap-2">
             <button>Upvote</button>
