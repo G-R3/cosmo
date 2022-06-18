@@ -19,7 +19,7 @@ const Post = () => {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <section className="p-5 bg-white">
+      <section className="p-5 bg-neutral">
         <h1 className="text-2xl">{post?.title}</h1>
         <small className="mb-3">Post by Tuxedoed 10 hours ago</small>
         <p className="mt-5 mb-10">{post?.content}</p>
@@ -36,18 +36,16 @@ const Post = () => {
         </div>
       </section>
 
-      <section className="mt-5 bg-white p-5 flex flex-col gap-2">
+      <section className="mt-5 bg-neutral p-5 flex flex-col gap-2">
         <h2 className="text-md">Post comment</h2>
         <textarea
           name="comment"
           id="comment"
           placeholder="What are you thoughts?"
           rows={5}
-          className="w-full py-2 px-3 border-2 rounded-md"
+          className="textarea textarea-bordered rounded-md overflow-hidden min-h-[100px] resize-none"
         ></textarea>
-        <button className="self-end bg-blue-500 text-white rounded-md p-2">
-          Post
-        </button>
+        <button className="btn btn-primary self-end rounded-md">Post</button>
       </section>
     </div>
   );
