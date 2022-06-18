@@ -1,7 +1,9 @@
 import type { NextPage } from "next";
-import { trpc } from "../utils/trpc";
-import Navbar from "../components/Navbar";
 import Link from "next/link";
+import { trpc } from "../utils/trpc";
+
+import Navbar from "../components/Navbar";
+import Markdown from "../components/Markdown";
 
 const Home: NextPage = () => {
   const postQuery = trpc.useQuery(["post.all"], {
@@ -35,7 +37,10 @@ const Home: NextPage = () => {
             </span>
             {/* <Image width={256} height={256} /> */}
             {/* <div className="h-96 w-full bg-gray-300 rounded-md"></div> */}
-            <div className="truncate">{post.content}</div>
+            {/* <div className="truncate">{post.content}</div> */}
+            <div className="two-line-ellipsis">
+              <Markdown content={post.content ? post.content : ""} />
+            </div>
             <div className="flex justify-between mt-3">
               <div className="flex justify-center items-center gap-2">
                 <button>Upvote</button>
