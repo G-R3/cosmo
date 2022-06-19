@@ -38,7 +38,7 @@ const Home: NextPage = () => {
             {/* <Image width={256} height={256} /> */}
             {/* <div className="h-96 w-full bg-gray-300 rounded-md"></div> */}
             {/* <div className="truncate">{post.content}</div> */}
-            <div className="two-line-ellipsis">
+            <div className="ellipsis">
               <Markdown content={post.content ? post.content : ""} />
             </div>
             <div className="flex justify-between mt-3">

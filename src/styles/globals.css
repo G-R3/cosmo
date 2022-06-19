@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-.two-line-ellipsis {
+.ellipsis {
   display: -webkit-box;
   -webkit-line-clamp: 10;
   -webkit-box-orient: vertical;
