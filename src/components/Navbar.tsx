@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { useSession, signIn, signOut, getProviders } from "next-auth/react";
 
 const Navbar: React.FC = () => {
+  const { data: session } = useSession();
+
   return (
     <nav className="p-3 px-5">
       <ul className="flex gap-5 justify-end">
@@ -10,9 +13,11 @@ const Navbar: React.FC = () => {
           </Link>
         </li>
         <li>
-          <Link href="/sign-in">
-            <a className="p-3">Sign In</a>
-          </Link>
+          {session ? (
+            <button onClick={() => signOut()}>Sign out</button>
+          ) : (
+            <button onClick={() => signIn()}>Sign in</button>
+          )}
         </li>
       </ul>
     </nav>
