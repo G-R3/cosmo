@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import Link from "next/link";
 import { trpc } from "../utils/trpc";
 
-import Navbar from "../components/Navbar";
+import Header from "../components/Header";
 import Markdown from "../components/Markdown";
 
 const Home: NextPage = () => {
@@ -22,7 +22,7 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <Navbar />
+      <Header />
       <section className="flex flex-col items-center gap-10">
         {posts?.map((post) => (
           <div

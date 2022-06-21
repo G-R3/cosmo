@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useSession, signIn, signOut, getProviders } from "next-auth/react";
 
-const Navbar: React.FC = () => {
+const Header: React.FC = () => {
   const { data: session, status } = useSession();
   const loading = status === "loading";
 
@@ -50,4 +50,4 @@ const Navbar: React.FC = () => {
   );
 };
 
-export default Navbar;
+export default Header;
