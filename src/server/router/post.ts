@@ -1,6 +1,7 @@
 import { createRouter } from "../createRouter";
 import { z } from "zod";
 import { prisma } from "../../db/client";
+import { TRPCError } from "@trpc/server";
 
 export const postRouter = createRouter()
   .query("get", {
@@ -29,8 +30,13 @@ export const postRouter = createRouter()
       title: z.string().trim().min(1).max(300),
       content: z.string().trim(),
     }),
-
-    async resolve({ input }) {
+    async resolve({ input, ctx }) {
+      if (!ctx.session?.user?.name) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not authorized",
+        });
+      }
       await prisma.post.create({
         data: {
           title: input.title,
