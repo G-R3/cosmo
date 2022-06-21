@@ -5,7 +5,6 @@ import { useSession, signIn, signOut, getProviders } from "next-auth/react";
 const Header: React.FC = () => {
   const { data: session, status } = useSession();
   const loading = status === "loading";
-  console.log(session);
   return (
     <header
       className={`backdrop-saturate-50 backdrop-blur-sm fixed top-0 left-0 w-full z-10 transition-all duration-200 ease-in ${
