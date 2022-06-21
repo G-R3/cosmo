@@ -10,7 +10,7 @@ interface Props {
 
 const UserCard: React.FC<Props> = ({ name, email, image }) => {
   return (
-    <div className="py-5 bg-neutral rounded-md flex items-center justify-center">
+    <div className="sticky top-20 py-5 bg-neutral rounded-md flex items-center justify-center">
       <div className="flex flex-col items-center justify-center rounded-full">
         <div className="avatar">
           <div className="w-24 rounded-full">
