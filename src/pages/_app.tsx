@@ -3,6 +3,7 @@ import { withTRPC } from "@trpc/next";
 import { AppType } from "next/dist/shared/lib/utils";
 import { AppRouter } from "../server/router/_app";
 import { SessionProvider } from "next-auth/react";
+import Layout from "../components/Layout";
 
 const MyApp: AppType = ({
   Component,
@@ -10,7 +11,9 @@ const MyApp: AppType = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <Component {...pageProps} />
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
     </SessionProvider>
   );
 };

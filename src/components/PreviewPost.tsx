@@ -7,13 +7,19 @@ interface Props {
 }
 
 const PreviewPost: React.FC<Props> = ({ title, content }) => {
+  const placeholder = `
+  # Your Post
+  Let the world know what you're thinking. Start with a title and then add some content
+  to spice up your post! 😀
+  
+`;
   return (
-    <section className="p-5 bg-neutral rounded-md">
-      <h1 className="text-2xl">{title}</h1>
+    <section className="p-5 bg-neutral rounded-md flex flex-col">
+      <h1 className="text-2xl">{title ? title : "Hello World"}</h1>
       <small className="mb-3 mt-1 block">Post by Tuxedoed 10 hours ago</small>
       <ReactMarkdown
         // eslint-disable-next-line react/no-children-prop
-        children={content}
+        children={content ? content : placeholder}
         linkTarget="_blank"
         components={{
           h1: ({ node, ...props }) => (
