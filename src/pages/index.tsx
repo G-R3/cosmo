@@ -22,7 +22,6 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <Header />
       <section className="flex flex-col items-center gap-10">
         {posts?.map((post) => (
           <div
