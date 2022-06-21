@@ -5,7 +5,9 @@ const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <>
       <Header />
-      <main className="py-16 lg:py-24 mx-auto lg:max-w-7xl">{children}</main>
+      <main className="px-5 py-16 lg:py-24 mx-auto lg:max-w-7xl">
+        {children}
+      </main>
     </>
   );
 };

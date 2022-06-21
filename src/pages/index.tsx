@@ -23,8 +23,8 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <section className="grid grid-cols-5 gap-x-5">
-        <div>
+      <section className="lg:grid lg:grid-cols-5 gap-x-5">
+        <div className="hidden lg:block">
           <div className="bg-neutral rounded-md sticky top-20">
             <h1 className="text-center">Todo Add something here</h1>
           </div>
@@ -41,7 +41,7 @@ const Home: NextPage = () => {
           ))}
         </div>
         {!!session?.user && (
-          <div>
+          <div className="hidden lg:block">
             <UserCard {...session?.user} />
           </div>
         )}
