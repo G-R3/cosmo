@@ -27,7 +27,7 @@ const Submit: NextPage = () => {
   }, [content]);
 
   return (
-    <div className={preview ? `grid grid-cols-2 gap-10` : ""}>
+    <div className={preview ? `grid grid-cols-2 gap-10 items-start` : ""}>
       <section className={preview ? "w-full" : "max-w-xl mx-auto"}>
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-semibold my-5">Create Post</h1>
@@ -60,7 +60,7 @@ const Submit: NextPage = () => {
           )}
           <input
             type="text"
-            placeholder="Title"
+            placeholder="Hello World"
             onChange={(e) => setTitle(e.target.value)}
             value={title}
             className="input input-bordered rounded-md"
@@ -68,7 +68,7 @@ const Submit: NextPage = () => {
           <div className="grid after:content">
             <textarea
               ref={textareaRef}
-              placeholder="Text (optional)"
+              placeholder={`# Your Post \nLet the world know what you're thinking. Start with a title and then add some content to spice up your post! 😀`}
               onChange={(e) => {
                 setContent(e.target.value);
               }}
