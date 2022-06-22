@@ -1,33 +1,15 @@
 import "../styles/globals.css";
 import { withTRPC } from "@trpc/next";
-import { AppType } from "next/dist/shared/lib/utils";
+import { AppProps } from "next/app";
 import { AppRouter } from "../server/router/_app";
 import { SessionProvider } from "next-auth/react";
 import Layout from "../components/Layout";
-import { NextPage } from "next";
-import Auth from "../components/Auth";
 
-export type NextPageWithAuth = NextPage & {
-  auth?: boolean;
-};
-
-const MyApp: AppType = ({
-  Component,
-  pageProps: { session, ...pageProps },
-}: {
-  Component: NextPageWithAuth;
-  pageProps: any;
-}) => {
+const App = ({ Component, pageProps: { session, ...pageProps } }: AppProps) => {
   return (
     <SessionProvider session={session}>
       <Layout>
-        {Component.auth ? (
-          <Auth>
-            <Component {...pageProps} />
-          </Auth>
-        ) : (
-          <Component {...pageProps} />
-        )}
+        <Component {...pageProps} />
       </Layout>
     </SessionProvider>
   );
@@ -43,5 +25,5 @@ export default withTRPC<AppRouter>({
       url,
     };
   },
-  ssr: true,
-})(MyApp);
+  ssr: false,
+})(App);

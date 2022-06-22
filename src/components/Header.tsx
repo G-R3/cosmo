@@ -33,12 +33,9 @@ const Header: React.FC = () => {
                   Sign out
                 </button>
               ) : (
-                <button
-                  onClick={() => signIn()}
-                  className="flex items-center h-14 lg:h-16"
-                >
-                  Sign in
-                </button>
+                <Link href="/auth/signin">
+                  <a className="flex items-center h-14 lg:h-16">Sign in</a>
+                </Link>
               )}
             </nav>
             {!!session?.user && (

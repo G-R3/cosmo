@@ -1,14 +1,16 @@
 import { useState, useRef, useEffect } from "react";
 import { trpc } from "../../utils/trpc";
 import PreviewPost from "../../components/PreviewPost";
-import { NextPageWithAuth } from "../_app";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
-const Submit: NextPageWithAuth = () => {
+const Submit = () => {
+  const { data: session } = useSession({ required: true });
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [preview, setPreview] = useState<boolean>(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
+  const router = useRouter();
   const mutation = trpc.useMutation("post.create");
 
   const handleSubmit = () => {
@@ -90,7 +92,5 @@ const Submit: NextPageWithAuth = () => {
     </div>
   );
 };
-
-Submit.auth = true;
 
 export default Submit;
