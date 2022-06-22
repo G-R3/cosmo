@@ -2,8 +2,11 @@ import type { NextPage } from "next";
 import { useState, useRef, useEffect } from "react";
 import { trpc } from "../../utils/trpc";
 import PreviewPost from "../../components/PreviewPost";
+import { useSession } from "next-auth/react";
+import { NextPageWithAuth } from "../_app";
 
-const Submit: NextPage = () => {
+const Submit: NextPageWithAuth = () => {
+  const { data: session } = useSession();
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [preview, setPreview] = useState<boolean>(false);
@@ -90,5 +93,7 @@ const Submit: NextPage = () => {
     </div>
   );
 };
+
+Submit.auth = true;
 
 export default Submit;

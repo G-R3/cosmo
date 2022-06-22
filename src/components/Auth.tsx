@@ -1,0 +1,13 @@
+import { useSession } from "next-auth/react";
+import { ReactNode } from "react";
+
+const Auth: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const { status } = useSession({ required: true });
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
+
+  return <>{children}</>;
+};
+
+export default Auth;
