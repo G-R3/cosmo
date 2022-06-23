@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { trpc } from "../../utils/trpc";
-import PreviewPost from "../../components/PreviewPost";
 import { ComponentWithAuth } from "../../components/Auth";
+import PreviewModal from "../../components/PreviewModal";
+import { AnimatePresence } from "framer-motion";
 
 const Submit: ComponentWithAuth = () => {
   const [title, setTitle] = useState<string>("");
@@ -26,13 +27,22 @@ const Submit: ComponentWithAuth = () => {
   }, [content]);
 
   return (
-    <div className={preview ? `grid grid-cols-2 gap-10 items-start` : ""}>
-      <section className={preview ? "w-full" : "max-w-xl mx-auto"}>
+    <div className={"flex"}>
+      <section className={"w-full max-w-xl mx-auto"}>
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-semibold my-5">Create Post</h1>
-          <button className="btn" onClick={() => setPreview((prev) => !prev)}>
-            Preview post
-          </button>
+          <label htmlFor="my-modal-4" className="btn modal-button">
+            Preview Post
+          </label>
+          <input
+            type="checkbox"
+            id="my-modal-4"
+            className="modal-toggle"
+            onClick={() => setPreview((prev) => !prev)}
+          />
+          <AnimatePresence>
+            {preview && <PreviewModal title={title} content={content} />}
+          </AnimatePresence>
         </div>
         <div className="flex flex-col gap-2 rounded-md">
           {mutation.error && (
@@ -85,7 +95,6 @@ const Submit: ComponentWithAuth = () => {
           </button>
         </div>
       </section>
-      {preview && <PreviewPost title={title} content={content} />}
     </div>
   );
 };
