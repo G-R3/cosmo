@@ -1,14 +1,13 @@
-import type { NextPage } from "next";
 import { useState, useRef, useEffect } from "react";
 import { trpc } from "../../utils/trpc";
 import PreviewPost from "../../components/PreviewPost";
+import { ComponentWithAuth } from "../../components/Auth";
 
-const Submit: NextPage = () => {
+const Submit: ComponentWithAuth = () => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [preview, setPreview] = useState<boolean>(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
   const mutation = trpc.useMutation("post.create");
 
   const handleSubmit = () => {
@@ -89,6 +88,10 @@ const Submit: NextPage = () => {
       {preview && <PreviewPost title={title} content={content} />}
     </div>
   );
+};
+
+Submit.auth = {
+  loader: <div>Loading...</div>,
 };
 
 export default Submit;

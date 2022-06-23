@@ -1,11 +1,9 @@
 import Link from "next/link";
-import Image from "next/image";
-import { useSession, signIn, signOut, getProviders } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 
 const Header: React.FC = () => {
   const { data: session, status } = useSession();
   const loading = status === "loading";
-  console.log(session);
   return (
     <header
       className={`backdrop-saturate-50 backdrop-blur-sm fixed top-0 left-0 w-full z-10 transition-all duration-200 ease-in ${
@@ -29,18 +27,15 @@ const Header: React.FC = () => {
 
               {session ? (
                 <button
-                  onClick={() => signOut()}
+                  onClick={() => signOut({ callbackUrl: "/" })}
                   className="flex items-center h-14 lg:h-16"
                 >
                   Sign out
                 </button>
               ) : (
-                <button
-                  onClick={() => signIn()}
-                  className="flex items-center h-14 lg:h-16"
-                >
-                  Sign in
-                </button>
+                <Link href="/auth/signin">
+                  <a className="flex items-center h-14 lg:h-16">Sign in</a>
+                </Link>
               )}
             </nav>
             {!!session?.user && (

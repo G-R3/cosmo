@@ -5,7 +5,7 @@ import Post from "../components/Post";
 import { useSession } from "next-auth/react";
 import UserCard from "../components/UserCard";
 
-const Home: NextPage = () => {
+const Home = () => {
   const postQuery = trpc.useQuery(["post.all"], {
     staleTime: 1000 * 60 * 60 * 24, // 24 hours in ms
   });

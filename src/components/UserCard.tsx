@@ -21,6 +21,7 @@ const UserCard: React.FC<Props> = ({ name, email, image }) => {
                 alt={name ? name : "Avatar"}
                 width={112}
                 height={112}
+                priority
               />
             )}
           </div>
