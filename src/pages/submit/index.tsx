@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import { trpc } from "../../utils/trpc";
 import { ComponentWithAuth } from "../../components/Auth";
 import PreviewModal from "../../components/PreviewModal";
-import { AnimatePresence } from "framer-motion";
 
 const Submit: ComponentWithAuth = () => {
   const [title, setTitle] = useState<string>("");
@@ -40,9 +39,8 @@ const Submit: ComponentWithAuth = () => {
             className="modal-toggle"
             onClick={() => setPreview((prev) => !prev)}
           />
-          <AnimatePresence>
-            {preview && <PreviewModal title={title} content={content} />}
-          </AnimatePresence>
+
+          {preview && <PreviewModal title={title} content={content} />}
         </div>
         <div className="flex flex-col gap-2 rounded-md">
           {mutation.error && (
