@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 
 const Header: React.FC = () => {
   const { data: session, status } = useSession();
@@ -27,7 +27,7 @@ const Header: React.FC = () => {
 
               {session ? (
                 <button
-                  onClick={() => signOut()}
+                  onClick={() => signOut({ callbackUrl: "/" })}
                   className="flex items-center h-14 lg:h-16"
                 >
                   Sign out
