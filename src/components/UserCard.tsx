@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 interface Props {
   name?: string | null;
@@ -10,7 +11,11 @@ interface Props {
 
 const UserCard: React.FC<Props> = ({ name, email, image }) => {
   return (
-    <div className="sticky top-20 py-5 bg-neutral rounded-md flex items-center justify-center">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="sticky top-20 py-5 bg-neutral rounded-md flex items-center justify-center"
+    >
       <div className="flex flex-col items-center justify-center rounded-full">
         <div className="avatar">
           <div className="w-24 rounded-full">
@@ -41,7 +46,7 @@ const UserCard: React.FC<Props> = ({ name, email, image }) => {
           </Link>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

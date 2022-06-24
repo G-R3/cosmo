@@ -1,6 +1,6 @@
 import Link from "next/link";
+import { motion } from "framer-motion";
 import Markdown from "../components/Markdown";
-
 interface Props {
   id: number;
   title: string;
@@ -11,16 +11,34 @@ interface Props {
 const Post: React.FC<Props> = ({ id, title, content, slug }) => {
   return (
     <div className="bg-neutral border-2 border-transparent hover:border-accent w-full rounded-md p-5 transition-all">
-      <h2 className="text-xl font-semibold">{title}</h2>
-      <span className="flex gap-2 mb-3">
+      <motion.h2
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="text-xl font-semibold"
+      >
+        {title}
+      </motion.h2>
+      <motion.span
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="flex gap-2 mb-3"
+      >
         <small>Posted by</small>
         <small>Tuxedoed</small>
         <small>10 hrs ago</small>
-      </span>
-      <div className="ellipsis">
+      </motion.span>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="ellipsis"
+      >
         <Markdown content={content ? content : ""} />
-      </div>
-      <div className="flex justify-between mt-3">
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="flex justify-between mt-3"
+      >
         <div className="flex justify-center items-center gap-2">
           <button>Upvote</button>
           <span>Vote</span>
@@ -30,7 +48,7 @@ const Post: React.FC<Props> = ({ id, title, content, slug }) => {
         <Link href={`/post/${slug}`}>
           <a>100 Comment</a>
         </Link>
-      </div>
+      </motion.div>
     </div>
   );
 };

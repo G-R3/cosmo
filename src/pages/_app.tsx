@@ -1,11 +1,11 @@
 import "../styles/globals.css";
 import { withTRPC } from "@trpc/next";
 import { AppProps } from "next/app";
-import { AppRouter } from "../server/router/_app";
 import { SessionProvider } from "next-auth/react";
+import { NextComponentType, NextPageContext } from "next";
+import { AppRouter } from "../server/router/_app";
 import Layout from "../components/Layout";
 import Auth, { AuthEnabledComponentConfig } from "../components/Auth";
-import { NextComponentType, NextPageContext } from "next";
 
 type AppAuthProps = AppProps & {
   Component: NextComponentType<NextPageContext, any, {}> &
