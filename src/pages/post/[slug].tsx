@@ -1,3 +1,4 @@
+import { router } from "@trpc/server";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Markdown from "../../components/Markdown";
@@ -5,7 +6,6 @@ import { trpc } from "../../utils/trpc";
 
 const Post = () => {
   const slug = useRouter().query.slug as string;
-
   const postQuery = trpc.useQuery(["post.get", { slug }]);
 
   if (postQuery.isLoading) {
@@ -23,7 +23,7 @@ const Post = () => {
       <section className="p-5 bg-neutral">
         <h1 className="text-2xl">{post?.title}</h1>
         <small className="mb-3 mt-1 block">Post by Tuxedoed 10 hours ago</small>
-        <Markdown content={post.content ? post.content : ""} />
+        <Markdown content={post?.content ? post.content : ""} />
         <div className="flex justify-between mt-3">
           <div className="flex justify-center items-center gap-2">
             <button>Upvote</button>
@@ -31,7 +31,7 @@ const Post = () => {
             <button>Downvote</button>
           </div>
 
-          <Link href={`/post/${post.slug}`}>
+          <Link href={`/post/${post?.slug}`}>
             <a>100 Comments</a>
           </Link>
         </div>
