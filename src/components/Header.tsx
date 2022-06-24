@@ -20,7 +20,7 @@ const Header: React.FC = () => {
             </Link>
           </div>
           <div className="flex gap-5 justify-end items-center flex-grow">
-            <nav className={`flex gap-5`}>
+            <nav className="flex items-center gap-5">
               <Link href="/submit">
                 <div className="tooltip tooltip-bottom" data-tip="Create Post">
                   <a
@@ -60,7 +60,7 @@ const Header: React.FC = () => {
                     className="w-8 h-8 bg-cover bg-no-repeat bg-center rounded-full outline-none cursor-pointer"
                   ></label>
                 </div>
-                <ul className="menu dropdown-content p-2 shadow bg-neutral rounded-box w-52 mt-2">
+                <ul className="menu dropdown-content p-2 shadow-xl bg-neutral rounded-md w-52 mt-2">
                   <li>
                     <a tabIndex={0}>TODO: Profile</a>
                   </li>
