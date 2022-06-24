@@ -13,7 +13,7 @@ const PostSkeleton = () => {
     >
       <div className="animate-pulse">
         <h2 className="text-xl font-semibold bg-neutral-content brightness-50 rounded-md h-6 w-full"></h2>
-        <span className="flex gap-2 mt-2 mb-3 h-2 w-32 bg-neutral-content brightness-50 rounded-md"></span>
+        <span className="flex gap-2 mt-2 mb-3 h-2 w-48 bg-neutral-content brightness-50 rounded-md"></span>
         <div className="flex flex-col gap-2 my-4">
           <p className="h-2 w-full bg-neutral-content brightness-50 rounded-md"></p>
           <p className="h-2 w-full bg-neutral-content brightness-50 rounded-md"></p>
