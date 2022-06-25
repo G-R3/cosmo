@@ -62,7 +62,7 @@ const Submit: ComponentWithAuth = () => {
           <button
             onClick={handleSubmit}
             disabled={mutation.isLoading}
-            className="bg-accentFour text-accentTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50"
+            className="bg-accentFour text-accentTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95"
           >
             Post
           </button>
