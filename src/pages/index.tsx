@@ -7,7 +7,7 @@ import PostSkeleton from "../components/PostSkeleton";
 
 const Home = () => {
   const postQuery = trpc.useQuery(["post.all"], {
-    staleTime: 1000 * 60 * 60 * 24, // 24 hours in ms
+    // staleTime: 1000 * 60 * 60 * 24, // 24 hours in ms
   });
   const { data: session } = useSession();
 
@@ -26,19 +26,21 @@ const Home = () => {
           </div>
         </div>
         <motion.div className="col-span-3 flex flex-col items-center gap-10">
-          {postQuery.isLoading
-            ? Array(13)
-                .fill(0)
-                .map((skelton, idx) => <PostSkeleton key={idx} />)
-            : posts?.map((post) => (
-                <Post
-                  key={post.id}
-                  id={post.id}
-                  title={post.title}
-                  content={post.content}
-                  slug={post.slug}
-                />
-              ))}
+          {postQuery.isLoading &&
+            Array(13)
+              .fill(0)
+              .map((skeleton, idx) => <PostSkeleton key={idx} />)}
+
+          {posts &&
+            posts?.map((post) => (
+              <Post
+                key={post.id}
+                id={post.id}
+                title={post.title}
+                content={post.content}
+                slug={post.slug}
+              />
+            ))}
         </motion.div>
         {!!session?.user && (
           <div className="hidden lg:block">
