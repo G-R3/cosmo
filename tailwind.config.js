@@ -17,6 +17,10 @@ module.exports = {
         warning: "#F5A623",
       },
 
+      backgroundImage: {
+        skeleton: "linear-gradient(270deg, #222, #333, #333, #222)",
+      },
+
       keyframes: {
         popIn: {
           "0%": {
@@ -29,9 +33,19 @@ module.exports = {
             transform: "scale(1)",
           },
         },
+
+        skeletonLoading: {
+          "0%": {
+            "background-position": "200% 0",
+          },
+          to: {
+            "background-position": "-200% 0",
+          },
+        },
       },
       animation: {
         popIn: "popIn 0.25s ease-out",
+        skeletonLoading: "skeletonLoading 10s ease-in-out infinite",
       },
     },
   },
