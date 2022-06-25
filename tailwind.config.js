@@ -8,7 +8,7 @@ module.exports = {
         background: "#000",
         accentOne: "#111",
         accentTwo: "#333",
-        accentFour: "#EAEAEA",
+        accentFour: "#f4f4f4",
         foreground: "#fff",
 
         highlight: "#8b5cf6",
@@ -18,7 +18,8 @@ module.exports = {
       },
 
       backgroundImage: {
-        skeleton: "linear-gradient(270deg, #222, #333, #333, #222)",
+        skeletonDark: "linear-gradient(90deg, #222, #333, #333, #222)",
+        skeleton: "linear-gradient(90deg,#cfcfcf, #dcdcdc,#dcdcdc, #cfcfcf)",
       },
 
       keyframes: {
@@ -45,7 +46,7 @@ module.exports = {
       },
       animation: {
         popIn: "popIn 0.25s ease-out",
-        skeletonLoading: "skeletonLoading 10s ease-in-out infinite",
+        skeletonLoading: "skeletonLoading 6s ease-in-out infinite",
       },
     },
   },
