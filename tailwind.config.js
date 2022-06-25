@@ -9,6 +9,7 @@ module.exports = {
         accentOne: "#111",
         accentTwo: "#333",
         accentFour: "#f4f4f4",
+        accentFive: "#888",
         foreground: "#fff",
 
         highlight: "#8b5cf6",
