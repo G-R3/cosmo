@@ -10,7 +10,7 @@ interface Props {
 
 const Post: React.FC<Props> = ({ id, title, content, slug }) => {
   return (
-    <div className="bg-accentFour dark:bg-accentOne border-2 border-transparent hover:border-highlight w-full rounded-md p-5 transition-all">
+    <div className="bg-grayAlt dark:bg-darkOne border-2 border-transparent hover:border-highlight w-full rounded-md p-5 transition-all">
       <motion.h2
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -21,7 +21,7 @@ const Post: React.FC<Props> = ({ id, title, content, slug }) => {
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="flex gap-2 mb-3 text-accentFive"
+        className="flex gap-2 mb-3 text-whiteAlt"
       >
         <small>Posted by</small>
         <small>Tuxedoed</small>
@@ -39,14 +39,14 @@ const Post: React.FC<Props> = ({ id, title, content, slug }) => {
         animate={{ opacity: 1 }}
         className="flex justify-between mt-3"
       >
-        <div className="flex justify-center items-center gap-2 text-accentFive">
+        <div className="flex justify-center items-center gap-2 text-whiteAlt">
           <button>Upvote</button>
           <span>Vote</span>
           <button>Downvote</button>
         </div>
 
         <Link href={`/post/${slug}`}>
-          <a className="text-accentFive">100 Comment</a>
+          <a className="text-whiteAlt">100 Comment</a>
         </Link>
       </motion.div>
     </div>

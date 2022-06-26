@@ -6,11 +6,11 @@ module.exports = {
     extend: {
       colors: {
         background: "#000",
-        accentOne: "#111",
-        accentTwo: "#333",
-        accentFour: "#f4f4f4",
-        accentFive: "#888",
         foreground: "#fff",
+        darkOne: "#111",
+        darkTwo: "#333",
+        whiteAlt: "#888",
+        grayAlt: "#f4f4f4",
 
         highlight: "#8b5cf6",
         error: "#F33",

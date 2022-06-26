@@ -44,7 +44,7 @@ const Submit: ComponentWithAuth = () => {
             placeholder="Hello World"
             onChange={(e) => setTitle(e.target.value)}
             value={title}
-            className="p-4 rounded-md bg-accentFour text-accentTwo placeholder:text-slate-400 dark:bg-accentTwo dark:text-foreground  focus:outline-offset-2 focus:outline focus:outline-2 focus:outline-accentTwo dark:focus:outline-accentFour transition-all"
+            className="p-4 rounded-md bg-grayAlt text-darkTwo placeholder:text-slate-400 dark:bg-darkTwo dark:text-foreground  focus:outline-offset-2 focus:outline focus:outline-2 focus:outline-darkTwo dark:focus:outline-grayAlt transition-all"
           />
           <div className="grid after:content">
             <textarea
@@ -55,14 +55,14 @@ const Submit: ComponentWithAuth = () => {
               }}
               value={content}
               className="
-              py-3 px-4 rounded-md bg-accentFour text-accentTwo placeholder:text-slate-400 dark:bg-accentTwo dark:text-foreground  focus:outline-offset-2 focus:outline focus:outline-2 focus:outline-accentTwo dark:focus:outline-accentFour transition-all overflow-hidden min-h-[200px] resize-none"
+              py-3 px-4 rounded-md bg-grayAlt text-darkTwo placeholder:text-slate-400 dark:bg-darkTwo dark:text-foreground  focus:outline-offset-2 focus:outline focus:outline-2 focus:outline-darkTwo dark:focus:outline-grayAlt transition-all overflow-hidden min-h-[200px] resize-none"
             ></textarea>
           </div>
 
           <button
             onClick={handleSubmit}
             disabled={mutation.isLoading}
-            className="bg-accentFour text-accentTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
+            className="bg-grayAlt text-darkTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
           >
             Post
           </button>

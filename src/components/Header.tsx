@@ -15,7 +15,7 @@ const DropdownLink = forwardRef<HTMLAnchorElement, Props>((props, ref) => {
       <a
         ref={ref}
         {...rest}
-        className="flex w-full items-center rounded-md px-2 py-2 text-sm hover:bg-accentFour dark:hover:bg-accentTwo"
+        className="flex w-full items-center rounded-md px-2 py-2 text-sm hover:bg-grayAlt dark:hover:bg-darkTwo"
       >
         {children}
       </a>
@@ -81,11 +81,11 @@ const Header: React.FC = () => {
                       ></span>
                     </div>
                   </Menu.Button>
-                  <Menu.Items className="bg-foreground dark:bg-accentOne absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg focus:outline-none ring-1 dark:ring-accentTwo">
+                  <Menu.Items className="bg-foreground dark:bg-darkOne absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md shadow-lg focus:outline-none ring-1 dark:ring-darkTwo">
                     <div className="p-2">
                       <Menu.Item>
                         {({ active }) => (
-                          <button className="flex w-full items-center rounded-md px-2 py-2 hover:bg-accentFour text-sm dark:hover:bg-accentTwo">
+                          <button className="flex w-full items-center rounded-md px-2 py-2 hover:bg-grayAlt text-sm dark:hover:bg-darkTwo">
                             Account settings
                           </button>
                         )}

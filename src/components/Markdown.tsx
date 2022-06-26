@@ -9,37 +9,37 @@ const Markdown: React.FC<{ content: string }> = ({ content }) => {
       components={{
         h1: ({ node, ...props }) => (
           <h2
-            className="text-xl font-normal text-accentOne dark:text-accentFour"
+            className="text-xl font-normal text-darkOne dark:text-grayAlt"
             {...props}
           />
         ),
         h2: ({ node, ...props }) => (
           <h3
-            className="text-lg font-normal text-accentOne dark:text-accentFour"
+            className="text-lg font-normal text-darkOne dark:text-grayAlt"
             {...props}
           />
         ),
         h3: ({ node, ...props }) => (
           <h4
-            className="text-md font-normal text-accentOne dark:text-accentFour"
+            className="text-md font-normal text-darkOne dark:text-grayAlt"
             {...props}
           />
         ),
         h4: ({ node, ...props }) => (
           <h5
-            className="text-sm font-normal text-accentOne dark:text-accentFour"
+            className="text-sm font-normal text-darkOne dark:text-grayAlt"
             {...props}
           />
         ),
         h5: ({ node, ...props }) => (
           <h6
-            className="text-sm font-normal text-accentOne dark:text-accentFour"
+            className="text-sm font-normal text-darkOne dark:text-grayAlt"
             {...props}
           />
         ),
         h6: "p",
       }}
-      className="min-w-full prose rounded-md text-accentOne dark:text-accentFour"
+      className="min-w-full prose rounded-md text-darkOne dark:text-grayAlt"
     />
   );
 };
