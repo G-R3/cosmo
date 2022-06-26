@@ -8,7 +8,8 @@ import Link from "next/link";
 
 const Home = () => {
   const postQuery = trpc.useQuery(["post.all"], {
-    // staleTime: 1000 * 60 * 60 * 24, // 24 hours in ms
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 60 * 24, // 24 hours in ms
   });
   const { data: session } = useSession();
 
