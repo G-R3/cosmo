@@ -1,15 +1,23 @@
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/router";
 import { BiErrorCircle } from "react-icons/bi";
 import { trpc } from "../../utils/trpc";
 import { ComponentWithAuth } from "../../components/Auth";
 // import PreviewModal from "../../components/PreviewModal";
 
 const Submit: ComponentWithAuth = () => {
+  // const utils = trpc.useContext();
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
-  const [preview, setPreview] = useState<boolean>(false);
+  // const [preview, setPreview] = useState<boolean>(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const mutation = trpc.useMutation("post.create");
+  const router = useRouter();
+  const mutation = trpc.useMutation("post.create", {
+    onSuccess(input) {
+      // utils.invalidateQueries(["post.all"]);
+      router.push("/");
+    },
+  });
 
   const handleSubmit = () => {
     mutation.mutate({ title, content });
