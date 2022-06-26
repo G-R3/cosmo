@@ -31,7 +31,7 @@ const Home = () => {
             <h1 className="text-center">Todo Add something here</h1>
           </div>
         </div>
-        <motion.div className="col-span-3 flex flex-col items-center gap-10">
+        <motion.div className="col-span-3 pb-5 flex flex-col items-center gap-10">
           {postQuery.isLoading &&
             Array(13)
               .fill(0)
