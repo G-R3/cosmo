@@ -27,6 +27,9 @@ export const postRouter = createRouter()
             },
           },
           comments: {
+            orderBy: {
+              createdAt: "desc",
+            },
             select: {
               id: true,
               content: true,
