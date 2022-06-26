@@ -83,7 +83,12 @@ const Header: React.FC = () => {
                   </Menu.Button>
                   <Menu.Items className="bg-foreground dark:bg-darkOne absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md shadow-lg focus:outline-none ring-1 dark:ring-darkTwo">
                     <div className="p-2">
-                      <Menu.Item>{({ active }) => <ThemeToggler />}</Menu.Item>
+                      <Menu.Item>
+                        {/* we need these fragments so that clicking on the menu dropdown will not throw a wwarning when opened*/}
+                        <>
+                          <ThemeToggler />
+                        </>
+                      </Menu.Item>
                       <Menu.Item>
                         {!session ? (
                           <DropdownLink href="/auth/signin">
