@@ -3,6 +3,7 @@ import { withTRPC } from "@trpc/next";
 import { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
 import { NextComponentType, NextPageContext } from "next";
+import { ThemeProvider } from "next-themes";
 import { AppRouter } from "../server/router/_app";
 import Layout from "../components/Layout";
 import Auth, { AuthEnabledComponentConfig } from "../components/Auth";
@@ -18,15 +19,23 @@ const App = ({
 }: AppAuthProps) => {
   return (
     <SessionProvider session={session}>
-      <Layout>
-        {Component.auth ? (
-          <Auth loader={Component.auth.loader}>
+      <ThemeProvider
+        storageKey="theme"
+        defaultTheme="system"
+        enableSystem={true}
+        themes={["light", "dark"]}
+        attribute="class"
+      >
+        <Layout>
+          {Component.auth ? (
+            <Auth loader={Component.auth.loader}>
+              <Component {...pageProps} />
+            </Auth>
+          ) : (
             <Component {...pageProps} />
-          </Auth>
-        ) : (
-          <Component {...pageProps} />
-        )}
-      </Layout>
+          )}
+        </Layout>
+      </ThemeProvider>
     </SessionProvider>
   );
 };

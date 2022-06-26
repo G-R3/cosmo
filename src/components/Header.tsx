@@ -2,6 +2,7 @@ import { forwardRef, ReactNode } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { Menu } from "@headlessui/react";
+import { ThemeToggler } from "./ThemeToggler";
 
 interface Props {
   href: string;
@@ -15,7 +16,7 @@ const DropdownLink = forwardRef<HTMLAnchorElement, Props>((props, ref) => {
       <a
         ref={ref}
         {...rest}
-        className="flex w-full items-center rounded-md px-2 py-2 text-sm hover:bg-grayAlt dark:hover:bg-darkTwo"
+        className="flex w-full items-center rounded-md px-2 py-2 text-sm hover:bg-whiteAlt dark:hover:bg-darkTwo"
       >
         {children}
       </a>
@@ -85,11 +86,12 @@ const Header: React.FC = () => {
                     <div className="p-2">
                       <Menu.Item>
                         {({ active }) => (
-                          <button className="flex w-full items-center rounded-md px-2 py-2 hover:bg-grayAlt text-sm dark:hover:bg-darkTwo">
+                          <button className="flex w-full items-center rounded-md px-2 py-2 hover:bg-whiteAlt text-sm dark:hover:bg-darkTwo">
                             Account settings
                           </button>
                         )}
                       </Menu.Item>
+                      <Menu.Item>{({ active }) => <ThemeToggler />}</Menu.Item>
                       <Menu.Item>
                         {({ active }) => (
                           <DropdownLink href="/auth/signin">
