@@ -20,8 +20,8 @@ const Comment: React.FC<Props> = ({
   user,
 }) => {
   return (
-    <div className="bg-foreground flex gap-5 dark:bg-darkOne py-3 px-5 rounded-md">
-      <div className="bg-darkTwo min-h-full min-w-[4px] rounded-full"></div>
+    <div className="bg-whiteAlt flex gap-5 dark:bg-darkOne py-3 px-5 rounded-md">
+      <div className="bg-foreground dark:bg-darkTwo min-h-full min-w-[4px] rounded-full"></div>
       <div className="flex flex-col gap-5 flex-grow">
         <div className="flex items-center gap-3">
           <Image
