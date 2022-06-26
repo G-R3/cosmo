@@ -9,8 +9,8 @@ module.exports = {
         foreground: "#fff",
         darkOne: "#111",
         darkTwo: "#333",
-        whiteAlt: "#888",
-        grayAlt: "#f4f4f4",
+        grayAlt: "#888",
+        whiteAlt: "#f4f4f4",
 
         highlight: "#8b5cf6",
         error: "#F33",

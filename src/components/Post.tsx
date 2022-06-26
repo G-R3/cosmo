@@ -21,7 +21,7 @@ const Post: React.FC<Props> = ({ id, title, content, slug }) => {
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="flex gap-2 mb-3 text-whiteAlt"
+        className="flex gap-2 mb-3 text-grayAlt"
       >
         <small>Posted by</small>
         <small>Tuxedoed</small>
@@ -39,14 +39,14 @@ const Post: React.FC<Props> = ({ id, title, content, slug }) => {
         animate={{ opacity: 1 }}
         className="flex justify-between mt-3"
       >
-        <div className="flex justify-center items-center gap-2 text-whiteAlt">
+        <div className="flex justify-center items-center gap-2 text-grayAlt">
           <button>Upvote</button>
           <span>Vote</span>
           <button>Downvote</button>
         </div>
 
         <Link href={`/post/${slug}`}>
-          <a className="text-whiteAlt">100 Comment</a>
+          <a className="text-grayAlt">100 Comment</a>
         </Link>
       </motion.div>
     </div>
