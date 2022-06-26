@@ -20,7 +20,9 @@ model Post {
   content   String?  @db.Text()
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
-  slug      String?  @unique
+  slug      String   @unique
+  user      User     @relation(fields: [userEmail], references: [email])
+  userEmail String
 }
 
 model Account {
@@ -58,6 +60,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  posts         Post[]
 }
 
 model VerificationToken {
