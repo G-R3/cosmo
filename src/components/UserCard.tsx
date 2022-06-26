@@ -14,33 +14,38 @@ const UserCard: React.FC<Props> = ({ name, email, image }) => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="sticky top-20 py-5 bg-neutral rounded-md flex items-center justify-center"
+      className="sticky top-20 py-5 bg-whiteAlt dark:bg-darkOne rounded-md flex items-center justify-center"
     >
       <div className="flex flex-col items-center justify-center rounded-full">
-        <div className="avatar">
-          <div className="w-24 rounded-full">
-            {/* TODO: set a default image */}
-            {!!image && (
-              <Image
-                src={image}
-                alt={name ? name : "Avatar"}
-                width={112}
-                height={112}
-                priority
-              />
-            )}
-          </div>
-        </div>
+        <motion.div
+          className="w-24"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 260, damping: 15 }}
+        >
+          {/* TODO: set a default image */}
+          {!!image && (
+            <Image
+              src={image}
+              alt={name ? name : "Avatar"}
+              width={112}
+              height={112}
+              className="rounded-full"
+              priority
+            />
+          )}
+        </motion.div>
+
         <div className="flex flex-col items-center mt-2">
           <span>{name}</span>
           <span>{email}</span>
         </div>
         <div className="flex flex-col gap-2 mt-5">
-          <button className="btn btn-primary btn-sm text-xs rounded-md">
-            Create Community
+          <button className="bg-error text-whiteAlt self-end h-10 p-4 w-full rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all">
+            Create community
           </button>
           <Link href={"/submit"}>
-            <a className="btn btn-secondary btn-sm text-xs text-base-100 rounded-md">
+            <a className="bg-foreground text-darkOne self-end h-10 p-4 w-full rounded-md flex items-center justify-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all">
               Create Post
             </a>
           </Link>
