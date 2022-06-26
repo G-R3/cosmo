@@ -26,6 +26,21 @@ export const postRouter = createRouter()
               image: true,
             },
           },
+          comments: {
+            select: {
+              id: true,
+              content: true,
+              createdAt: true,
+              updatedAt: true,
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+          },
         },
       });
 
@@ -66,7 +81,7 @@ export const postRouter = createRouter()
       content: z.string().trim(),
     }),
     async resolve({ input, ctx }) {
-      if (!ctx.session?.user?.name) {
+      if (!ctx.session?.user) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You are not authorized",
