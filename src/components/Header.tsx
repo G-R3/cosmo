@@ -84,19 +84,19 @@ const Header: React.FC = () => {
                   </Menu.Button>
                   <Menu.Items className="bg-foreground dark:bg-darkOne absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md shadow-lg focus:outline-none ring-1 dark:ring-darkTwo">
                     <div className="p-2">
-                      <Menu.Item>
-                        {({ active }) => (
-                          <button className="flex w-full items-center rounded-md px-2 py-2 hover:bg-whiteAlt text-sm dark:hover:bg-darkTwo">
-                            Account settings
-                          </button>
-                        )}
-                      </Menu.Item>
                       <Menu.Item>{({ active }) => <ThemeToggler />}</Menu.Item>
                       <Menu.Item>
-                        {({ active }) => (
+                        {!session ? (
                           <DropdownLink href="/auth/signin">
                             Sign in
                           </DropdownLink>
+                        ) : (
+                          <button
+                            onClick={() => signOut()}
+                            className="flex w-full items-center rounded-md px-2 py-2 hover:bg-whiteAlt text-sm dark:hover:bg-darkTwo"
+                          >
+                            Sign out
+                          </button>
                         )}
                       </Menu.Item>
                     </div>
