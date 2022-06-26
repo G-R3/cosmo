@@ -22,8 +22,6 @@ const Home = () => {
 
   const { data: posts } = postQuery;
 
-  console.log(posts);
-
   return (
     <>
       <section className="lg:grid lg:grid-cols-5 gap-x-5 min-h-full">
