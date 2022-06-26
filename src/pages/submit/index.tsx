@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
+import { BiErrorCircle } from "react-icons/bi";
 import { trpc } from "../../utils/trpc";
 import { ComponentWithAuth } from "../../components/Auth";
-import PreviewModal from "../../components/PreviewModal";
+// import PreviewModal from "../../components/PreviewModal";
 
 const Submit: ComponentWithAuth = () => {
   const [title, setTitle] = useState<string>("");
@@ -20,7 +21,7 @@ const Submit: ComponentWithAuth = () => {
       const scrollHeight = textareaRef.current.scrollHeight;
       textareaRef.current.style.height = `${Math.max(
         textareaRef.current.scrollHeight,
-        100,
+        200,
       )}px`;
     }
   }, [content]);
@@ -30,39 +31,12 @@ const Submit: ComponentWithAuth = () => {
       <section className={"w-full max-w-xl mx-auto"}>
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-semibold my-5">Create Post</h1>
-          <label htmlFor="my-modal-4" className="btn modal-button">
-            Preview Post
-          </label>
-          <input
-            type="checkbox"
-            id="my-modal-4"
-            className="modal-toggle"
-            onClick={() => setPreview((prev) => !prev)}
-          />
-
-          {preview && <PreviewModal title={title} content={content} />}
         </div>
-        <div className="flex flex-col gap-2 rounded-md">
+        <div className="flex flex-col gap-5 rounded-md">
           {mutation.error && (
-            <div className="alert alert-error shadow-lg">
-              <div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="stroke-current flex-shrink-0 h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <span className="text-white">
-                  Something has gone terrible wrong!
-                </span>
-              </div>
+            <div className="bg-error p-3 rounded-md text-foreground flex items-center gap-2">
+              <BiErrorCircle size={22} />
+              <span>Something has gone terrible wrong!</span>
             </div>
           )}
           <input
@@ -70,7 +44,7 @@ const Submit: ComponentWithAuth = () => {
             placeholder="Hello World"
             onChange={(e) => setTitle(e.target.value)}
             value={title}
-            className="input input-bordered rounded-md"
+            className="p-4 rounded-md bg-whiteAlt text-darkTwo placeholder:text-slate-400 dark:bg-darkTwo dark:text-foreground  focus:outline-offset-2 focus:outline focus:outline-2 focus:outline-darkTwo dark:focus:outline-grayAlt transition-all"
           />
           <div className="grid after:content">
             <textarea
@@ -80,14 +54,15 @@ const Submit: ComponentWithAuth = () => {
                 setContent(e.target.value);
               }}
               value={content}
-              className="textarea textarea-bordered rounded-md overflow-hidden min-h-[100px] resize-none"
+              className="
+              py-3 px-4 rounded-md bg-whiteAlt text-darkTwo placeholder:text-slate-400 dark:bg-darkTwo dark:text-foreground  focus:outline-offset-2 focus:outline focus:outline-2 focus:outline-darkTwo dark:focus:outline-grayAlt transition-all overflow-hidden min-h-[200px] resize-none"
             ></textarea>
           </div>
 
           <button
             onClick={handleSubmit}
             disabled={mutation.isLoading}
-            className="btn btn-primary self-end rounded-md"
+            className="bg-whiteAlt text-darkTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
           >
             Post
           </button>
