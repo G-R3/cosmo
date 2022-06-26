@@ -5,10 +5,11 @@ interface Props {
   id: number;
   title: string;
   content?: string | null;
-  slug?: string | null;
+  slug: string;
+  username: string | null;
 }
 
-const Post: React.FC<Props> = ({ id, title, content, slug }) => {
+const Post: React.FC<Props> = ({ id, title, content, slug, username }) => {
   return (
     <div className="bg-whiteAlt dark:bg-darkOne border-2 border-transparent hover:border-highlight w-full rounded-md p-5 transition-all">
       <motion.h2
@@ -23,9 +24,7 @@ const Post: React.FC<Props> = ({ id, title, content, slug }) => {
         animate={{ opacity: 1 }}
         className="flex gap-2 mb-3 text-grayAlt"
       >
-        <small>Posted by</small>
-        <small>Tuxedoed</small>
-        <small>10 hrs ago</small>
+        <small>Posted by {username} 10 hrs ago</small>
       </motion.span>
       <motion.div
         initial={{ opacity: 0 }}

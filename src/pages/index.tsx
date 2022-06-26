@@ -13,10 +13,16 @@ const Home = () => {
   const { data: session } = useSession();
 
   if (postQuery.error) {
-    return <div>Error grabbing posts</div>;
+    return (
+      <h1 className="text-grayAlt font-bold text-2xl text-center">
+        Something happened and posts could not be fetched
+      </h1>
+    );
   }
 
   const { data: posts } = postQuery;
+
+  console.log(posts);
 
   return (
     <>
@@ -40,10 +46,11 @@ const Home = () => {
                 title={post.title}
                 content={post.content}
                 slug={post.slug}
+                username={post.user.name}
               />
             ))}
 
-          {!!posts && (
+          {posts?.length === 0 && (
             <div className="flex flex-col gap-5 justify-center items-center h-full">
               <h1 className="text-grayAlt font-bold text-2xl">
                 No posts found
