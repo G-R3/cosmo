@@ -1,11 +1,22 @@
 import { getProviders, signIn } from "next-auth/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { AiFillGithub } from "react-icons/ai";
+import { AiFillGithub, AiFillGoogleCircle } from "react-icons/ai";
 
-const providerButtonStyles: Record<string, string> = {
-  github: "bg-zinc-800 text-secondary hover:bg-zinc-700",
-  google: "bg-blue-700 text-white hover:bg-blue-600",
+interface ProviderProps {
+  styles: string;
+  icon: JSX.Element;
+}
+
+const providerStyles: Record<string, ProviderProps> = {
+  github: {
+    styles: "bg-zinc-800 text-whiteAlt hover:bg-zinc-700",
+    icon: <AiFillGithub size={25} className="mr-2" />,
+  },
+  google: {
+    styles: "bg-blue-700 text-whiteAlt hover:bg-blue-600",
+    icon: <AiFillGoogleCircle size={25} className="mr-2" />,
+  },
 };
 
 const SignIn = ({
@@ -16,21 +27,22 @@ const SignIn = ({
   return (
     <div className="flex flex-col items-center justify-center max-w-xl mx-auto">
       <h1 className="text-3xl font-bold text-center mb-10">Log in to Cosmo</h1>
-      <div className="max-w-xs">
-        {Object.values(providers).map((provider: any) => (
-          <button
-            key={provider.id}
-            className={`btn w-full mt-3 focus:outline-accent ${
-              providerButtonStyles[provider.id]
-            }`}
-            onClick={() =>
-              signIn(provider.id, { callbackUrl: callbackUrl ?? "/" })
-            }
-          >
-            <AiFillGithub size={25} className="mr-2" />
-            Sign in with {provider.name}
-          </button>
-        ))}
+      <div className="flex flex-col gap-4">
+        {Object.values(providers).map((provider: any) => {
+          const { styles, icon } = providerStyles[provider.id] as ProviderProps;
+          return (
+            <button
+              key={provider.id}
+              className={`h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all w-full ${styles}`}
+              onClick={() =>
+                signIn(provider.id, { callbackUrl: callbackUrl ?? "/" })
+              }
+            >
+              {icon}
+              Sign in with {provider.name}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
