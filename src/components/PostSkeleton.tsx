@@ -9,7 +9,7 @@ const PostSkeleton = () => {
   return (
     <motion.div
       variants={variants}
-      className="bg-grayAlt dark:bg-darkOne w-full rounded-md p-5 max-h-[168px]"
+      className="bg-whiteAlt dark:bg-darkOne w-full rounded-md p-5 max-h-[168px]"
     >
       <div>
         <h2 className="bg-skeleton dark:bg-skeletonDark bg-[length:400%_100%] animate-skeletonLoading rounded-md h-5 w-full"></h2>

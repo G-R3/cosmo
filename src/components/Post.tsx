@@ -10,7 +10,7 @@ interface Props {
 
 const Post: React.FC<Props> = ({ id, title, content, slug }) => {
   return (
-    <div className="bg-grayAlt dark:bg-darkOne border-2 border-transparent hover:border-highlight w-full rounded-md p-5 transition-all">
+    <div className="bg-whiteAlt dark:bg-darkOne border-2 border-transparent hover:border-highlight w-full rounded-md p-5 transition-all">
       <motion.h2
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

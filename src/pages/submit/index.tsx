@@ -44,7 +44,7 @@ const Submit: ComponentWithAuth = () => {
             placeholder="Hello World"
             onChange={(e) => setTitle(e.target.value)}
             value={title}
-            className="p-4 rounded-md bg-grayAlt text-darkTwo placeholder:text-slate-400 dark:bg-darkTwo dark:text-foreground  focus:outline-offset-2 focus:outline focus:outline-2 focus:outline-darkTwo dark:focus:outline-grayAlt transition-all"
+            className="p-4 rounded-md bg-whiteAlt text-darkTwo placeholder:text-slate-400 dark:bg-darkTwo dark:text-foreground  focus:outline-offset-2 focus:outline focus:outline-2 focus:outline-darkTwo dark:focus:outline-grayAlt transition-all"
           />
           <div className="grid after:content">
             <textarea
@@ -55,7 +55,7 @@ const Submit: ComponentWithAuth = () => {
               }}
               value={content}
               className="
-              py-3 px-4 rounded-md bg-grayAlt text-darkTwo placeholder:text-slate-400 dark:bg-darkTwo dark:text-foreground  focus:outline-offset-2 focus:outline focus:outline-2 focus:outline-darkTwo dark:focus:outline-grayAlt transition-all overflow-hidden min-h-[200px] resize-none"
+              py-3 px-4 rounded-md bg-whiteAlt text-darkTwo placeholder:text-slate-400 dark:bg-darkTwo dark:text-foreground  focus:outline-offset-2 focus:outline focus:outline-2 focus:outline-darkTwo dark:focus:outline-grayAlt transition-all overflow-hidden min-h-[200px] resize-none"
             ></textarea>
           </div>
 
