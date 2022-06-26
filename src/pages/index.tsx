@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Post from "../components/Post";
 import UserCard from "../components/UserCard";
 import PostSkeleton from "../components/PostSkeleton";
+import Link from "next/link";
 
 const Home = () => {
   const postQuery = trpc.useQuery(["post.all"], {
@@ -19,7 +20,7 @@ const Home = () => {
 
   return (
     <>
-      <section className="lg:grid lg:grid-cols-5 gap-x-5">
+      <section className="lg:grid lg:grid-cols-5 gap-x-5 min-h-full">
         <div className="hidden lg:block">
           <div className="bg-neutral rounded-md sticky top-20">
             <h1 className="text-center">Todo Add something here</h1>
@@ -41,6 +42,21 @@ const Home = () => {
                 slug={post.slug}
               />
             ))}
+
+          {!!posts && (
+            <div className="flex flex-col gap-5 justify-center items-center h-full">
+              <h1 className="text-grayAlt font-bold text-2xl">
+                No posts found
+              </h1>
+              <div>
+                <Link href={"/submit"}>
+                  <a className="bg-foreground text-darkOne self-end h-10 p-4 w-full rounded-md flex items-center justify-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all">
+                    Create Post
+                  </a>
+                </Link>
+              </div>
+            </div>
+          )}
         </motion.div>
         {!!session?.user && (
           <div className="hidden lg:block">
