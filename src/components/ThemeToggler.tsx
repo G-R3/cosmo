@@ -17,13 +17,13 @@ export const ThemeToggler: React.FC = () => {
         onChange={setToggle}
         onClick={() => setTheme(theme === "light" ? "dark" : "light")}
         className={`${
-          toggle && theme === "dark" ? "bg-neutral-800" : "bg-neutral-300"
+          theme === "dark" ? "bg-neutral-800" : "bg-neutral-300"
         } relative inline-flex h-6 w-11 items-center rounded-full`}
       >
         <span className="sr-only">Toggle Theme</span>
         <span
           className={`${
-            toggle && theme === "dark"
+            theme === "dark"
               ? "translate-x-6 bg-background"
               : "translate-x-1 bg-foreground"
           } inline-block h-4 w-4 transform rounded-full`}
