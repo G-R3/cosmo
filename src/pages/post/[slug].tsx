@@ -62,9 +62,12 @@ const Post = () => {
             <button>Downvote</button>
           </div>
 
-          <Link href={`/post/${post?.slug}`}>
-            <a>0 Comments</a>
-          </Link>
+          <span>
+            {post.comments.length}{" "}
+            {post.comments.length > 1 || post.comments.length === 0
+              ? "comments"
+              : "comment"}
+          </span>
         </div>
       </section>
 

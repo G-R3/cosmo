@@ -55,6 +55,11 @@ export const postRouter = createRouter()
       const posts = await prisma.post.findMany({
         include: {
           user: true,
+          _count: {
+            select: {
+              comments: true,
+            },
+          },
         },
       });
 
@@ -69,6 +74,7 @@ export const postRouter = createRouter()
           slug: post.slug,
           createdAt: post.createdAt,
           updatedAt: post.updatedAt,
+          commentCount: post._count.comments,
           user: {
             id: post.user.id,
             name: post.user.name,
