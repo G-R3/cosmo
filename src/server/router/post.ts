@@ -13,6 +13,20 @@ export const postRouter = createRouter()
         where: {
           slug: input.slug,
         },
+        select: {
+          id: true,
+          title: true,
+          content: true,
+          slug: true,
+          createdAt: true,
+          updatedAt: true,
+          user: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
+        },
       });
 
       return post;
@@ -26,7 +40,7 @@ export const postRouter = createRouter()
         },
       });
 
-      // doing this so that I can exclude the userEmail field idk why I'm doing https://www.prisma.io/docs/guides/database/troubleshooting-orm/help-articles/working-with-many-to-many-relations#explicit-relations
+      // doing this so that I can exclude the userEmail field idk why I'm doing. I guess because I don't like it being there? maybe I'm doing the relation wrong. Like maybe I should have an int id for the user. no way right? i think i'm doing it right. right? https://www.prisma.io/docs/guides/database/troubleshooting-orm/help-articles/working-with-many-to-many-relations#explicit-relations
 
       // but I can also do it like this: https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#select-specific-relation-fields
       return [

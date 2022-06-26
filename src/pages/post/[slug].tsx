@@ -18,23 +18,25 @@ const Post = () => {
 
   const { data: post } = postQuery;
 
+  console.log(post);
+
   return (
     <div className="max-w-3xl mx-auto">
       <section className="p-5 bg-whiteAlt dark:bg-darkOne">
         <h1 className="text-2xl">{post?.title}</h1>
         <small className="mb-3 mt-1 block text-grayAlt">
-          Post by Tuxedoed 10 hours ago
+          Posted by {post?.user.name} 10 hours ago
         </small>
         <Markdown content={post?.content ? post.content : ""} />
         <div className="flex justify-between mt-3 text-grayAlt">
           <div className="flex justify-center items-center gap-2">
             <button>Upvote</button>
-            <span>Vote</span>
+            <span>0</span>
             <button>Downvote</button>
           </div>
 
           <Link href={`/post/${post?.slug}`}>
-            <a>100 Comments</a>
+            <a>0 Comments</a>
           </Link>
         </div>
       </section>
