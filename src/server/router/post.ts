@@ -20,6 +20,7 @@ export const postRouter = createRouter()
           slug: true,
           createdAt: true,
           updatedAt: true,
+          voteCount: true,
           user: {
             select: {
               name: true,
@@ -46,6 +47,10 @@ export const postRouter = createRouter()
           },
         },
       });
+
+      if (!post) {
+        return null;
+      }
 
       return post;
     },
