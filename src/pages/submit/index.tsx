@@ -1,16 +1,16 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import { BiErrorCircle } from "react-icons/bi";
 import { trpc } from "../../utils/trpc";
 import { ComponentWithAuth } from "../../components/Auth";
+import useTextarea from "../../hooks/useTextarea";
 // import PreviewModal from "../../components/PreviewModal";
 
 const Submit: ComponentWithAuth = () => {
   // const utils = trpc.useContext();
   const [title, setTitle] = useState<string>("");
-  const [content, setContent] = useState<string>("");
+  const { content, setContent, textareaRef } = useTextarea("");
   // const [preview, setPreview] = useState<boolean>(false);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const router = useRouter();
   const mutation = trpc.useMutation("post.create", {
     onSuccess(input) {
@@ -22,17 +22,6 @@ const Submit: ComponentWithAuth = () => {
   const handleSubmit = () => {
     mutation.mutate({ title, content });
   };
-
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "inherit";
-      const scrollHeight = textareaRef.current.scrollHeight;
-      textareaRef.current.style.height = `${Math.max(
-        textareaRef.current.scrollHeight,
-        200,
-      )}px`;
-    }
-  }, [content]);
 
   return (
     <div className={"flex"}>
