@@ -24,6 +24,7 @@ model Post {
   user      User      @relation(fields: [userEmail], references: [email])
   userEmail String
   comments  Comment[]
+  voteCount Int       @default(0)
 }
 
 model Comment {
@@ -35,6 +36,16 @@ model Comment {
   postId    Int
   user      User     @relation(fields: [userEmail], references: [email])
   userEmail String
+}
+
+model Votes {
+  // id        Int    @id @default(autoincrement())
+  voteType  Int
+  postId    Int
+  user      User   @relation(fields: [userEmail], references: [email])
+  userEmail String
+
+  @@id([userEmail, postId], name: "voteId")
 }
 
 model Account {
@@ -74,6 +85,7 @@ model User {
   sessions      Session[]
   posts         Post[]
   comments      Comment[]
+  votes         Votes[]
 }
 
 model VerificationToken {
