@@ -8,43 +8,19 @@ export const postRouter = createRouter()
     input: z.object({
       slug: z.string(),
     }),
-    async resolve({ input }) {
+    async resolve({ input, ctx }) {
       const post = await prisma.post.findFirst({
         where: {
           slug: input.slug,
         },
-        select: {
-          id: true,
-          title: true,
-          content: true,
-          slug: true,
-          createdAt: true,
-          updatedAt: true,
-          voteCount: true,
-          user: {
-            select: {
-              name: true,
-              image: true,
-            },
-          },
+        include: {
+          user: true,
           comments: {
-            orderBy: {
-              createdAt: "desc",
-            },
-            select: {
-              id: true,
-              content: true,
-              createdAt: true,
-              updatedAt: true,
-              user: {
-                select: {
-                  id: true,
-                  name: true,
-                  image: true,
-                },
-              },
+            include: {
+              user: true,
             },
           },
+          votes: true,
         },
       });
 
@@ -52,7 +28,15 @@ export const postRouter = createRouter()
         return null;
       }
 
-      return post;
+      return {
+        ...post,
+        hasVoted: post.votes.find(
+          (vote) => vote.userEmail === ctx.session?.user?.email,
+        ),
+        totalVotes: post.votes.reduce((prev, curr) => {
+          return prev + curr.voteType;
+        }, 0),
+      };
     },
   })
   .query("all", {
