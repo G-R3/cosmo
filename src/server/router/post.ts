@@ -9,7 +9,7 @@ export const postRouter = createRouter()
       slug: z.string(),
     }),
     async resolve({ input, ctx }) {
-      const post = await prisma.post.findFirst({
+      const post = await prisma.post.findUnique({
         where: {
           slug: input.slug,
         },
