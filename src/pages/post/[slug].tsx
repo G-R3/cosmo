@@ -28,11 +28,15 @@ const Post = () => {
   });
 
   if (postQuery.isLoading) {
-    return <div>Loading...</div>;
+    return <div className="text-center text-xl font-semibold">Loading...</div>;
   }
 
   if (postQuery.error) {
-    return <div>Error grabbing post</div>;
+    return (
+      <div className="text-center text-xl font-semibold">
+        Error grabbing post
+      </div>
+    );
   }
 
   const handleSubmit = (e: any, postId: number, comment: string) => {
@@ -53,7 +57,9 @@ const Post = () => {
     // this will crash if we try to visit a post that does not exist
     // Objects are not valid as a React child. Figure out a way to redirect if post does not exist
     // return router.push("/");
-    return <p>No post found</p>;
+    return (
+      <div className="text-center text-xl font-semibold">No post found</div>
+    );
   }
 
   return (
