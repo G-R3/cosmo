@@ -39,7 +39,7 @@ const Auth: React.FC<Props> = ({ children, loader }) => {
   }, [isUser, isLoading]);
 
   if (isLoading || !session) {
-    return <>{loader}</>;
+    return <div className="text-center text-xl font-semibold">Loading...</div>;
   }
 
   return <>{children}</>;

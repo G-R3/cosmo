@@ -19,7 +19,7 @@ export const commentRouter = createRouter().mutation("create", {
     await prisma.comment.create({
       data: {
         content: input.content,
-        userEmail: ctx.session.user.email!,
+        userId: ctx.session.user.id!,
         postId: input.postId,
       },
     });

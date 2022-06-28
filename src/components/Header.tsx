@@ -27,10 +27,14 @@ const DropdownLink = forwardRef<HTMLAnchorElement, Props>((props, ref) => {
 const Header: React.FC = () => {
   const { data: session, status } = useSession();
   const loading = status === "loading";
+
+  // if (loading) return null;
+
   return (
     <header
       className={`backdrop-saturate-50 backdrop-blur-sm fixed top-0 left-0 w-full z-10 transition-all duration-200 ease-in ${
-        !session && loading ? "-top-8 opacity-0" : "top-0 opacity-1"
+        ""
+        // !session && loading ? "-top-8 opacity-0" : "top-0 opacity-1"
       }`}
     >
       <div className="relative px-8 h-14 lg:h-16 ">

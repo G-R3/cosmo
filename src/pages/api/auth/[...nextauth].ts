@@ -20,4 +20,16 @@ export default NextAuth({
     signIn: "/auth/signin",
     error: "/",
   },
+  callbacks: {
+    session({ session, token, user }) {
+      if (session?.user) {
+        session.user.id = user.id;
+      }
+
+      return session;
+    },
+  },
+  session: {
+    strategy: "database",
+  },
 });
