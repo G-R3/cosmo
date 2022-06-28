@@ -15,16 +15,17 @@ datasource db {
 }
 
 model Post {
-  id        Int       @id @default(autoincrement())
-  title     String
-  content   String?   @db.Text()
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now())
-  slug      String    @unique
-  user      User      @relation(fields: [userEmail], references: [email])
-  userEmail String
-  comments  Comment[]
-  voteCount Int       @default(0)
+  id         Int       @id @default(autoincrement())
+  title      String
+  content    String?   @db.Text()
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @default(now())
+  slug       String    @unique
+  totalVotes Int       @default(0)
+  user       User      @relation(fields: [userEmail], references: [email])
+  userEmail  String
+  comments   Comment[]
+  votes      Votes[]
 }
 
 model Comment {
@@ -39,13 +40,13 @@ model Comment {
 }
 
 model Votes {
-  // id        Int    @id @default(autoincrement())
   voteType  Int
+  post      Post   @relation(fields: [postId], references: [id])
   postId    Int
   user      User   @relation(fields: [userEmail], references: [email])
   userEmail String
 
-  @@id([userEmail, postId], name: "voteId")
+  @@id([postId, userEmail], name: "voteId")
 }
 
 model Account {
