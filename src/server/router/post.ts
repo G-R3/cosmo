@@ -31,7 +31,7 @@ export const postRouter = createRouter()
       return {
         ...post,
         hasVoted: post.votes.find(
-          (vote) => vote.userEmail === ctx.session?.user?.email,
+          (vote) => vote.userId === ctx.session?.user?.id,
         ),
         totalVotes: post.votes.reduce((prev, curr) => {
           return prev + curr.voteType;
@@ -52,9 +52,6 @@ export const postRouter = createRouter()
         },
       });
 
-      // doing this so that I can exclude the userEmail field idk why I'm doing. I guess because I don't like it being there? maybe I'm doing the relation wrong. Like maybe I should have an int id for the user. no way right? i think i'm doing it right. right? https://www.prisma.io/docs/guides/database/troubleshooting-orm/help-articles/working-with-many-to-many-relations#explicit-relations
-
-      // but I can also do it like this: https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#select-specific-relation-fields
       return [
         ...posts.map((post) => ({
           id: post.id,
@@ -91,7 +88,7 @@ export const postRouter = createRouter()
           title: input.title,
           content: input.content,
           slug: input.title.toLowerCase().replace(/\s/g, "-"),
-          userEmail: ctx.session.user.email!,
+          userId: ctx.session.user.id!,
         },
       });
 
