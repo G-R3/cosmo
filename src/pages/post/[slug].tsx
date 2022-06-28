@@ -4,14 +4,12 @@ import Markdown from "../../components/Markdown";
 import Comment from "../../components/Comment";
 import { BiErrorCircle } from "react-icons/bi";
 import useTextarea from "../../hooks/useTextarea";
-import { useSession } from "next-auth/react";
 
 const Post = () => {
   const router = useRouter();
   const utils = trpc.useContext();
   const { content, setContent, textareaRef } = useTextarea("");
   const slug = router.query.slug as string;
-  const { data: session } = useSession();
 
   const postQuery = trpc.useQuery(["post.get", { slug }], {
     refetchOnWindowFocus: false,
