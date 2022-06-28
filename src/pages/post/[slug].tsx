@@ -7,37 +7,17 @@ import useTextarea from "../../hooks/useTextarea";
 import { useSession } from "next-auth/react";
 
 const Post = () => {
-  const { content, setContent, textareaRef } = useTextarea("");
   const router = useRouter();
   const utils = trpc.useContext();
-  const { data: session } = useSession();
+  const { content, setContent, textareaRef } = useTextarea("");
   const slug = router.query.slug as string;
+  const { data: session } = useSession();
 
   const postQuery = trpc.useQuery(["post.get", { slug }], {
     refetchOnWindowFocus: false,
   });
 
-  const voteQuery = trpc.useQuery(
-    ["vote.get", { postId: postQuery.data?.id }],
-    {
-      enabled: !!postQuery.data?.id,
-    },
-  );
-
-  const userQuery = trpc.useQuery(
-    [
-      "user.has-voted",
-      {
-        userEmail: session?.user?.email,
-        postId: postQuery.data?.id,
-      },
-    ],
-    {
-      enabled: !!session?.user?.email && !!postQuery.data?.id,
-    },
-  );
-
-  const mutation = trpc.useMutation("comment.create", {
+  const commentMutation = trpc.useMutation("comment.create", {
     onSuccess: (input) => {
       utils.invalidateQueries(["post.get"]);
     },
@@ -45,8 +25,6 @@ const Post = () => {
 
   const voteMutation = trpc.useMutation("vote.create", {
     onSuccess(data, variables, context) {
-      // utils.invalidateQueries("vote.get");
-      utils.invalidateQueries("user.has-voted");
       utils.invalidateQueries("post.get");
     },
   });
@@ -60,7 +38,7 @@ const Post = () => {
   }
 
   const handleSubmit = (e: any, postId: number, comment: string) => {
-    mutation.mutate({
+    commentMutation.mutate({
       content: comment,
       postId,
     });
@@ -68,11 +46,12 @@ const Post = () => {
     setContent("");
   };
 
-  const handleVote = (type: number, postId: number) => {
-    voteMutation.mutate({
-      voteType: type,
-      postId: postId,
-    });
+  const upvote = (vote: number, postId: number) => {
+    voteMutation.mutate({ voteType: vote, postId });
+  };
+
+  const downvote = (vote: number, postId: number) => {
+    voteMutation.mutate({ voteType: vote, postId });
   };
 
   const { data: post } = postQuery;
@@ -95,24 +74,20 @@ const Post = () => {
         <div className="flex justify-between mt-3 text-grayAlt">
           <div className="flex justify-center items-center gap-2">
             <button
-              onClick={() => handleVote(1, post.id)}
+              onClick={() => upvote(1, post.id)}
               className={`rounded-md p-1 text-xs ${
-                userQuery.data?.hasVoted &&
-                userQuery.data.voteType === 1 &&
-                "bg-orange-500 text-whiteAlt"
+                post.hasVoted?.voteType === 1 && "bg-orange-500 text-whiteAlt"
               }`}
             >
               Upvote
             </button>
             <span className="text-base border px-2 rounded-full">
-              {post.voteCount}
+              {post.totalVotes}
             </span>
             <button
-              onClick={() => handleVote(-1, post.id)}
+              onClick={() => downvote(-1, post.id)}
               className={`rounded-md p-1 text-xs ${
-                userQuery.data?.hasVoted &&
-                userQuery.data.voteType === -1 &&
-                "bg-indigo-400 text-whiteAlt"
+                post.hasVoted?.voteType === -1 && "bg-indigo-400 text-whiteAlt"
               }`}
             >
               Downvote
@@ -131,7 +106,7 @@ const Post = () => {
       <section className="mt-5 bg-whiteAlt dark:bg-darkOne p-5 flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <h2 className="text-md text-grayAlt">Post comment</h2>
-          {mutation.error && (
+          {commentMutation.error && (
             <div className="bg-error p-3 rounded-md text-foreground flex items-center gap-2">
               <BiErrorCircle size={22} />
               <span>Something has gone terrible wrong!</span>
@@ -149,7 +124,7 @@ const Post = () => {
           className=" py-3 px-4 rounded-md bg-foreground text-darkTwo placeholder:text-slate-400 dark:bg-darkTwo dark:text-foreground  focus:outline-offset-2 focus:outline focus:outline-2 focus:outline-darkTwo dark:focus:outline-grayAlt transition-all overflow-hidden min-h-[200px] resize-none"
         ></textarea>
         <button
-          disabled={mutation.isLoading}
+          disabled={commentMutation.isLoading}
           onClick={(e) => handleSubmit(e, post?.id, content)}
           className="bg-foreground text-darkTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:outline-[3px] focus-visible:focus:outline-highlight"
         >
