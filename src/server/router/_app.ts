@@ -1,7 +1,6 @@
 import { createRouter } from "../createRouter";
 import { commentRouter } from "./comment";
 import { postRouter } from "./post";
-
 import { voteRouter } from "./vote";
 
 export const appRouter = createRouter()

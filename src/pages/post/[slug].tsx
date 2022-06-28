@@ -46,14 +46,9 @@ const Post = () => {
     setContent("");
   };
 
-  const upvote = (vote: number, postId: number) => {
+  const handleVote = (vote: number, postId: number) => {
     voteMutation.mutate({ voteType: vote, postId });
   };
-
-  const downvote = (vote: number, postId: number) => {
-    voteMutation.mutate({ voteType: vote, postId });
-  };
-
   const { data: post } = postQuery;
 
   if (!post) {
@@ -74,7 +69,7 @@ const Post = () => {
         <div className="flex justify-between mt-3 text-grayAlt">
           <div className="flex justify-center items-center gap-2">
             <button
-              onClick={() => upvote(1, post.id)}
+              onClick={() => handleVote(1, post.id)}
               className={`rounded-md p-1 text-xs ${
                 post.hasVoted?.voteType === 1 && "bg-orange-500 text-whiteAlt"
               }`}
@@ -85,7 +80,7 @@ const Post = () => {
               {post.totalVotes}
             </span>
             <button
-              onClick={() => downvote(-1, post.id)}
+              onClick={() => handleVote(-1, post.id)}
               className={`rounded-md p-1 text-xs ${
                 post.hasVoted?.voteType === -1 && "bg-indigo-400 text-whiteAlt"
               }`}
