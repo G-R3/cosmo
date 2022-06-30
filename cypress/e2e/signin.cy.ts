@@ -15,5 +15,3 @@ describe("Cypress login", () => {
       });
   });
 });
-
-export {};
