@@ -74,7 +74,10 @@ const Header: React.FC = () => {
                 </Link>
               )}
               {!!session?.user && (
-                <Menu as={"div"} className="relative inline-block text-left">
+                <Menu
+                  as={"div"}
+                  className="user-menu relative inline-block text-left"
+                >
                   <Menu.Button className="p-2 rounded-full">
                     <div className="flex items-center bg-red-100 justify-center rounded-full outline outline-offset-2 outline-1 outline-highlight">
                       <span
