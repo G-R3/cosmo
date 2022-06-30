@@ -1,5 +1,3 @@
-import { eq } from "cypress/types/lodash";
-
 describe("Post creation", () => {
   before(() => {
     cy.login();
