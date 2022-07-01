@@ -64,6 +64,15 @@ const Post = () => {
 
   return (
     <div className="max-w-3xl mx-auto">
+      {voteMutation.error && (
+        <div
+          data-cy="alert-error"
+          className="bg-error p-3 rounded-md text-foreground flex items-center gap-2"
+        >
+          <BiErrorCircle size={22} />
+          <span>Unable to vote on post!</span>
+        </div>
+      )}
       <section className="p-5 bg-whiteAlt dark:bg-darkOne">
         <h1 className="text-2xl">{post?.title}</h1>
         <small className="mb-3 mt-1 block text-grayAlt">
@@ -73,6 +82,7 @@ const Post = () => {
         <div className="flex justify-between mt-3 text-grayAlt">
           <div className="flex justify-center items-center gap-2">
             <button
+              data-cy="upvote-post"
               onClick={() => handleVote(1, post.id)}
               className={`rounded-md p-1 text-xs ${
                 post.hasVoted?.voteType === 1 && "bg-orange-500 text-whiteAlt"
@@ -80,10 +90,14 @@ const Post = () => {
             >
               Upvote
             </button>
-            <span className="text-base border px-2 rounded-full">
+            <span
+              data-cy="post-votes"
+              className="text-base border px-2 rounded-full"
+            >
               {post.totalVotes}
             </span>
             <button
+              data-cy="downvote-post"
               onClick={() => handleVote(-1, post.id)}
               className={`rounded-md p-1 text-xs ${
                 post.hasVoted?.voteType === -1 && "bg-indigo-400 text-whiteAlt"
@@ -106,13 +120,17 @@ const Post = () => {
         <div className="flex items-center justify-between">
           <h2 className="text-md text-grayAlt">Post comment</h2>
           {commentMutation.error && (
-            <div className="bg-error p-3 rounded-md text-foreground flex items-center gap-2">
+            <div
+              data-cy="alert-error"
+              className="bg-error p-3 rounded-md text-foreground flex items-center gap-2"
+            >
               <BiErrorCircle size={22} />
               <span>Something has gone terrible wrong!</span>
             </div>
           )}
         </div>
         <textarea
+          data-cy="comment-textarea"
           ref={textareaRef}
           value={content}
           onChange={(e) => setContent(e.target.value)}

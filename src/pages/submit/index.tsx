@@ -57,6 +57,7 @@ const Submit: ComponentWithAuth = () => {
           </div>
 
           <button
+            data-cy="submit"
             onClick={handleSubmit}
             disabled={mutation.isLoading}
             className="bg-whiteAlt text-darkTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
