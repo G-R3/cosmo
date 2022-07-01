@@ -101,4 +101,56 @@ describe("Post voting", () => {
       expect(newVotes).to.eq(postVotes + 1);
     });
   });
+
+  it("Should upvote then downvote", () => {
+    let postVotes;
+    cy.login();
+    cy.visit("/");
+    cy.wait("@session");
+    cy.get("[data-cy='post-link']").eq(0).click();
+
+    cy.get("[data-cy='post-votes']").then(($span) => {
+      postVotes = parseInt($span.text());
+    });
+    cy.intercept("GET", "/api/trpc/post.get?*").as("postVote");
+
+    cy.get("[data-cy='upvote-post']").click();
+    cy.wait("@postVote");
+    cy.get("[data-cy='downvote-post']").click();
+    cy.wait("@postVote");
+
+    cy.get("[data-cy='post-votes']").then(($span) => {
+      const newVotes = parseInt($span.text());
+
+      expect(newVotes).to.eq(postVotes - 1);
+    });
+
+    cy.get("[data-cy='downvote-post']").click();
+  });
+
+  it("Should downvote then upvote", () => {
+    cy.login();
+    cy.visit("/");
+    cy.wait("@session");
+    let postVotes;
+    cy.get("[data-cy='post-link']").eq(0).click();
+
+    cy.get("[data-cy='post-votes']").then(($span) => {
+      postVotes = parseInt($span.text());
+    });
+    cy.intercept("GET", "/api/trpc/post.get?*").as("postVote");
+
+    cy.get("[data-cy='downvote-post']").click();
+    cy.wait("@postVote");
+    cy.get("[data-cy='upvote-post']").click();
+    cy.wait("@postVote");
+
+    cy.get("[data-cy='post-votes']").then(($span) => {
+      const newVotes = parseInt($span.text());
+
+      expect(newVotes).to.eq(postVotes + 1);
+    });
+
+    cy.get("[data-cy='upvote-post']").click();
+  });
 });
