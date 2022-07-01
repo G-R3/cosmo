@@ -8,4 +8,8 @@ const generatePost = () => {
   return { postTitle, postBody, postSlug };
 };
 
-export { generatePost };
+const generateCommentBody = () => {
+  return `# ${faker.lorem.words()} \n${faker.lorem.text()}`;
+};
+
+export { generatePost, generateCommentBody };
