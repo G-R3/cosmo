@@ -1,9 +1,6 @@
 name: main
 
-on:
-  push:
-    branches:
-      - "main"
+on: pull_request
 
 jobs:
   eslint:
@@ -22,5 +19,5 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         with:
-          start: npm start
+          start: npm run dev
           browser: chrome
