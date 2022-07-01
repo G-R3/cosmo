@@ -19,7 +19,7 @@ jobs:
 
       - name: Cypress run
         uses: cypress-io/github-action@v4
-        width:
+        with:
           build: npm run build
           start: npm start
           browser: chrome
