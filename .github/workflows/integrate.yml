@@ -21,3 +21,5 @@ jobs:
         with:
           start: npm run dev
           browser: chrome
+        env:
+          CYPRESS_DATABASE_URL: ${{ secrets.DATABASE_URL }}
