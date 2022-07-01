@@ -1,4 +1,4 @@
-name: CI
+name: main
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   eslint:
-    name: Lint code base
+    name: Integrate
     runs-on: ubuntu-latest
 
     steps:

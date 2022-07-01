@@ -23,3 +23,5 @@ describe("Create comment", () => {
     cy.wait("@createComment").its("response.statusCode").should("eq", 200);
   });
 });
+
+export {};

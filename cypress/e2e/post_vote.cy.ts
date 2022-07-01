@@ -39,3 +39,5 @@ describe("Vote on a post", () => {
     cy.wait("@createVote").its("response.statusCode").should("eq", 200);
   });
 });
+
+export {};
