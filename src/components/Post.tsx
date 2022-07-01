@@ -53,7 +53,7 @@ const Post: React.FC<Props> = ({
         </div>
 
         <Link href={`/post/${slug}`}>
-          <a className="text-grayAlt">
+          <a data-cy="post-link" className="text-grayAlt">
             {commentCount}{" "}
             {commentCount > 1 || commentCount === 0 ? "comments" : "comment"}
           </a>
