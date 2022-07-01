@@ -68,7 +68,7 @@ describe("Vote on a post", () => {
     });
   });
 
-  it("Should upvote", () => {
+  it("Should downvote", () => {
     let initialVotes;
     cy.get("[data-cy='post-votes']").then(($span) => {
       initialVotes = parseInt($span.text());
