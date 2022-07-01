@@ -16,8 +16,6 @@ jobs:
 
       - name: Cypress run
         uses: cypress-io/github-action@v4
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         with:
           start: npm run dev
           browser: chrome
