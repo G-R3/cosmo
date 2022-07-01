@@ -11,88 +11,31 @@ describe("Vote on a post", () => {
   });
 
   it("Should upvote and then downvote", () => {
-    let initialVotes;
-
-    cy.get("[data-cy='post-votes']").then(($span) => {
-      initialVotes = parseInt($span.text());
-    });
-
-    cy.intercept("GET", "/api/trpc/post.get?*").as("getPost");
     cy.intercept("POST", "/api/trpc/vote.create?*").as("createVote");
     // upvote
     cy.get("[data-cy='upvote-post']").click();
-    cy.wait(["@createVote", "@getPost"]);
-    cy.get("[data-cy='post-votes']").then(($span) => {
-      const newVotes = parseInt($span.text());
-
-      expect(newVotes).to.eq(initialVotes + 1);
-    });
-
-    // downvote
-    cy.get("[data-cy='downvote-post']").click();
-    cy.wait(["@createVote", "@getPost"]);
-    cy.get("[data-cy='post-votes']").then(($span) => {
-      const newVotes = parseInt($span.text());
-
-      expect(newVotes).to.eq(initialVotes - 1);
-    });
-
-    cy.get("[data-cy='downvote-post']").click();
-    cy.wait(["@createVote", "@getPost"]);
-  });
-
-  it("Should upvote", () => {
-    let initialVotes;
-    cy.get("[data-cy='post-votes']").then(($span) => {
-      initialVotes = parseInt($span.text());
-    });
-
-    cy.intercept("GET", "/api/trpc/post.get?*").as("getPost");
-    cy.intercept("POST", "/api/trpc/vote.create?*").as("createVote");
-    // upvote
-    cy.get("[data-cy='upvote-post']").click();
-    cy.wait(["@createVote", "@getPost"]);
-    cy.get("[data-cy='post-votes']").then(($span) => {
-      const newVotes = parseInt($span.text());
-
-      expect(newVotes).to.eq(initialVotes + 1);
-    });
+    cy.wait("@createVote").its("response.statusCode").should("eq", 200);
 
     // undo upvote
     cy.get("[data-cy='upvote-post']").click();
-    cy.wait(["@createVote", "@getPost"]);
-    cy.get("[data-cy='post-votes']").then(($span) => {
-      const newVotes = parseInt($span.text());
-
-      expect(newVotes).to.eq(initialVotes);
-    });
-  });
-
-  it("Should downvote", () => {
-    let initialVotes;
-    cy.get("[data-cy='post-votes']").then(($span) => {
-      initialVotes = parseInt($span.text());
-    });
-
-    cy.intercept("GET", "/api/trpc/post.get?*").as("getPost");
-    cy.intercept("POST", "/api/trpc/vote.create?*").as("createVote");
+    cy.wait("@createVote").its("response.statusCode").should("eq", 200);
 
     // downvote
     cy.get("[data-cy='downvote-post']").click();
-    cy.wait(["@createVote", "@getPost"]);
-    cy.get("[data-cy='post-votes']").then(($span) => {
-      const newVotes = parseInt($span.text());
+    cy.wait("@createVote").its("response.statusCode").should("eq", 200);
 
-      expect(newVotes).to.eq(initialVotes - 1);
-    });
-
-    // undo downvote
+    // undow downvote
     cy.get("[data-cy='downvote-post']").click();
-    cy.wait(["@createVote", "@getPost"]);
-    cy.get("[data-cy='post-votes']").then(($span) => {
-      const newVotes = parseInt($span.text());
+    cy.wait("@createVote").its("response.statusCode").should("eq", 200);
 
-      expect(newVotes).to.eq(initialVotes);
-    });
+    // upvote and then downvote
+    cy.get("[data-cy='upvote-post']").click();
+    cy.wait("@createVote").its("response.statusCode").should("eq", 200);
+    cy.get("[data-cy='downvote-post']").click();
+    cy.wait("@createVote").its("response.statusCode").should("eq", 200);
+
+    // reset vote
+    cy.get("[data-cy='downvote-post']").click();
+    cy.wait("@createVote").its("response.statusCode").should("eq", 200);
   });
 });
