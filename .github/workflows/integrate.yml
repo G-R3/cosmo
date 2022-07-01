@@ -1,6 +1,9 @@
 name: CI
 
-on: [push]
+on:
+  push:
+    branches:
+      - "main"
 
 jobs:
   eslint:
@@ -14,13 +17,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
 
-      - name: Install packages
-        run: npm ci
-
-      - name: Run ESLint
-        run: npm run lint
-
       - name: Cypress run
         uses: cypress-io/github-action@v4
-        with:
-          start: npm start
+        width:
+          browser: chrome
