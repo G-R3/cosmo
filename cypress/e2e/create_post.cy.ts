@@ -21,3 +21,5 @@ describe("Post creation", () => {
     cy.get("h1").should("have.text", postTitle);
   });
 });
+
+export {};
