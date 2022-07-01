@@ -1,6 +1,7 @@
 {
   "name": "cosmo",
   "version": "0.1.0",
+  "description": "Some app using next.js",
   "private": true,
   "scripts": {
     "dev": "next dev",
