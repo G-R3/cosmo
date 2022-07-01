@@ -1,22 +1,23 @@
+import { generatePost } from "../support/generate";
+
 describe("Post creation", () => {
   before(() => {
     cy.login();
     cy.visit("/");
     cy.wait("@session");
   });
+
   it("Creates a post", () => {
+    const { postTitle, postBody, postSlug } = generatePost();
     cy.visit("/submit");
 
-    cy.get("input").type("Hello, World");
+    cy.get("input").type(postTitle);
 
-    cy.get("textarea").type(
-      `# Your Post \nLet the world know what you're thinking. Start with a title and then add some content to spice up your post! 😀`,
-    );
+    cy.get("textarea").type(postBody);
 
-    cy.get("button").contains("Post").click().should("be.disabled");
-  });
-  it("navigate to post", () => {
-    cy.visit("/post/hello,-world");
-    cy.get("h1").should("have.text", "Hello, World");
+    cy.get("[data-cy='submit']").click().should("be.disabled");
+
+    cy.visit(`/post/${postSlug}`);
+    cy.get("h1").should("have.text", postTitle);
   });
 });
