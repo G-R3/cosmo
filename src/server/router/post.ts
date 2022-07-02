@@ -21,6 +21,7 @@ export const postRouter = createRouter()
             },
           },
           votes: true,
+          community: true,
         },
       });
 
@@ -45,6 +46,7 @@ export const postRouter = createRouter()
         include: {
           user: true,
           votes: true,
+          community: true,
           _count: {
             select: {
               comments: true,
@@ -62,6 +64,7 @@ export const postRouter = createRouter()
           createdAt: post.createdAt,
           updatedAt: post.updatedAt,
           commentCount: post._count.comments,
+          community: post.community,
           user: {
             id: post.user.id,
             name: post.user.name,
@@ -81,6 +84,7 @@ export const postRouter = createRouter()
     input: z.object({
       title: z.string().trim().min(1).max(300),
       content: z.string().trim(),
+      community: z.string().trim().min(1),
     }),
     async resolve({ input, ctx }) {
       if (!ctx.session?.user) {
@@ -90,12 +94,26 @@ export const postRouter = createRouter()
         });
       }
 
+      const communityExists = await prisma.community.findUnique({
+        where: {
+          name: input.community,
+        },
+      });
+
+      if (!communityExists) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Community does not exist.",
+        });
+      }
+
       await prisma.post.create({
         data: {
           title: input.title,
           content: input.content,
           slug: input.title.toLowerCase().replace(/\s/g, "-"),
           userId: ctx.session.user.id!,
+          communityName: input.community,
         },
       });
 
