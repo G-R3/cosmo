@@ -27,7 +27,14 @@ export const communityRouter = createRouter()
       name: z.string().trim().min(1),
       description: z.string().nullable(),
     }),
-    async resolve({ input }) {
+    async resolve({ input, ctx }) {
+      if (!ctx.session?.user) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not authorized",
+        });
+      }
+
       const community = await prisma.community.create({
         data: {
           name: input.name,
