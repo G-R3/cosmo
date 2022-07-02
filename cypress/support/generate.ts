@@ -8,8 +8,15 @@ const generatePost = () => {
   return { postTitle, postBody, postSlug };
 };
 
+const generateCommunity = () => {
+  const name = faker.lorem.words(2);
+  const description = faker.lorem.words(20);
+
+  return { name, description };
+};
+
 const generateCommentBody = () => {
   return `# ${faker.lorem.words()} \n${faker.lorem.text()}`;
 };
 
-export { generatePost, generateCommentBody };
+export { generatePost, generateCommentBody, generateCommunity };

@@ -3,15 +3,19 @@
 
 describe("Vote on a post", () => {
   // i tried setting this to 'before' but the 'should downvote' test would end up as a not authorized error.
-  beforeEach(() => {
+  before(() => {
     cy.login();
     cy.visit("/");
     cy.wait("@session");
-    cy.get("[data-cy='post-link']").eq(0).click();
   });
 
   it("Should upvote and then downvote", () => {
+    cy.intercept("GET", "/api/trpc/post.get?*").as("getPost");
     cy.intercept("POST", "/api/trpc/vote.create?*").as("createVote");
+
+    cy.get("[data-cy='post-link']").eq(0).click();
+    cy.wait("@getPost").its("response.statusCode").should("eq", 200);
+
     // upvote
     cy.get("[data-cy='upvote-post']").click();
     cy.wait("@createVote").its("response.statusCode").should("eq", 200);
