@@ -14,6 +14,12 @@ datasource db {
 
 }
 
+model Community {
+  id          Int    @id @default(autoincrement())
+  name        String @unique
+  description String
+}
+
 model Post {
   id         Int       @id @default(autoincrement())
   title      String
