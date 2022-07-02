@@ -15,23 +15,26 @@ datasource db {
 }
 
 model Community {
-  id          Int    @id @default(autoincrement())
-  name        String @unique
-  description String
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String?
+  posts       Post[]
 }
 
 model Post {
-  id         Int       @id @default(autoincrement())
-  title      String
-  content    String?   @db.Text()
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @default(now())
-  slug       String    @unique
-  totalVotes Int       @default(0)
-  user       User      @relation(fields: [userId], references: [id])
-  userId     String
-  comments   Comment[]
-  votes      Votes[]
+  id            Int       @id @default(autoincrement())
+  title         String
+  content       String?   @db.Text()
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now())
+  slug          String    @unique
+  totalVotes    Int       @default(0)
+  user          User      @relation(fields: [userId], references: [id])
+  userId        String
+  comments      Comment[]
+  votes         Votes[]
+  community     Community @relation(fields: [communityName], references: [name])
+  communityName String
 }
 
 model Comment {
