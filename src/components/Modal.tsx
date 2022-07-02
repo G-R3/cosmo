@@ -11,7 +11,11 @@ const Modal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
-  const communityMutation = trpc.useMutation("community.create");
+  const communityMutation = trpc.useMutation("community.create", {
+    onSuccess(data, variables, context) {
+      setIsOpen(false);
+    },
+  });
 
   const createCommunity = () => {
     communityMutation.mutate({
