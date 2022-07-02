@@ -5,7 +5,7 @@ import { trpc } from "../utils/trpc";
 interface Vote {
   voteType: number;
   postId: number;
-  userId: number;
+  userId: string;
 }
 interface Props {
   id: number;
@@ -15,7 +15,7 @@ interface Props {
   username: string | null;
   commentCount: number;
   totalVotes: number;
-  hasVoted: Vote;
+  hasVoted: Vote | null;
 }
 
 const Post: React.FC<Props> = ({

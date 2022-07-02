@@ -48,7 +48,7 @@ const Home = () => {
                 username={post.user.name}
                 commentCount={post.commentCount}
                 totalVotes={post.totalVotes}
-                hasVoted={post.hasVoted}
+                hasVoted={post.hasVoted ? post.hasVoted : null}
               />
             ))}
 
