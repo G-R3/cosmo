@@ -35,6 +35,19 @@ export const communityRouter = createRouter()
         });
       }
 
+      const communityExist = await prisma.community.findFirst({
+        where: {
+          name: input.name,
+        },
+      });
+
+      if (communityExist) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Community already exists",
+        });
+      }
+
       const community = await prisma.community.create({
         data: {
           name: input.name,
