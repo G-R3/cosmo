@@ -16,6 +16,7 @@ interface Props {
   commentCount: number;
   totalVotes: number;
   hasVoted: Vote | null;
+  community: { id: number; name: string };
 }
 
 const Post: React.FC<Props> = ({
@@ -27,6 +28,7 @@ const Post: React.FC<Props> = ({
   commentCount,
   totalVotes,
   hasVoted,
+  community,
 }) => {
   const utils = trpc.useContext();
   const voteMutation = trpc.useMutation("vote.create", {
@@ -53,7 +55,10 @@ const Post: React.FC<Props> = ({
         animate={{ opacity: 1 }}
         className="flex gap-2 mb-3 text-grayAlt"
       >
-        <small>Posted by {username} 10 hrs ago</small>
+        <small>
+          Posted to <span className="text-highlight">{community.name}</span> by{" "}
+          {username} 10 hrs ago
+        </small>
       </motion.span>
       <motion.div
         initial={{ opacity: 0 }}
