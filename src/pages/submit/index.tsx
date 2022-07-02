@@ -42,6 +42,7 @@ const Submit: ComponentWithAuth = () => {
 
         <Search value={community} setValue={setCommunity} />
         <input
+          data-cy="post-title"
           type="text"
           placeholder="Hello World"
           onChange={(e) => setTitle(e.target.value)}
@@ -50,6 +51,7 @@ const Submit: ComponentWithAuth = () => {
         />
         <div className="grid after:content">
           <textarea
+            data-cy="post-body"
             ref={textareaRef}
             placeholder={`# Your Post \nLet the world know what you're thinking. Start with a title and then add some content to spice up your post! 😀`}
             onChange={(e) => {

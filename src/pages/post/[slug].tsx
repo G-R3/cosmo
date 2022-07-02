@@ -77,8 +77,10 @@ const Post = () => {
         <h1 className="text-2xl">{post?.title}</h1>
         <small className="mb-3 mt-1 block text-grayAlt">
           Posted to{" "}
-          <span className="text-highlight">{post.community.name}</span> by{" "}
-          {post?.user.name} 10 hours ago
+          <span data-cy="post-community" className="text-highlight">
+            {post.community.name}
+          </span>{" "}
+          by {post?.user.name} 10 hours ago
         </small>
         <Markdown content={post?.content ? post.content : ""} />
         <div className="flex justify-between mt-3 text-grayAlt">
