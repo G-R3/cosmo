@@ -47,6 +47,8 @@ const Home = () => {
                 slug={post.slug}
                 username={post.user.name}
                 commentCount={post.commentCount}
+                totalVotes={post.totalVotes}
+                hasVoted={post.hasVoted}
               />
             ))}
 

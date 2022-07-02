@@ -1,6 +1,12 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Markdown from "../components/Markdown";
+import { trpc } from "../utils/trpc";
+interface Vote {
+  voteType: number;
+  postId: number;
+  userId: number;
+}
 interface Props {
   id: number;
   title: string;
@@ -8,6 +14,8 @@ interface Props {
   slug: string;
   username: string | null;
   commentCount: number;
+  totalVotes: number;
+  hasVoted: Vote;
 }
 
 const Post: React.FC<Props> = ({
@@ -17,7 +25,20 @@ const Post: React.FC<Props> = ({
   slug,
   username,
   commentCount,
+  totalVotes,
+  hasVoted,
 }) => {
+  const utils = trpc.useContext();
+  const voteMutation = trpc.useMutation("vote.create", {
+    onSuccess(data, variables, context) {
+      utils.invalidateQueries("post.all");
+    },
+  });
+
+  const handleVote = (vote: number, postId: number) => {
+    voteMutation.mutate({ voteType: vote, postId });
+  };
+
   return (
     <div className="bg-whiteAlt dark:bg-darkOne border-2 border-transparent hover:border-highlight w-full rounded-md p-5 transition-all">
       <motion.h2
@@ -47,9 +68,25 @@ const Post: React.FC<Props> = ({
         className="flex justify-between mt-3"
       >
         <div className="flex justify-center items-center gap-2 text-grayAlt">
-          <button>Upvote</button>
-          <span>0</span>
-          <button>Downvote</button>
+          <button
+            data-cy="upvote-post"
+            onClick={() => handleVote(1, id)}
+            className={`rounded-md p-1 text-xs ${
+              hasVoted?.voteType === 1 && "bg-orange-500 text-whiteAlt"
+            }`}
+          >
+            Upvote
+          </button>
+          <span>{totalVotes}</span>
+          <button
+            data-cy="downvote-post"
+            onClick={() => handleVote(-1, id)}
+            className={`rounded-md p-1 text-xs ${
+              hasVoted?.voteType === -1 && "bg-indigo-400 text-whiteAlt"
+            }`}
+          >
+            Downvote
+          </button>
         </div>
 
         <Link href={`/post/${slug}`}>

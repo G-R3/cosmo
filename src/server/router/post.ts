@@ -40,10 +40,11 @@ export const postRouter = createRouter()
     },
   })
   .query("all", {
-    async resolve() {
+    async resolve({ input, ctx }) {
       const posts = await prisma.post.findMany({
         include: {
           user: true,
+          votes: true,
           _count: {
             select: {
               comments: true,
@@ -66,6 +67,12 @@ export const postRouter = createRouter()
             name: post.user.name,
             image: post.user.image,
           },
+          hasVoted: post.votes.find(
+            (vote) => vote.userId === ctx.session?.user?.id,
+          ),
+          totalVotes: post.votes.reduce((prev, curr) => {
+            return prev + curr.voteType;
+          }, 0),
         })),
       ];
     },
