@@ -25,6 +25,7 @@ const Search: React.FC<Props> = ({ value, setValue }) => {
             <FiSearch />
           </Combobox.Button>
           <Combobox.Input
+            data-cy="search-communities"
             onChange={(e) => setValue(e.target.value)}
             displayValue={(community: string) => community}
             autoCapitalize="false"

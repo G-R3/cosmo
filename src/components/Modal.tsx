@@ -13,6 +13,8 @@ const Modal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
 
   const communityMutation = trpc.useMutation("community.create", {
     onSuccess(data, variables, context) {
+      setName("");
+      setDescription("");
       setIsOpen(false);
     },
   });
@@ -79,12 +81,14 @@ const Modal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
 
           <div className="self-end flex gap-2">
             <button
+              data-cy="close-modal"
               onClick={() => setIsOpen(false)}
               className=" text-whiteAlt py-4 px-6 h-12 p-4 rounded-md flex items-center border-2 border-transparent disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:border-error hover:border-error"
             >
               Cancel
             </button>
             <button
+              data-cy="confirm-create"
               onClick={createCommunity}
               disabled={communityMutation.isLoading}
               className="bg-whiteAlt text-darkTwo h-12 p-4 rounded-md flex items-center border-2 border-transparent disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:border-highlight hover:border-highlight"
