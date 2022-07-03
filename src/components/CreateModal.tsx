@@ -57,7 +57,7 @@ const CreateModal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
                   type="text"
                   name="community-name"
                   id="community-name"
-                  className="border-2 border-darkTwo focus:outline-none focus:border-grayAlt rounded-md p-4 bg-whiteAlt text-darkTwo placeholder:text-slate-400 dark:bg-darkOne dark:text-foreground"
+                  className="border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-slate-400 dark:bg-darkOne dark:text-foreground"
                 />
               </div>
 
@@ -69,7 +69,7 @@ const CreateModal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
                   <textarea
                     onChange={(e) => setDescription(e.target.value)}
                     value={description}
-                    className=" border-2 border-darkTwo focus:outline-none focus:border-grayAlt rounded-md py-3 px-4 bg-whiteAlt text-darkTwo placeholder:text-slate-400 dark:bg-darkOne dark:text-foreground overflow-hidden min-h-[85px] resize-none"
+                    className="border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md py-3 px-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-slate-400 dark:bg-darkOne dark:text-foreground overflow-hidden min-h-[85px] resize-none overflow-y-auto"
                   ></textarea>
                   <span className="text-grayAlt">
                     You can always change this later
