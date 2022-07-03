@@ -32,15 +32,12 @@ const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const loading = status === "loading";
 
-  // if (loading) return null;
+  if (loading) return null;
 
   return (
     <>
       <header
-        className={`backdrop-saturate-50 backdrop-blur-sm fixed top-0 left-0 w-full z-10 transition-all duration-200 ease-in ${
-          ""
-          // !session && loading ? "-top-8 opacity-0" : "top-0 opacity-1"
-        }`}
+        className={`backdrop-saturate-50 backdrop-blur-sm fixed top-0 left-0 w-full z-10 transition-all duration-200 ease-in`}
       >
         <div className="relative px-8 h-14 lg:h-16 ">
           <div className="flex">
