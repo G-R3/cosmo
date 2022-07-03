@@ -1,17 +1,19 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { GetServerSideProps } from "next";
 import { BiErrorCircle } from "react-icons/bi";
+import { authOptions } from "../api/auth/[...nextauth]";
+import { getServerSession } from "next-auth/next";
 import { trpc } from "../../utils/trpc";
 import { ComponentWithAuth } from "../../components/Auth";
 import useTextarea from "../../hooks/useTextarea";
 import Search from "../../components/Search";
+import { getSession } from "next-auth/react";
 
-const Submit: ComponentWithAuth = () => {
-  // const utils = trpc.useContext();
+const Submit = () => {
   const [title, setTitle] = useState<string>("");
   const [community, setCommunity] = useState("");
   const { content, setContent, textareaRef } = useTextarea("");
-  // const [preview, setPreview] = useState<boolean>(false);
   const router = useRouter();
   const mutation = trpc.useMutation("post.create", {
     onSuccess(input) {
@@ -76,8 +78,21 @@ const Submit: ComponentWithAuth = () => {
   );
 };
 
-Submit.auth = {
-  loader: <div>Loading...</div>,
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerSession(context, authOptions);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/auth/signin",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
 };
 
 export default Submit;
