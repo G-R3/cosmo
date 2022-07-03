@@ -10,7 +10,7 @@ interface Props {
   setValue: Dispatch<SetStateAction<string>>;
 }
 
-const Search: React.FC<Props> = ({ value, setValue }) => {
+const SearchCommunity: React.FC<Props> = ({ value, setValue }) => {
   const [debouncedValue] = useDebounce(value, 1000);
 
   const communityQuery = trpc.useQuery(["community.search", { query: value }], {
@@ -86,4 +86,4 @@ const Search: React.FC<Props> = ({ value, setValue }) => {
   );
 };
 
-export default Search;
+export default SearchCommunity;

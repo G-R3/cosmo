@@ -7,7 +7,7 @@ interface Props {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const Modal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
+const CreateModal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
@@ -102,4 +102,4 @@ const Modal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
   );
 };
 
-export default Modal;
+export default CreateModal;

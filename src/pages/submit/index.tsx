@@ -2,13 +2,11 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
 import { BiErrorCircle } from "react-icons/bi";
-import { authOptions } from "../api/auth/[...nextauth]";
 import { getServerSession } from "next-auth/next";
+import { authOptions } from "../api/auth/[...nextauth]";
 import { trpc } from "../../utils/trpc";
-import { ComponentWithAuth } from "../../components/Auth";
 import useTextarea from "../../hooks/useTextarea";
-import Search from "../../components/Search";
-import { getSession } from "next-auth/react";
+import SearchCommunity from "../../components/SearchCommunity";
 
 const Submit = () => {
   const [title, setTitle] = useState<string>("");
@@ -42,7 +40,7 @@ const Submit = () => {
           </div>
         )}
 
-        <Search value={community} setValue={setCommunity} />
+        <SearchCommunity value={community} setValue={setCommunity} />
         <input
           data-cy="post-title"
           type="text"

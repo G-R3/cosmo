@@ -5,7 +5,7 @@ import { Menu } from "@headlessui/react";
 import { FiPlus } from "react-icons/fi";
 import { MdGroups } from "react-icons/md";
 import { ThemeToggler } from "./ThemeToggler";
-import Modal from "./Modal";
+import CreateModal from "./CreateModal";
 
 interface Props {
   href: string;
@@ -117,7 +117,7 @@ const Header: React.FC = () => {
           </div>
         </div>
       </header>
-      {isOpen && <Modal isOpen={isOpen} setIsOpen={setIsOpen} />}
+      {isOpen && <CreateModal isOpen={isOpen} setIsOpen={setIsOpen} />}
     </>
   );
 };
