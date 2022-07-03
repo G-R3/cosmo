@@ -70,7 +70,7 @@ const Header: React.FC = () => {
                 </Link>
 
                 {!session && (
-                  <Link href="/auth/signin">
+                  <Link href="/signin">
                     <a className="flex items-center h-14 lg:h-16">Sign in</a>
                   </Link>
                 )}
