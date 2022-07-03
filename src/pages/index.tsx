@@ -7,10 +7,7 @@ import PostSkeleton from "../components/PostSkeleton";
 import Link from "next/link";
 
 const Home = () => {
-  const postQuery = trpc.useQuery(["post.all"], {
-    refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 * 60 * 24, // 24 hours in ms
-  });
+  const postQuery = trpc.useQuery(["post.all"]);
   const { data: session } = useSession();
 
   if (postQuery.error) {
@@ -41,12 +38,16 @@ const Home = () => {
             posts?.map((post) => (
               <Post
                 key={post.id}
+                {...post}
                 id={post.id}
                 title={post.title}
                 content={post.content}
                 slug={post.slug}
                 username={post.user.name}
                 commentCount={post.commentCount}
+                totalVotes={post.totalVotes}
+                hasVoted={post.hasVoted ? post.hasVoted : null}
+                community={post.community}
               />
             ))}
 

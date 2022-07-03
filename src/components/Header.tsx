@@ -54,6 +54,7 @@ const Header: React.FC = () => {
             <div className="flex gap-5 justify-end items-center flex-grow">
               <nav className="flex justify-center items-center gap-3">
                 <button
+                  data-cy="create-community-modal"
                   onClick={() => setIsOpen(true)}
                   className="flex items-center px-2 h-6 lg:h-8 cursor-pointer"
                 >
@@ -119,7 +120,7 @@ const Header: React.FC = () => {
           </div>
         </div>
       </header>
-      <Modal isOpen={isOpen} setIsOpen={setIsOpen} />
+      {isOpen && <Modal isOpen={isOpen} setIsOpen={setIsOpen} />}
     </>
   );
 };
