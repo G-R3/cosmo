@@ -86,7 +86,7 @@ const Header: React.FC = () => {
                         ></span>
                       </div>
                     </Menu.Button>
-                    <Menu.Items className="bg-foreground dark:bg-darkOne absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md shadow-lg focus:outline-none ring-1 dark:ring-darkTwo">
+                    <Menu.Items className="border dark:border-darkTwo bg-foreground dark:bg-darkOne absolute right-0 mt-2 w-56 rounded-md shadow-lg dark:ring-darkTwo">
                       <div className="p-2">
                         <Menu.Item>
                           {/* we need these fragments so that clicking on the menu dropdown will not throw a wwarning when opened*/}
