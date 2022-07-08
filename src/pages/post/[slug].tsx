@@ -79,7 +79,10 @@ const Post = () => {
         <small>
           Posted to{" "}
           <Link href={`/c/${post.community.name}`}>
-            <a className="text-highlight font-semibold">
+            <a
+              data-cy="post-community"
+              className="text-highlight font-semibold"
+            >
               {post.community.name}
             </a>
           </Link>{" "}
