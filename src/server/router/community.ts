@@ -4,6 +4,65 @@ import { prisma } from "../../db/client";
 import { TRPCError } from "@trpc/server";
 
 export const communityRouter = createRouter()
+  .query("get", {
+    input: z.object({
+      query: z.string().trim().min(1).max(25),
+    }),
+    async resolve({ input, ctx }) {
+      const community = await prisma.community.findUnique({
+        where: {
+          name: input.query,
+        },
+        include: {
+          posts: {
+            include: {
+              user: true,
+              votes: true,
+              _count: {
+                select: {
+                  comments: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!community) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Community could not be found",
+        });
+      }
+
+      return {
+        ...community,
+        posts: [
+          ...community.posts.map((post) => ({
+            id: post.id,
+            title: post.title,
+            content: post.content,
+            slug: post.slug,
+            createdAt: post.createdAt,
+            updatedAt: post.updatedAt,
+            commentCount: post._count.comments,
+            community: { id: community.id, name: community.name },
+            user: {
+              id: post.user.id,
+              name: post.user.name,
+              image: post.user.image,
+            },
+            hasVoted: post.votes.find(
+              (vote) => vote.userId === ctx.session?.user?.id,
+            ),
+            totalVotes: post.votes.reduce((prev, curr) => {
+              return prev + curr.voteType;
+            }, 0),
+          })),
+        ],
+      };
+    },
+  })
   .query("search", {
     input: z.object({
       query: z.string().trim(),
@@ -24,7 +83,7 @@ export const communityRouter = createRouter()
   })
   .mutation("create", {
     input: z.object({
-      name: z.string().trim().min(1),
+      name: z.string().trim().min(1).max(25),
       description: z.string().nullable(),
     }),
     async resolve({ input, ctx }) {
@@ -35,7 +94,7 @@ export const communityRouter = createRouter()
         });
       }
 
-      const communityExist = await prisma.community.findFirst({
+      const communityExist = await prisma.community.findUnique({
         where: {
           name: input.name,
         },

@@ -3,6 +3,18 @@ import { z } from "zod";
 import { prisma } from "../../db/client";
 import { TRPCError } from "@trpc/server";
 
+export const slugify = (...args: (string | number)[]): string => {
+  const value = args.join(" ");
+
+  return value
+    .normalize("NFD") // split an accented letter in the base letter and the acent
+    .replace(/[\u0300-\u036f]/g, "") // remove all previously split accents
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9 ]/g, "") // remove all chars not letters, numbers and spaces (to be replaced)
+    .replace(/\s+/g, "-"); // separator
+};
+
 export const postRouter = createRouter()
   .query("get", {
     input: z.object({
@@ -111,7 +123,7 @@ export const postRouter = createRouter()
         data: {
           title: input.title,
           content: input.content,
-          slug: input.title.toLowerCase().replace(/\s/g, "-"),
+          slug: slugify(input.title),
           userId: ctx.session.user.id!,
           communityName: input.community,
         },

@@ -51,14 +51,17 @@ const CreateModal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
                 <label htmlFor="community-name" className="text-md">
                   Name
                 </label>
-                <input
-                  onChange={(e) => setName(e.target.value)}
-                  value={name}
-                  type="text"
-                  name="community-name"
-                  id="community-name"
-                  className="border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-slate-400 dark:bg-darkOne dark:text-foreground"
-                />
+                <div className="flex flex-col gap-2">
+                  <input
+                    onChange={(e) => setName(e.target.value)}
+                    value={name}
+                    type="text"
+                    name="community-name"
+                    id="community-name"
+                    className="border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-slate-400 dark:bg-darkOne dark:text-foreground"
+                  />
+                  <span className="text-grayAlt">25 characters</span>
+                </div>
               </div>
 
               <div className="flex flex-col gap-2">

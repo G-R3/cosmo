@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { trpc } from "../../utils/trpc";
 import Markdown from "../../components/Markdown";
 import Comment from "../../components/Comment";
@@ -75,16 +76,19 @@ const Post = () => {
       )}
       <section className="p-5 bg-whiteAlt dark:bg-darkOne">
         <h1 className="text-2xl">{post?.title}</h1>
-        <small className="mb-3 mt-1 block text-grayAlt">
+        <small>
           Posted to{" "}
-          <span
-            data-cy="post-community"
-            className="text-highlight font-semibold"
-          >
-            {post.community.name}
-          </span>{" "}
-          by {post?.user.name} 10 hours ago
+          <Link href={`/c/${post.community.name}`}>
+            <a
+              data-cy="post-community"
+              className="text-highlight font-semibold"
+            >
+              {post.community.name}
+            </a>
+          </Link>{" "}
+          by {post.user.name} 10 hrs ago
         </small>
+
         <Markdown content={post?.content ? post.content : ""} />
         <div className="flex justify-between mt-3 text-grayAlt">
           <div className="flex justify-center items-center gap-2">
