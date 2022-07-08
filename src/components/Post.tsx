@@ -57,7 +57,9 @@ const Post: React.FC<Props> = ({
       >
         <small>
           Posted to{" "}
-          <span className="text-highlight font-semibold">{community.name}</span>{" "}
+          <Link href={`/c/${community.name}`}>
+            <a className="text-highlight font-semibold">{community.name}</a>
+          </Link>{" "}
           by {username} 10 hrs ago
         </small>
       </motion.span>
