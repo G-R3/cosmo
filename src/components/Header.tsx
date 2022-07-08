@@ -5,7 +5,7 @@ import { Menu } from "@headlessui/react";
 import { FiPlus } from "react-icons/fi";
 import { MdGroups } from "react-icons/md";
 import { ThemeToggler } from "./ThemeToggler";
-import Modal from "./Modal";
+import CreateModal from "./CreateModal";
 
 interface Props {
   href: string;
@@ -32,15 +32,12 @@ const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const loading = status === "loading";
 
-  // if (loading) return null;
+  if (loading) return null;
 
   return (
     <>
       <header
-        className={`backdrop-saturate-50 backdrop-blur-sm fixed top-0 left-0 w-full z-10 transition-all duration-200 ease-in ${
-          ""
-          // !session && loading ? "-top-8 opacity-0" : "top-0 opacity-1"
-        }`}
+        className={`backdrop-saturate-50 backdrop-blur-sm fixed top-0 left-0 w-full z-10 transition-all duration-200 ease-in`}
       >
         <div className="relative px-8 h-14 lg:h-16 ">
           <div className="flex">
@@ -70,7 +67,7 @@ const Header: React.FC = () => {
                 </Link>
 
                 {!session && (
-                  <Link href="/auth/signin">
+                  <Link href="/signin">
                     <a className="flex items-center h-14 lg:h-16">Sign in</a>
                   </Link>
                 )}
@@ -89,7 +86,7 @@ const Header: React.FC = () => {
                         ></span>
                       </div>
                     </Menu.Button>
-                    <Menu.Items className="bg-foreground dark:bg-darkOne absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md shadow-lg focus:outline-none ring-1 dark:ring-darkTwo">
+                    <Menu.Items className="border dark:border-darkTwo bg-foreground dark:bg-darkOne absolute right-0 mt-2 w-56 rounded-md shadow-lg dark:ring-darkTwo">
                       <div className="p-2">
                         <Menu.Item>
                           {/* we need these fragments so that clicking on the menu dropdown will not throw a wwarning when opened*/}
@@ -120,7 +117,7 @@ const Header: React.FC = () => {
           </div>
         </div>
       </header>
-      {isOpen && <Modal isOpen={isOpen} setIsOpen={setIsOpen} />}
+      {isOpen && <CreateModal isOpen={isOpen} setIsOpen={setIsOpen} />}
     </>
   );
 };

@@ -77,7 +77,10 @@ const Post = () => {
         <h1 className="text-2xl">{post?.title}</h1>
         <small className="mb-3 mt-1 block text-grayAlt">
           Posted to{" "}
-          <span data-cy="post-community" className="text-highlight">
+          <span
+            data-cy="post-community"
+            className="text-highlight font-semibold"
+          >
             {post.community.name}
           </span>{" "}
           by {post?.user.name} 10 hours ago

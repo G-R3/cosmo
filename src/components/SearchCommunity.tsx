@@ -10,7 +10,7 @@ interface Props {
   setValue: Dispatch<SetStateAction<string>>;
 }
 
-const Search: React.FC<Props> = ({ value, setValue }) => {
+const SearchCommunity: React.FC<Props> = ({ value, setValue }) => {
   const [debouncedValue] = useDebounce(value, 1000);
 
   const communityQuery = trpc.useQuery(["community.search", { query: value }], {
@@ -32,7 +32,7 @@ const Search: React.FC<Props> = ({ value, setValue }) => {
             autoComplete="false"
             autoCorrect="false"
             placeholder="Search for a community"
-            className="w-full p-4 pl-10 rounded-md bg-whiteAlt text-darkTwo placeholder:text-slate-400 dark:bg-darkTwo dark:text-foreground  focus:outline-offset-2 focus:outline focus:outline-2 focus:outline-darkTwo dark:focus:outline-grayAlt transition-all"
+            className="w-full p-4 pl-10 bg-whiteAlt text-darkTwo placeholder:text-slate-400 dark:bg-darkOne dark:text-foreground border-2 dark:border-darkTwo focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md"
           />
 
           <AnimatePresence>
@@ -43,8 +43,7 @@ const Search: React.FC<Props> = ({ value, setValue }) => {
                 initial={{ opacity: 0, y: "-100" }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, transition: { duration: 0.2 } }}
-                className="border-2 bg-foreground dark:bg-darkOne p-2 rounded-md absolute z-10 w-full mt-2
-                shadow-xl"
+                className="border-2 dark:border-darkTwo bg-foreground dark:bg-darkOne p-2 rounded-md absolute z-10 w-full mt-2 shadow-xl"
               >
                 {communityQuery.data && communityQuery.data.length > 0 ? (
                   communityQuery.data.map((community) => (
@@ -56,9 +55,9 @@ const Search: React.FC<Props> = ({ value, setValue }) => {
                       {({ active, selected }) => (
                         <li
                           key={community.id}
-                          className={`p-2 rounded-md cursor-pointer transition-colors duration-300 ${
+                          className={`p-2 rounded-md cursor-pointer transition-colors duration-200 ${
                             active &&
-                            "bg-whiteAlt text-darkOne dark:bg-darkOne dark:text-white"
+                            "bg-whiteAlt text-darkOne dark:bg-darkTwo dark:text-white"
                           }`}
                         >
                           {community.name}
@@ -86,4 +85,4 @@ const Search: React.FC<Props> = ({ value, setValue }) => {
   );
 };
 
-export default Search;
+export default SearchCommunity;

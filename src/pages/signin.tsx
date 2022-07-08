@@ -2,6 +2,8 @@ import { getProviders, signIn } from "next-auth/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { AiFillGithub, AiFillGoogleCircle } from "react-icons/ai";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 interface ProviderProps {
   styles: string;
@@ -50,7 +52,18 @@ const SignIn = ({
 
 export default SignIn;
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerSession(context, authOptions);
+
+  if (session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
   const providers = await getProviders();
 
   return {

@@ -7,7 +7,7 @@ interface Props {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const Modal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
+const CreateModal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
@@ -57,7 +57,7 @@ const Modal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
                   type="text"
                   name="community-name"
                   id="community-name"
-                  className="p-4 rounded-md bg-whiteAlt text-darkTwo placeholder:text-slate-400 dark:bg-darkTwo dark:text-foreground  focus:outline-offset-2 focus:outline focus:outline-2 focus:outline-darkTwo dark:focus:outline-grayAlt transition-all"
+                  className="border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-slate-400 dark:bg-darkOne dark:text-foreground"
                 />
               </div>
 
@@ -69,7 +69,7 @@ const Modal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
                   <textarea
                     onChange={(e) => setDescription(e.target.value)}
                     value={description}
-                    className="py-3 px-4 rounded-md bg-whiteAlt text-darkTwo placeholder:text-slate-400 dark:bg-darkTwo dark:text-foreground  focus:outline-offset-2 focus:outline focus:outline-2 focus:outline-darkTwo dark:focus:outline-grayAlt transition-all overflow-hidden min-h-[85px] resize-none"
+                    className="border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md py-3 px-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-slate-400 dark:bg-darkOne dark:text-foreground overflow-hidden min-h-[85px] resize-none overflow-y-auto"
                   ></textarea>
                   <span className="text-grayAlt">
                     You can always change this later
@@ -83,7 +83,7 @@ const Modal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
             <button
               data-cy="close-modal"
               onClick={() => setIsOpen(false)}
-              className=" text-whiteAlt py-4 px-6 h-12 p-4 rounded-md flex items-center border-2 border-transparent disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:border-error hover:border-error"
+              className="text-darkOne dark:text-whiteAlt py-4 px-6 h-12 p-4 rounded-md flex items-center border-2 border-transparent disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:border-error hover:border-error"
             >
               Cancel
             </button>
@@ -91,7 +91,7 @@ const Modal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
               data-cy="confirm-create"
               onClick={createCommunity}
               disabled={communityMutation.isLoading}
-              className="bg-whiteAlt text-darkTwo h-12 p-4 rounded-md flex items-center border-2 border-transparent disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:border-highlight hover:border-highlight"
+              className="bg-whiteAlt text-darkOne h-12 p-4 rounded-md flex items-center border-2 border-transparent disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline"
             >
               Create
             </button>
@@ -102,4 +102,4 @@ const Modal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
   );
 };
 
-export default Modal;
+export default CreateModal;

@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { GetServerSideProps } from "next";
 import { BiErrorCircle } from "react-icons/bi";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../api/auth/[...nextauth]";
 import { trpc } from "../../utils/trpc";
-import { ComponentWithAuth } from "../../components/Auth";
 import useTextarea from "../../hooks/useTextarea";
-import Search from "../../components/Search";
+import SearchCommunity from "../../components/SearchCommunity";
 
-const Submit: ComponentWithAuth = () => {
-  // const utils = trpc.useContext();
+const Submit = () => {
   const [title, setTitle] = useState<string>("");
   const [community, setCommunity] = useState("");
   const { content, setContent, textareaRef } = useTextarea("");
-  // const [preview, setPreview] = useState<boolean>(false);
   const router = useRouter();
   const mutation = trpc.useMutation("post.create", {
     onSuccess(input) {
@@ -40,14 +40,14 @@ const Submit: ComponentWithAuth = () => {
           </div>
         )}
 
-        <Search value={community} setValue={setCommunity} />
+        <SearchCommunity value={community} setValue={setCommunity} />
         <input
           data-cy="post-title"
           type="text"
           placeholder="Hello World"
           onChange={(e) => setTitle(e.target.value)}
           value={title}
-          className="p-4 rounded-md bg-whiteAlt text-darkTwo placeholder:text-slate-400 dark:bg-darkTwo dark:text-foreground  focus:outline-offset-2 focus:outline focus:outline-2 focus:outline-darkTwo dark:focus:outline-grayAlt transition-all"
+          className="border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-slate-400 dark:bg-darkOne dark:text-foreground"
         />
         <div className="grid after:content">
           <textarea
@@ -58,8 +58,7 @@ const Submit: ComponentWithAuth = () => {
               setContent(e.target.value);
             }}
             value={content}
-            className="
-              py-3 px-4 rounded-md bg-whiteAlt text-darkTwo placeholder:text-slate-400 dark:bg-darkTwo dark:text-foreground  focus:outline-offset-2 focus:outline focus:outline-2 focus:outline-darkTwo dark:focus:outline-grayAlt transition-all overflow-hidden min-h-[200px] resize-none"
+            className="border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md py-3 px-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-slate-400 dark:bg-darkOne dark:text-foreground overflow-hidden min-h-[200px] resize-none"
           ></textarea>
         </div>
 
@@ -67,7 +66,7 @@ const Submit: ComponentWithAuth = () => {
           data-cy="submit"
           onClick={handleSubmit}
           disabled={mutation.isLoading}
-          className="bg-whiteAlt text-darkTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
+          className="bg-whiteAlt text-darkOne self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
         >
           Post
         </button>
@@ -76,8 +75,21 @@ const Submit: ComponentWithAuth = () => {
   );
 };
 
-Submit.auth = {
-  loader: <div>Loading...</div>,
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerSession(context, authOptions);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/signin",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
 };
 
 export default Submit;
