@@ -56,8 +56,9 @@ const Post: React.FC<Props> = ({
         className="flex gap-2 mb-3 text-grayAlt"
       >
         <small>
-          Posted to <span className="text-highlight">{community.name}</span> by{" "}
-          {username} 10 hrs ago
+          Posted to{" "}
+          <span className="text-highlight font-semibold">{community.name}</span>{" "}
+          by {username} 10 hrs ago
         </small>
       </motion.span>
       <motion.div
