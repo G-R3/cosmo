@@ -4,6 +4,12 @@ import { prisma } from "../../db/client";
 import { TRPCError } from "@trpc/server";
 
 export const communityRouter = createRouter()
+  .query("get", {
+    input: z.object({
+      query: z.string().trim().min(1).max(25),
+    }),
+    async resolve({ input }) {},
+  })
   .query("search", {
     input: z.object({
       query: z.string().trim(),
@@ -24,7 +30,7 @@ export const communityRouter = createRouter()
   })
   .mutation("create", {
     input: z.object({
-      name: z.string().trim().min(1),
+      name: z.string().trim().min(1).max(25),
       description: z.string().nullable(),
     }),
     async resolve({ input, ctx }) {
