@@ -75,21 +75,6 @@ const Submit = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getServerSession(context, authOptions);
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/signin",
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {},
-  };
-};
+Submit.auth = true;
 
 export default Submit;
