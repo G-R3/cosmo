@@ -9,10 +9,13 @@ import React, { ReactNode, useEffect } from "react";
 // also checkout this write up. It summarizes this stuff pretty welll
 // https://simplernerd.com/next-auth-global-session
 
+// export interface AuthEnabledComponentConfig {
+//   auth: {
+//     loader: ReactNode;
+//   };
+// }
 export interface AuthEnabledComponentConfig {
-  auth: {
-    loader: ReactNode;
-  };
+  auth: boolean;
 }
 
 export type ComponentWithAuth<PropsType = any> = React.FC<PropsType> &
@@ -20,29 +23,23 @@ export type ComponentWithAuth<PropsType = any> = React.FC<PropsType> &
 
 interface Props {
   children: ReactNode;
-  loader: ReactNode;
 }
 
-const Auth: React.FC<Props> = ({ children, loader }) => {
+const Auth: React.FC<Props> = ({ children }) => {
   const { data: session, status } = useSession();
   const isUser = !!session?.user;
   const isLoading = status === "loading";
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && !isUser) {
-      // using the signIn gives us the callbackUrl
-      //   router.push("/auth/signin");
-      signIn();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (isLoading) return;
+
+    if (!isUser) signIn();
   }, [isUser, isLoading]);
 
-  if (isLoading || !session) {
-    return <div className="text-center text-xl font-semibold">Loading...</div>;
-  }
+  if (isUser) return <>{children}</>;
 
-  return <>{children}</>;
+  return null;
 };
 
 export default Auth;

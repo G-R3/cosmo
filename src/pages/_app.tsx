@@ -28,7 +28,7 @@ const App = ({
       >
         <Layout>
           {Component.auth ? (
-            <Auth loader={Component.auth.loader}>
+            <Auth>
               <Component {...pageProps} />
             </Auth>
           ) : (

@@ -18,7 +18,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   pages: {
-    signIn: "/auth/signin",
+    signIn: "/signin",
     error: "/",
   },
   callbacks: {
@@ -33,6 +33,7 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "database",
   },
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 export default NextAuth(authOptions);
