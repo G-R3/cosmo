@@ -7,6 +7,7 @@ import PostSkeleton from "../components/PostSkeleton";
 import Link from "next/link";
 
 const Home = () => {
+  const { data: session } = useSession();
   const postQuery = trpc.useQuery(["post.feed"]);
   const utils = trpc.useContext();
   const voteMutation = trpc.useMutation("post.vote", {
@@ -14,8 +15,6 @@ const Home = () => {
       utils.invalidateQueries("post.feed");
     },
   });
-
-  const { data: session } = useSession();
 
   if (postQuery.error) {
     return (
