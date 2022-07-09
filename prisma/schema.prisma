@@ -16,7 +16,7 @@ datasource db {
 
 model Community {
   id          Int     @id @default(autoincrement())
-  name        String  @unique
+  name        String  @unique @default("")
   description String?
   posts       Post[]
 }
@@ -32,7 +32,7 @@ model Post {
   user          User      @relation(fields: [userId], references: [id])
   userId        String
   comments      Comment[]
-  votes         Votes[]
+  likes         Like[]
   community     Community @relation(fields: [communityName], references: [name])
   communityName String
 }
@@ -48,14 +48,14 @@ model Comment {
   userId    String
 }
 
-model Votes {
-  voteType Int
-  post     Post   @relation(fields: [postId], references: [id])
-  postId   Int
-  user     User   @relation(fields: [userId], references: [id])
-  userId   String
+model Like {
+  id     Int    @unique @default(autoincrement())
+  post   Post   @relation(fields: [postId], references: [id])
+  postId Int
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 
-  @@id([postId, userId], name: "voteId")
+  @@id([postId, userId], name: "likeId")
 }
 
 model Account {
@@ -95,7 +95,7 @@ model User {
   sessions      Session[]
   posts         Post[]
   comments      Comment[]
-  votes         Votes[]
+  likes         Like[]
 }
 
 model VerificationToken {
