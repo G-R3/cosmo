@@ -111,19 +111,8 @@ export const postRouter = createRouter()
 
       return [
         ...posts.map((post) => ({
-          id: post.id,
-          title: post.title,
-          content: post.content,
-          slug: post.slug,
-          createdAt: post.createdAt,
-          updatedAt: post.updatedAt,
+          ...post,
           commentCount: post._count.comments,
-          community: post.community,
-          user: {
-            id: post.user.id,
-            name: post.user.name,
-            image: post.user.image,
-          },
         })),
       ];
     },

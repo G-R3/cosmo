@@ -16,9 +16,14 @@ const Index = () => {
     },
   );
 
-  const voteMutation = trpc.useMutation("post.vote", {
+  const likeMutation = trpc.useMutation(["post.like"], {
     onSuccess(data, variables, context) {
-      utils.invalidateQueries("community.get");
+      utils.invalidateQueries("post.get-by-community");
+    },
+  });
+  const unlikeMutation = trpc.useMutation(["post.unlike"], {
+    onSuccess(data, variables, context) {
+      utils.invalidateQueries("post.get-by-community");
     },
   });
 
@@ -39,8 +44,11 @@ const Index = () => {
     return <div>Loading...</div>;
   }
 
-  const handleVote = (vote: number, postId: number) => {
-    voteMutation.mutate({ voteType: vote, postId });
+  const onLike = (postId: number) => {
+    likeMutation.mutate({ postId });
+  };
+  const onUnlike = (postId: number) => {
+    unlikeMutation.mutate({ postId });
   };
 
   return (
@@ -53,7 +61,7 @@ const Index = () => {
       <div className="flex flex-col gap-10 py-10">
         {postQuery.data ? (
           postQuery.data.map((post) => (
-            <Post key={post.id} {...post} onVote={handleVote} />
+            <Post key={post.id} {...post} onLike={onLike} onUnlike={onUnlike} />
           ))
         ) : (
           <div className="flex items-center flex-col gap-5 mt-10">
