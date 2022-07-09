@@ -8,9 +8,14 @@ import Link from "next/link";
 
 const Home = () => {
   const { data: session } = useSession();
-  const postQuery = trpc.useQuery(["post.feed"]);
   const utils = trpc.useContext();
-  const voteMutation = trpc.useMutation("post.vote", {
+  const postQuery = trpc.useQuery(["post.feed"]);
+  const likeMutation = trpc.useMutation(["post.like"], {
+    onSuccess(data, variables, context) {
+      utils.invalidateQueries("post.feed");
+    },
+  });
+  const unlikeMutation = trpc.useMutation(["post.unlike"], {
     onSuccess(data, variables, context) {
       utils.invalidateQueries("post.feed");
     },
@@ -24,11 +29,14 @@ const Home = () => {
     );
   }
 
-  const handleVote = (vote: number, postId: number) => {
-    voteMutation.mutate({ voteType: vote, postId });
-  };
-
   const { data: posts } = postQuery;
+
+  const onLike = (postId: number) => {
+    likeMutation.mutate({ postId });
+  };
+  const onUnlike = (postId: number) => {
+    unlikeMutation.mutate({ postId });
+  };
 
   return (
     <>
@@ -46,7 +54,12 @@ const Home = () => {
 
           {posts &&
             posts?.map((post) => (
-              <Post key={post.id} {...post} onVote={handleVote} />
+              <Post
+                key={post.id}
+                {...post}
+                onLike={onLike}
+                onUnlike={onUnlike}
+              />
             ))}
 
           {posts?.length === 0 && (

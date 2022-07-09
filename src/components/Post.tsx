@@ -1,11 +1,9 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import Markdown from "../components/Markdown";
-interface Vote {
-  voteType: number;
-  postId: number;
-  userId: string;
-}
+import { useSession } from "next-auth/react";
+
 interface Props {
   id: number;
   title: string;
@@ -13,10 +11,10 @@ interface Props {
   slug: string;
   user: { id: string; name: string | null; image: string | null };
   commentCount: number;
-  totalVotes: number;
-  isLikedByUser: Vote | undefined;
+  likes: { postId: number; userId: string }[];
   community: { id: number; name: string };
-  onVote: (postId: number, voteType: number) => void;
+  onLike: (postId: number) => void;
+  onUnlike: (postId: number) => void;
 }
 
 const Post: React.FC<Props> = ({
@@ -26,11 +24,15 @@ const Post: React.FC<Props> = ({
   slug,
   user,
   commentCount,
-  totalVotes,
-  isLikedByUser,
+  likes,
   community,
-  onVote,
+  onLike,
+  onUnlike,
 }) => {
+  const { data: session } = useSession();
+
+  const isLikedByUser = likes.find((like) => like.userId === session?.user.id);
+
   return (
     <div className="bg-whiteAlt dark:bg-darkOne border-2 border-transparent hover:border-highlight w-full rounded-md p-5 transition-all">
       <motion.h2
@@ -65,27 +67,17 @@ const Post: React.FC<Props> = ({
         animate={{ opacity: 1 }}
         className="flex justify-between mt-3"
       >
-        <div className="flex justify-center items-center gap-2 text-grayAlt">
-          <button
-            data-cy="upvote-post"
-            onClick={() => onVote(1, id)}
-            className={`rounded-md p-1 text-xs ${
-              isLikedByUser?.voteType === 1 && "bg-orange-500 text-whiteAlt"
-            }`}
-          >
-            Upvote
-          </button>
-          <span>{totalVotes}</span>
-          <button
-            data-cy="downvote-post"
-            onClick={() => onVote(-1, id)}
-            className={`rounded-md p-1 text-xs ${
-              isLikedByUser?.voteType === -1 && "bg-indigo-400 text-whiteAlt"
-            }`}
-          >
-            Downvote
-          </button>
-        </div>
+        <button
+          onClick={isLikedByUser ? () => onUnlike(id) : () => onLike(id)}
+          className="flex justify-center items-center gap-2 text-grayAlt px-3"
+        >
+          {isLikedByUser ? (
+            <AiFillHeart size={20} />
+          ) : (
+            <AiOutlineHeart size={20} />
+          )}
+          {likes.length}
+        </button>
 
         <Link href={`/c/${community.name}/${id}/${slug}`}>
           <a data-cy="post-link" className="text-grayAlt">

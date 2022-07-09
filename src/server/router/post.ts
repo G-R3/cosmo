@@ -49,17 +49,7 @@ const basePost = {
       },
     },
   },
-  votes: {
-    select: {
-      voteType: true,
-      user: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-    },
-  },
+  likes: true,
 };
 
 export const postRouter = createRouter()
@@ -87,9 +77,6 @@ export const postRouter = createRouter()
 
       return {
         ...post,
-        totalVotes: post.votes.reduce((prev, curr) => {
-          return prev + curr.voteType;
-        }, 0),
       };
     },
   })
@@ -114,13 +101,6 @@ export const postRouter = createRouter()
         select: {
           ...basePost,
           slug: true,
-          votes: {
-            select: {
-              voteType: true,
-              userId: true,
-              postId: true,
-            },
-          },
           _count: {
             select: {
               comments: true,
@@ -144,12 +124,6 @@ export const postRouter = createRouter()
             name: post.user.name,
             image: post.user.image,
           },
-          isLikedByUser: post.votes.find(
-            (vote) => vote.userId === ctx.session?.user.id,
-          ),
-          totalVotes: post.votes.reduce((prev, curr) => {
-            return prev + curr.voteType;
-          }, 0),
         })),
       ];
     },
@@ -160,13 +134,7 @@ export const postRouter = createRouter()
         select: {
           ...basePost,
           slug: true,
-          votes: {
-            select: {
-              voteType: true,
-              userId: true,
-              postId: true,
-            },
-          },
+          comments: false,
           _count: {
             select: {
               comments: true,
@@ -177,25 +145,8 @@ export const postRouter = createRouter()
 
       return [
         ...posts.map((post) => ({
-          id: post.id,
-          title: post.title,
-          content: post.content,
-          slug: post.slug,
-          createdAt: post.createdAt,
-          updatedAt: post.updatedAt,
+          ...post,
           commentCount: post._count.comments,
-          community: post.community,
-          user: {
-            id: post.user.id,
-            name: post.user.name,
-            image: post.user.image,
-          },
-          isLikedByUser: post.votes.find(
-            (vote) => vote.userId === ctx.session?.user.id,
-          ),
-          totalVotes: post.votes.reduce((prev, curr) => {
-            return prev + curr.voteType;
-          }, 0),
         })),
       ];
     },
@@ -243,10 +194,9 @@ export const postRouter = createRouter()
       };
     },
   })
-  .mutation("vote", {
+  .mutation("like", {
     input: z.object({
-      voteType: z.number().int().min(-1).max(1),
-      postId: z.number().int(),
+      postId: z.number(),
     }),
     async resolve({ input, ctx }) {
       if (!ctx.session?.user) {
@@ -255,59 +205,46 @@ export const postRouter = createRouter()
           message: "You are not authorized",
         });
       }
-      const { postId, voteType } = input;
 
-      const hasVoted = await prisma.votes.findUnique({
-        where: {
-          voteId: {
-            userId: ctx.session.user.id!,
-            postId,
+      const newLike = await prisma.like.create({
+        data: {
+          post: {
+            connect: {
+              id: input.postId,
+            },
+          },
+          user: {
+            connect: {
+              id: ctx.session.user.id,
+            },
           },
         },
       });
 
-      // if user has voted
-      // if new vote is the not the same as the saved vote ---> update the saved vote
-      // if the vote is the same as the saved vote ----> delete the record
-
-      if (hasVoted) {
-        if (hasVoted.voteType !== voteType) {
-          const updatedVote = await prisma.votes.update({
-            where: {
-              voteId: {
-                postId,
-                userId: ctx.session.user.id!,
-              },
-            },
-            data: {
-              voteType,
-            },
-          });
-
-          return updatedVote;
-        }
-
-        const deletedVote = await prisma.votes.delete({
-          where: {
-            voteId: {
-              postId,
-              userId: ctx.session.user.id!,
-            },
-          },
+      return newLike;
+    },
+  })
+  .mutation("unlike", {
+    input: z.object({
+      postId: z.number(),
+    }),
+    async resolve({ input, ctx }) {
+      if (!ctx.session?.user) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not authorized",
         });
-
-        return deletedVote;
       }
 
-      // otherwise, create a new vote and connect relationships
-      const newVote = await prisma.votes.create({
-        data: {
-          voteType,
-          postId,
-          userId: ctx.session.user.id!,
+      const deletedLike = await prisma.like.delete({
+        where: {
+          likeId: {
+            userId: ctx.session.user.id,
+            postId: input.postId,
+          },
         },
       });
 
-      return newVote;
+      return deletedLike;
     },
   });
