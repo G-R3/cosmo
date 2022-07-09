@@ -11,7 +11,7 @@ interface Props {
   title: string;
   content?: string | null;
   slug: string;
-  username: string | null;
+  user: { id: string; name: string | null; image: string | null };
   commentCount: number;
   totalVotes: number;
   isLikedByUser: Vote | undefined;
@@ -24,7 +24,7 @@ const Post: React.FC<Props> = ({
   title,
   content,
   slug,
-  username,
+  user,
   commentCount,
   totalVotes,
   isLikedByUser,
@@ -50,7 +50,7 @@ const Post: React.FC<Props> = ({
           <Link href={`/c/${community.name}`}>
             <a className="text-highlight font-semibold">{community.name}</a>
           </Link>{" "}
-          by {username} 10 hrs ago
+          by {user.name} 10 hrs ago
         </small>
       </motion.span>
       <motion.div

@@ -47,20 +47,7 @@ const Home = () => {
 
           {posts &&
             posts?.map((post) => (
-              <Post
-                key={post.id}
-                {...post}
-                id={post.id}
-                title={post.title}
-                content={post.content}
-                slug={post.slug}
-                username={post.user.name}
-                commentCount={post.commentCount}
-                totalVotes={post.totalVotes}
-                isLikedByUser={post.isLikedByUser}
-                community={post.community}
-                onVote={handleVote}
-              />
+              <Post key={post.id} {...post} onVote={handleVote} />
             ))}
 
           {posts?.length === 0 && (

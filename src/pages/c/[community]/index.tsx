@@ -53,20 +53,7 @@ const Index = () => {
       <div className="flex flex-col gap-10 py-10">
         {postQuery.data ? (
           postQuery.data.map((post) => (
-            <Post
-              key={post.id}
-              {...post}
-              id={post.id}
-              title={post.title}
-              content={post.content}
-              slug={post.slug}
-              username={post.user.name}
-              commentCount={post.commentCount}
-              totalVotes={post.totalVotes}
-              isLikedByUser={post.isLikedByUser}
-              community={post.community}
-              onVote={handleVote}
-            />
+            <Post key={post.id} {...post} onVote={handleVote} />
           ))
         ) : (
           <div className="flex items-center flex-col gap-5 mt-10">
