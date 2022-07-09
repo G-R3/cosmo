@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Markdown from "../components/Markdown";
-import { trpc } from "../utils/trpc";
 interface Vote {
   voteType: number;
   postId: number;
@@ -15,8 +14,9 @@ interface Props {
   username: string | null;
   commentCount: number;
   totalVotes: number;
-  hasVoted: Vote | null;
+  isLikedByUser: Vote | undefined;
   community: { id: number; name: string };
+  onVote: (postId: number, voteType: number) => void;
 }
 
 const Post: React.FC<Props> = ({
@@ -27,20 +27,10 @@ const Post: React.FC<Props> = ({
   username,
   commentCount,
   totalVotes,
-  hasVoted,
+  isLikedByUser,
   community,
+  onVote,
 }) => {
-  const utils = trpc.useContext();
-  const voteMutation = trpc.useMutation("vote.create", {
-    onSuccess(data, variables, context) {
-      utils.invalidateQueries("post.all");
-    },
-  });
-
-  const handleVote = (vote: number, postId: number) => {
-    voteMutation.mutate({ voteType: vote, postId });
-  };
-
   return (
     <div className="bg-whiteAlt dark:bg-darkOne border-2 border-transparent hover:border-highlight w-full rounded-md p-5 transition-all">
       <motion.h2
@@ -78,9 +68,9 @@ const Post: React.FC<Props> = ({
         <div className="flex justify-center items-center gap-2 text-grayAlt">
           <button
             data-cy="upvote-post"
-            onClick={() => handleVote(1, id)}
+            onClick={() => onVote(1, id)}
             className={`rounded-md p-1 text-xs ${
-              hasVoted?.voteType === 1 && "bg-orange-500 text-whiteAlt"
+              isLikedByUser?.voteType === 1 && "bg-orange-500 text-whiteAlt"
             }`}
           >
             Upvote
@@ -88,16 +78,16 @@ const Post: React.FC<Props> = ({
           <span>{totalVotes}</span>
           <button
             data-cy="downvote-post"
-            onClick={() => handleVote(-1, id)}
+            onClick={() => onVote(-1, id)}
             className={`rounded-md p-1 text-xs ${
-              hasVoted?.voteType === -1 && "bg-indigo-400 text-whiteAlt"
+              isLikedByUser?.voteType === -1 && "bg-indigo-400 text-whiteAlt"
             }`}
           >
             Downvote
           </button>
         </div>
 
-        <Link href={`/post/${slug}`}>
+        <Link href={`/c/${community.name}/${id}/${slug}`}>
           <a data-cy="post-link" className="text-grayAlt">
             {commentCount}{" "}
             {commentCount > 1 || commentCount === 0 ? "comments" : "comment"}
