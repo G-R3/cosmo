@@ -3,7 +3,7 @@ import { z } from "zod";
 import { prisma } from "../../db/client";
 import { TRPCError } from "@trpc/server";
 
-export const slugify = (...args: (string | number)[]): string => {
+const slugify = (...args: (string | number)[]): string => {
   const value = args.join(" ");
 
   return value
@@ -15,50 +15,112 @@ export const slugify = (...args: (string | number)[]): string => {
     .replace(/\s+/g, "-"); // separator
 };
 
+const basePost = {
+  id: true,
+  title: true,
+  content: true,
+  createdAt: true,
+  updatedAt: true,
+  user: {
+    select: {
+      id: true,
+      name: true,
+      image: true,
+    },
+  },
+  community: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+  comments: {
+    select: {
+      id: true,
+      content: true,
+      createdAt: true,
+      updatedAt: true,
+      user: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      },
+    },
+  },
+  votes: {
+    select: {
+      voteType: true,
+      user: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  },
+};
+
 export const postRouter = createRouter()
-  .query("get", {
+  .query("get-by-id", {
     input: z.object({
       slug: z.string(),
+      id: z.number(),
     }),
     async resolve({ input, ctx }) {
       const post = await prisma.post.findUnique({
         where: {
-          slug: input.slug,
+          id: input.id,
         },
-        include: {
-          user: true,
-          comments: {
-            include: {
-              user: true,
-            },
-          },
-          votes: true,
-          community: true,
+        select: {
+          ...basePost,
         },
       });
 
       if (!post) {
-        return null;
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Post does not exist.",
+        });
       }
 
       return {
         ...post,
-        hasVoted: post.votes.find(
-          (vote) => vote.userId === ctx.session?.user?.id,
-        ),
         totalVotes: post.votes.reduce((prev, curr) => {
           return prev + curr.voteType;
         }, 0),
       };
     },
   })
-  .query("all", {
+  .query("get-by-community", {
+    input: z.object({
+      communityId: z.number().nullish(),
+    }),
     async resolve({ input, ctx }) {
+      if (!input.communityId) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Post does not exist.",
+        });
+      }
+
       const posts = await prisma.post.findMany({
-        include: {
-          user: true,
-          votes: true,
-          community: true,
+        where: {
+          community: {
+            id: input.communityId,
+          },
+        },
+        select: {
+          ...basePost,
+          slug: true,
+          votes: {
+            select: {
+              voteType: true,
+              userId: true,
+              postId: true,
+            },
+          },
           _count: {
             select: {
               comments: true,
@@ -82,8 +144,54 @@ export const postRouter = createRouter()
             name: post.user.name,
             image: post.user.image,
           },
-          hasVoted: post.votes.find(
-            (vote) => vote.userId === ctx.session?.user?.id,
+          isLikedByUser: post.votes.find(
+            (vote) => vote.userId === ctx.session?.user.id,
+          ),
+          totalVotes: post.votes.reduce((prev, curr) => {
+            return prev + curr.voteType;
+          }, 0),
+        })),
+      ];
+    },
+  })
+  .query("feed", {
+    async resolve({ input, ctx }) {
+      const posts = await prisma.post.findMany({
+        select: {
+          ...basePost,
+          slug: true,
+          votes: {
+            select: {
+              voteType: true,
+              userId: true,
+              postId: true,
+            },
+          },
+          _count: {
+            select: {
+              comments: true,
+            },
+          },
+        },
+      });
+
+      return [
+        ...posts.map((post) => ({
+          id: post.id,
+          title: post.title,
+          content: post.content,
+          slug: post.slug,
+          createdAt: post.createdAt,
+          updatedAt: post.updatedAt,
+          commentCount: post._count.comments,
+          community: post.community,
+          user: {
+            id: post.user.id,
+            name: post.user.name,
+            image: post.user.image,
+          },
+          isLikedByUser: post.votes.find(
+            (vote) => vote.userId === ctx.session?.user.id,
           ),
           totalVotes: post.votes.reduce((prev, curr) => {
             return prev + curr.voteType;
@@ -133,5 +241,73 @@ export const postRouter = createRouter()
         success: true,
         message: "Post created successfully",
       };
+    },
+  })
+  .mutation("vote", {
+    input: z.object({
+      voteType: z.number().int().min(-1).max(1),
+      postId: z.number().int(),
+    }),
+    async resolve({ input, ctx }) {
+      if (!ctx.session?.user) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not authorized",
+        });
+      }
+      const { postId, voteType } = input;
+
+      const hasVoted = await prisma.votes.findUnique({
+        where: {
+          voteId: {
+            userId: ctx.session.user.id!,
+            postId,
+          },
+        },
+      });
+
+      // if user has voted
+      // if new vote is the not the same as the saved vote ---> update the saved vote
+      // if the vote is the same as the saved vote ----> delete the record
+
+      if (hasVoted) {
+        if (hasVoted.voteType !== voteType) {
+          const updatedVote = await prisma.votes.update({
+            where: {
+              voteId: {
+                postId,
+                userId: ctx.session.user.id!,
+              },
+            },
+            data: {
+              voteType,
+            },
+          });
+
+          return updatedVote;
+        }
+
+        const deletedVote = await prisma.votes.delete({
+          where: {
+            voteId: {
+              postId,
+              userId: ctx.session.user.id!,
+            },
+          },
+        });
+
+        return deletedVote;
+      }
+
+      // otherwise, create a new vote and connect relationships
+      const newVote = await prisma.votes.create({
+        data: {
+          voteType,
+          postId,
+          userId: ctx.session.user.id!,
+        },
+      });
+
+      return newVote;
     },
   });

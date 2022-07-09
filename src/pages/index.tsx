@@ -7,8 +7,14 @@ import PostSkeleton from "../components/PostSkeleton";
 import Link from "next/link";
 
 const Home = () => {
-  const postQuery = trpc.useQuery(["post.all"]);
   const { data: session } = useSession();
+  const postQuery = trpc.useQuery(["post.feed"]);
+  const utils = trpc.useContext();
+  const voteMutation = trpc.useMutation("post.vote", {
+    onSuccess(data, variables, context) {
+      utils.invalidateQueries("post.feed");
+    },
+  });
 
   if (postQuery.error) {
     return (
@@ -17,6 +23,10 @@ const Home = () => {
       </h1>
     );
   }
+
+  const handleVote = (vote: number, postId: number) => {
+    voteMutation.mutate({ voteType: vote, postId });
+  };
 
   const { data: posts } = postQuery;
 
@@ -36,19 +46,7 @@ const Home = () => {
 
           {posts &&
             posts?.map((post) => (
-              <Post
-                key={post.id}
-                {...post}
-                id={post.id}
-                title={post.title}
-                content={post.content}
-                slug={post.slug}
-                username={post.user.name}
-                commentCount={post.commentCount}
-                totalVotes={post.totalVotes}
-                hasVoted={post.hasVoted ? post.hasVoted : null}
-                community={post.community}
-              />
+              <Post key={post.id} {...post} onVote={handleVote} />
             ))}
 
           {posts?.length === 0 && (

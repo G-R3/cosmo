@@ -11,7 +11,7 @@ describe("Vote on a post", () => {
 
   it("Should upvote and then downvote", () => {
     cy.intercept("GET", "/api/trpc/post.get?*").as("getPost");
-    cy.intercept("POST", "/api/trpc/vote.create?*").as("createVote");
+    cy.intercept("POST", "/api/trpc/post.vote?*").as("createVote");
 
     cy.get("[data-cy='post-link']").eq(0).click();
     cy.wait("@getPost").its("response.statusCode").should("eq", 200);
