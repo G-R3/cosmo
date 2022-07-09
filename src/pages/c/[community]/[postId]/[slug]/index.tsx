@@ -21,17 +21,78 @@ const Post = () => {
       refetchOnWindowFocus: false,
     },
   );
-  const likeMutation = trpc.useMutation(["post.like"], {
-    onSuccess(data, variables, context) {
-      utils.invalidateQueries("post.get-by-id");
-    },
-  });
-  const unlikeMutation = trpc.useMutation(["post.unlike"], {
-    onSuccess(data, variables, context) {
-      utils.invalidateQueries("post.get-by-id");
-    },
-  });
   const commentMutation = trpc.useMutation("comment.create");
+
+  const likeMutation = trpc.useMutation(["post.like"], {
+    // optimistic update
+    // I still don't quite get this but it sounded like what i needed.
+    // https://tanstack.com/query/v4/docs/guides/optimistic-updates
+    onMutate: async (likedPost) => {
+      await utils.cancelQuery(["post.get-by-id", { slug, id: Number(postId) }]);
+      const previousData = utils.getQueryData([
+        "post.get-by-id",
+        { slug, id: Number(postId) },
+      ]);
+
+      if (previousData) {
+        utils.setQueryData(["post.get-by-id", { slug, id: Number(postId) }], {
+          ...previousData,
+          post: {
+            ...previousData.post,
+            likes: [
+              ...previousData.post.likes,
+              {
+                userId: session?.user.id!,
+                postId: likedPost.postId,
+              },
+            ],
+          },
+        });
+      }
+
+      return { previousData };
+    },
+    onError: (err, data, context) => {
+      if (context?.previousData) {
+        utils.setQueryData(
+          ["post.get-by-id", { slug, id: Number(postId) }],
+          context?.previousData,
+        );
+      }
+    },
+  });
+
+  const unlikeMutation = trpc.useMutation(["post.unlike"], {
+    onMutate: async (unLikedPost) => {
+      await utils.cancelQuery(["post.get-by-id", { slug, id: Number(postId) }]);
+      const previousData = utils.getQueryData([
+        "post.get-by-id",
+        { slug, id: Number(postId) },
+      ]);
+
+      if (previousData) {
+        utils.setQueryData(["post.get-by-id", { slug, id: Number(postId) }], {
+          ...previousData,
+          post: {
+            ...previousData.post,
+            likes: previousData.post.likes.filter(
+              (like) => like.userId !== session?.user.id!,
+            ),
+          },
+        });
+      }
+
+      return { previousData };
+    },
+    onError: (err, data, context) => {
+      if (context?.previousData) {
+        utils.setQueryData(
+          ["post.get-by-id", { slug, id: Number(postId) }],
+          context?.previousData,
+        );
+      }
+    },
+  });
 
   if (postQuery.error) {
     return <div>No post was found</div>;
@@ -61,8 +122,7 @@ const Post = () => {
     unlikeMutation.mutate({ postId });
   };
 
-  const { data: post } = postQuery;
-  const isLikedByUser = post.likes.find(
+  const isLikedByUser = postQuery.data.post.likes.find(
     (like) => like.userId === session?.user.id,
   );
 
@@ -80,25 +140,31 @@ const Post = () => {
             </div>
           ))}
         <section className="p-5 bg-whiteAlt dark:bg-darkOne">
-          <h1 className="text-2xl">{post?.title}</h1>
+          <h1 className="text-2xl">{postQuery.data.post.title}</h1>
           <small>
             Posted to{" "}
-            <Link href={`/c/${post?.community.name}`}>
+            <Link href={`/c/${postQuery.data.post.community.name}`}>
               <a
                 data-cy="post-community"
                 className="text-highlight font-semibold"
               >
-                {post?.community.name}
+                {postQuery.data.post.community.name}
               </a>
             </Link>{" "}
-            by {post?.user.name} 10 hrs ago
+            by {postQuery.data.post.user.name} 10 hrs ago
           </small>
 
-          <Markdown content={post?.content ? post.content : ""} />
+          <Markdown
+            content={
+              postQuery.data.post.content ? postQuery.data.post.content : ""
+            }
+          />
           <div className="flex justify-between mt-3 text-grayAlt">
             <button
               onClick={
-                isLikedByUser ? () => onUnlike(post.id) : () => onLike(post.id)
+                isLikedByUser
+                  ? () => onUnlike(postQuery.data.post.id)
+                  : () => onLike(postQuery.data.post.id)
               }
               className="flex justify-center items-center gap-2 text-grayAlt px-3"
             >
@@ -107,12 +173,13 @@ const Post = () => {
               ) : (
                 <AiOutlineHeart size={20} />
               )}
-              {post.likes.length}
+              {postQuery.data.post.likes.length}
             </button>
             <span>
-              {post?.comments.length}{" "}
-              {(post?.comments && post.comments.length > 1) ||
-              post?.comments.length === 0
+              {postQuery.data.post.comments.length}{" "}
+              {(postQuery.data.post.comments &&
+                postQuery.data.post.comments.length > 1) ||
+              postQuery.data.post.comments.length === 0
                 ? "comments"
                 : "comment"}
             </span>
@@ -146,7 +213,7 @@ const Post = () => {
           <button
             data-cy="create-comment"
             disabled={commentMutation.isLoading}
-            onClick={(e) => handleSubmit(e, post?.id, content)}
+            onClick={(e) => handleSubmit(e, postQuery.data.post?.id, content)}
             className="bg-foreground text-darkTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:outline-[3px] focus-visible:focus:outline-highlight"
           >
             Post
@@ -154,8 +221,9 @@ const Post = () => {
         </section>
 
         <section className="mt-5 rounded-md py-5 flex flex-col gap-5">
-          {post?.comments && post.comments.length > 0 ? (
-            post?.comments.map((comment) => (
+          {postQuery.data.post.comments &&
+          postQuery.data.post.comments.length > 0 ? (
+            postQuery.data.post.comments.map((comment) => (
               <Comment key={comment.id} {...comment} />
             ))
           ) : (

@@ -65,6 +65,11 @@ export const postRouter = createRouter()
         },
         select: {
           ...basePost,
+          _count: {
+            select: {
+              comments: true,
+            },
+          },
         },
       });
 
@@ -76,26 +81,22 @@ export const postRouter = createRouter()
       }
 
       return {
-        ...post,
+        post: {
+          ...post,
+          commentCount: post._count.comments,
+        },
       };
     },
   })
   .query("get-by-community", {
     input: z.object({
-      communityId: z.number().nullish(),
+      query: z.string().trim().min(1).max(25),
     }),
     async resolve({ input, ctx }) {
-      if (!input.communityId) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Post does not exist.",
-        });
-      }
-
       const posts = await prisma.post.findMany({
         where: {
           community: {
-            id: input.communityId,
+            name: input.query,
           },
         },
         select: {
@@ -110,12 +111,14 @@ export const postRouter = createRouter()
         },
       });
 
-      return [
-        ...posts.map((post) => ({
-          ...post,
-          commentCount: post._count.comments,
-        })),
-      ];
+      return {
+        posts: [
+          ...posts.map((post) => ({
+            ...post,
+            commentCount: post._count.comments,
+          })),
+        ],
+      };
     },
   })
   .query("feed", {
@@ -133,12 +136,14 @@ export const postRouter = createRouter()
         },
       });
 
-      return [
-        ...posts.map((post) => ({
-          ...post,
-          commentCount: post._count.comments,
-        })),
-      ];
+      return {
+        posts: [
+          ...posts.map((post) => ({
+            ...post,
+            commentCount: post._count.comments,
+          })),
+        ],
+      };
     },
   })
   .mutation("create", {
@@ -168,7 +173,7 @@ export const postRouter = createRouter()
         });
       }
 
-      await prisma.post.create({
+      const post = await prisma.post.create({
         data: {
           title: input.title,
           content: input.content,
@@ -181,6 +186,7 @@ export const postRouter = createRouter()
       return {
         success: true,
         message: "Post created successfully",
+        post,
       };
     },
   })

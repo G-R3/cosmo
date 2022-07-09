@@ -11,13 +11,69 @@ const Home = () => {
   const utils = trpc.useContext();
   const postQuery = trpc.useQuery(["post.feed"]);
   const likeMutation = trpc.useMutation(["post.like"], {
-    onSuccess(data, variables, context) {
-      utils.invalidateQueries("post.feed");
+    // optimistic update
+    // I still don't quite get this but it sounded like what i needed.
+    // https://tanstack.com/query/v4/docs/guides/optimistic-updates
+    onMutate: async (likedPost) => {
+      await utils.cancelQuery(["post.feed"]);
+      const previousData = utils.getQueryData(["post.feed"]);
+
+      if (previousData) {
+        utils.setQueryData(["post.feed"], {
+          ...previousData,
+          posts: previousData.posts.map((post) =>
+            post.id === likedPost.postId
+              ? {
+                  ...post,
+                  likes: [
+                    ...post.likes,
+                    {
+                      userId: session?.user.id!,
+                      postId: likedPost.postId,
+                    },
+                  ],
+                }
+              : post,
+          ),
+        });
+      }
+
+      return { previousData };
+    },
+    onError: (err, data, context) => {
+      if (context?.previousData) {
+        utils.setQueryData(["post.feed"], context?.previousData);
+      }
     },
   });
+
   const unlikeMutation = trpc.useMutation(["post.unlike"], {
-    onSuccess(data, variables, context) {
-      utils.invalidateQueries("post.feed");
+    onMutate: async (unLikedPost) => {
+      await utils.cancelQuery(["post.feed"]);
+      const previousData = utils.getQueryData(["post.feed"]);
+
+      if (previousData) {
+        utils.setQueryData(["post.feed"], {
+          ...previousData,
+          posts: previousData.posts.map((post) =>
+            post.id === unLikedPost.postId
+              ? {
+                  ...post,
+                  likes: post.likes.filter(
+                    (like) => like.userId !== session?.user.id!,
+                  ),
+                }
+              : post,
+          ),
+        });
+      }
+
+      return { previousData };
+    },
+    onError: (err, data, context) => {
+      if (context?.previousData) {
+        utils.setQueryData(["post.feed"], context?.previousData);
+      }
     },
   });
 
@@ -28,8 +84,6 @@ const Home = () => {
       </h1>
     );
   }
-
-  const { data: posts } = postQuery;
 
   const onLike = (postId: number) => {
     likeMutation.mutate({ postId });
@@ -52,8 +106,8 @@ const Home = () => {
               .fill(0)
               .map((skeleton, idx) => <PostSkeleton key={idx} />)}
 
-          {posts &&
-            posts?.map((post) => (
+          {postQuery?.data?.posts &&
+            postQuery.data.posts?.map((post) => (
               <Post
                 key={post.id}
                 {...post}
@@ -62,7 +116,7 @@ const Home = () => {
               />
             ))}
 
-          {posts?.length === 0 && (
+          {postQuery?.data?.posts?.length === 0 && (
             <div className="flex flex-col gap-5 justify-center items-center h-full">
               <h1 className="text-grayAlt font-bold text-2xl">
                 No posts found
