@@ -101,6 +101,7 @@ export const postRouter = createRouter()
         select: {
           ...basePost,
           slug: true,
+          comments: false,
           _count: {
             select: {
               comments: true,

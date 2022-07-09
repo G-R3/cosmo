@@ -7,9 +7,10 @@ import Markdown from "../../../../../components/Markdown";
 import Comment from "../../../../../components/Comment";
 import useTextarea from "../../../../../hooks/useTextarea";
 import { useSession } from "next-auth/react";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 
 const Post = () => {
-  const session = useSession();
+  const { data: session } = useSession();
   const slug = useRouter().query.slug as string;
   const postId = useRouter().query.postId;
   const { content, setContent, textareaRef } = useTextarea("");
@@ -20,8 +21,12 @@ const Post = () => {
       refetchOnWindowFocus: false,
     },
   );
-
-  const voteMutation = trpc.useMutation("post.vote", {
+  const likeMutation = trpc.useMutation(["post.like"], {
+    onSuccess(data, variables, context) {
+      utils.invalidateQueries("post.get-by-id");
+    },
+  });
+  const unlikeMutation = trpc.useMutation(["post.unlike"], {
     onSuccess(data, variables, context) {
       utils.invalidateQueries("post.get-by-id");
     },
@@ -49,28 +54,31 @@ const Post = () => {
     setContent("");
   };
 
-  const handleVote = (vote: number, postId: number) => {
-    voteMutation.mutate({ voteType: vote, postId });
+  const onLike = (postId: number) => {
+    likeMutation.mutate({ postId });
+  };
+  const onUnlike = (postId: number) => {
+    unlikeMutation.mutate({ postId });
   };
 
   const { data: post } = postQuery;
-
-  const isLikedByUser = post.votes.find(
-    (vote) => vote.user.id === session.data?.user.id,
+  const isLikedByUser = post.likes.find(
+    (like) => like.userId === session?.user.id,
   );
 
   return (
     <>
       <div className="max-w-3xl mx-auto">
-        {voteMutation.error && (
-          <div
-            data-cy="alert-error"
-            className="bg-error p-3 rounded-md text-foreground flex items-center gap-2"
-          >
-            <BiErrorCircle size={22} />
-            <span>Unable to vote on post!</span>
-          </div>
-        )}
+        {!!likeMutation.error ||
+          (!!unlikeMutation.error && (
+            <div
+              data-cy="alert-error"
+              className="bg-error p-3 rounded-md text-foreground flex items-center gap-2"
+            >
+              <BiErrorCircle size={22} />
+              <span>Failed to like the post</span>
+            </div>
+          ))}
         <section className="p-5 bg-whiteAlt dark:bg-darkOne">
           <h1 className="text-2xl">{post?.title}</h1>
           <small>
@@ -88,34 +96,19 @@ const Post = () => {
 
           <Markdown content={post?.content ? post.content : ""} />
           <div className="flex justify-between mt-3 text-grayAlt">
-            <div className="flex justify-center items-center gap-2">
-              <button
-                data-cy="upvote-post"
-                onClick={() => handleVote(1, post.id)}
-                className={`rounded-md p-1 text-xs ${
-                  isLikedByUser?.voteType === 1 && "bg-orange-500 text-whiteAlt"
-                }`}
-              >
-                Upvote
-              </button>
-              <span
-                data-cy="post-votes"
-                className="text-base border px-2 rounded-full"
-              >
-                {post?.totalVotes}
-              </span>
-              <button
-                data-cy="downvote-post"
-                onClick={() => handleVote(-1, post.id)}
-                className={`rounded-md p-1 text-xs ${
-                  isLikedByUser?.voteType === -1 &&
-                  "bg-indigo-400 text-whiteAlt"
-                }`}
-              >
-                Downvote
-              </button>
-            </div>
-
+            <button
+              onClick={
+                isLikedByUser ? () => onUnlike(post.id) : () => onLike(post.id)
+              }
+              className="flex justify-center items-center gap-2 text-grayAlt px-3"
+            >
+              {isLikedByUser ? (
+                <AiFillHeart size={20} />
+              ) : (
+                <AiOutlineHeart size={20} />
+              )}
+              {post.likes.length}
+            </button>
             <span>
               {post?.comments.length}{" "}
               {(post?.comments && post.comments.length > 1) ||
