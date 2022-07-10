@@ -13,19 +13,6 @@ export const communityRouter = createRouter()
         where: {
           name: input.query,
         },
-        include: {
-          posts: {
-            include: {
-              user: true,
-              votes: true,
-              _count: {
-                select: {
-                  comments: true,
-                },
-              },
-            },
-          },
-        },
       });
 
       if (!community) {
@@ -35,32 +22,7 @@ export const communityRouter = createRouter()
         });
       }
 
-      return {
-        ...community,
-        posts: [
-          ...community.posts.map((post) => ({
-            id: post.id,
-            title: post.title,
-            content: post.content,
-            slug: post.slug,
-            createdAt: post.createdAt,
-            updatedAt: post.updatedAt,
-            commentCount: post._count.comments,
-            community: { id: community.id, name: community.name },
-            user: {
-              id: post.user.id,
-              name: post.user.name,
-              image: post.user.image,
-            },
-            hasVoted: post.votes.find(
-              (vote) => vote.userId === ctx.session?.user?.id,
-            ),
-            totalVotes: post.votes.reduce((prev, curr) => {
-              return prev + curr.voteType;
-            }, 0),
-          })),
-        ],
-      };
+      return community;
     },
   })
   .query("search", {

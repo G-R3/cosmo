@@ -1,24 +1,86 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { trpc } from "../../../utils/trpc";
 import Post from "../../../components/Post";
+import PostSkeleton from "../../../components/PostSkeleton";
 
 const Index = () => {
+  const { data: session } = useSession();
   const query = useRouter().query.community as string;
   const utils = trpc.useContext();
   const communityQuery = trpc.useQuery(["community.get", { query }], {
     refetchOnWindowFocus: false,
   });
-  const postQuery = trpc.useQuery(
-    ["post.get-by-community", { communityId: communityQuery.data?.id }],
-    {
-      enabled: !!communityQuery.data?.id,
-    },
-  );
+  const postQuery = trpc.useQuery(["post.get-by-community", { query }]);
 
-  const voteMutation = trpc.useMutation("post.vote", {
-    onSuccess(data, variables, context) {
-      utils.invalidateQueries("community.get");
+  const likeMutation = trpc.useMutation(["post.like"], {
+    onMutate: async (likedPost) => {
+      await utils.cancelQuery(["post.get-by-community", { query }]);
+      const previousData = utils.getQueryData([
+        "post.get-by-community",
+        { query },
+      ]);
+
+      if (previousData) {
+        utils.setQueryData(["post.get-by-community", { query }], {
+          ...previousData,
+          posts: previousData.posts.map((post) =>
+            post.id === likedPost.postId
+              ? {
+                  ...post,
+                  likes: [
+                    ...post.likes,
+                    {
+                      userId: session?.user.id!,
+                      postId: likedPost.postId,
+                    },
+                  ],
+                }
+              : post,
+          ),
+        });
+      }
+
+      return { previousData };
+    },
+    onError: (err, data, context) => {
+      if (context?.previousData) {
+        utils.setQueryData(["post.get-by-community"], context?.previousData);
+      }
+    },
+  });
+
+  const unlikeMutation = trpc.useMutation(["post.unlike"], {
+    onMutate: async (unLikedPost) => {
+      await utils.cancelQuery(["post.get-by-community", { query }]);
+      const previousData = utils.getQueryData([
+        "post.get-by-community",
+        { query },
+      ]);
+
+      if (previousData) {
+        utils.setQueryData(["post.get-by-community", { query }], {
+          ...previousData,
+          posts: previousData.posts.map((post) =>
+            post.id === unLikedPost.postId
+              ? {
+                  ...post,
+                  likes: post.likes.filter(
+                    (like) => like.userId !== session?.user.id!,
+                  ),
+                }
+              : post,
+          ),
+        });
+      }
+
+      return { previousData };
+    },
+    onError: (err, data, context) => {
+      if (context?.previousData) {
+        utils.setQueryData(["post.get-by-community"], context?.previousData);
+      }
     },
   });
 
@@ -39,8 +101,11 @@ const Index = () => {
     return <div>Loading...</div>;
   }
 
-  const handleVote = (vote: number, postId: number) => {
-    voteMutation.mutate({ voteType: vote, postId });
+  const onLike = (postId: number) => {
+    likeMutation.mutate({ postId });
+  };
+  const onUnlike = (postId: number) => {
+    unlikeMutation.mutate({ postId });
   };
 
   return (
@@ -51,9 +116,13 @@ const Index = () => {
       </div>
 
       <div className="flex flex-col gap-10 py-10">
-        {postQuery.data ? (
-          postQuery.data.map((post) => (
-            <Post key={post.id} {...post} onVote={handleVote} />
+        {postQuery.isLoading &&
+          Array(13)
+            .fill(0)
+            .map((skeleton, idx) => <PostSkeleton key={idx} />)}
+        {postQuery?.data?.posts ? (
+          postQuery?.data?.posts.map((post) => (
+            <Post key={post.id} {...post} onLike={onLike} onUnlike={onUnlike} />
           ))
         ) : (
           <div className="flex items-center flex-col gap-5 mt-10">
