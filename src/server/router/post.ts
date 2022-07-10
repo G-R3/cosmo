@@ -34,22 +34,12 @@ const basePost = {
       name: true,
     },
   },
-  comments: {
+  likes: {
     select: {
-      id: true,
-      content: true,
-      createdAt: true,
-      updatedAt: true,
-      user: {
-        select: {
-          id: true,
-          name: true,
-          image: true,
-        },
-      },
+      postId: true,
+      userId: true,
     },
   },
-  likes: true,
 };
 
 export const postRouter = createRouter()
