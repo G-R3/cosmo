@@ -12,7 +12,7 @@ Cypress.Commands.add("login", () => {
   // We are unsure if this is true and if true, when it needs to be refreshed.
   cy.setCookie(
     "next-auth.session-token",
-    "062b9007-6836-490d-af1f-e75d05354da7",
+    "54e7d1bb6e3af7d0e0923a69343cc3e7e298206b3029bc737e580967d6930318",
   );
   Cypress.Cookies.preserveOnce("next-auth.session-token");
 });
