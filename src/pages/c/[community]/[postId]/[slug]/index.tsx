@@ -161,6 +161,7 @@ const Post = () => {
           />
           <div className="flex justify-between mt-3 text-grayAlt">
             <button
+              data-cy="like-post"
               onClick={
                 isLikedByUser
                   ? () => onUnlike(postQuery.data.post.id)
