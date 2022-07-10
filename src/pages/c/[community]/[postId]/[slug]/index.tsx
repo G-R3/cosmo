@@ -8,6 +8,7 @@ import Comment from "../../../../../components/Comment";
 import useTextarea from "../../../../../hooks/useTextarea";
 import { useSession } from "next-auth/react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import CommentSkeleton from "../../../../../components/CommentSkeleton";
 
 const Post = () => {
   const { data: session } = useSession();
@@ -21,12 +22,15 @@ const Post = () => {
       refetchOnWindowFocus: false,
     },
   );
+  const commentQuery = trpc.useQuery(
+    ["comment.get-by-postId", { postId: Number(postQuery.data?.post.id) }],
+    {
+      enabled: !!postQuery.data?.post.id,
+    },
+  );
   const commentMutation = trpc.useMutation("comment.create");
 
   const likeMutation = trpc.useMutation(["post.like"], {
-    // optimistic update
-    // I still don't quite get this but it sounded like what i needed.
-    // https://tanstack.com/query/v4/docs/guides/optimistic-updates
     onMutate: async (likedPost) => {
       await utils.cancelQuery(["post.get-by-id", { slug, id: Number(postId) }]);
       const previousData = utils.getQueryData([
@@ -177,12 +181,8 @@ const Post = () => {
               {postQuery.data.post.likes.length}
             </button>
             <span>
-              {postQuery.data.post.comments.length}{" "}
-              {(postQuery.data.post.comments &&
-                postQuery.data.post.comments.length > 1) ||
-              postQuery.data.post.comments.length === 0
-                ? "comments"
-                : "comment"}
+              {postQuery.data.post.commentCount}{" "}
+              {postQuery.data.post.commentCount === 1 ? "comment" : "comments"}
             </span>
           </div>
         </section>
@@ -222,23 +222,25 @@ const Post = () => {
         </section>
 
         <section className="mt-5 rounded-md py-5 flex flex-col gap-5">
-          {postQuery.data.post.comments &&
-          postQuery.data.post.comments.length > 0 ? (
-            postQuery.data.post.comments.map((comment) => (
-              <Comment key={comment.id} {...comment} />
-            ))
-          ) : (
-            <div className="flex flex-col justify-center items-center">
-              <p className="font-bold text-lg text-center mt-6">
-                Its empty here
-              </p>
-              <p className="text-xl">😢</p>
-            </div>
-          )}
+          {commentQuery.isLoading &&
+            Array(13)
+              .fill(0)
+              .map((skeleton, idx) => <CommentSkeleton key={idx} />)}
+          {commentQuery.data?.comments.map((comment) => (
+            <Comment key={comment.id} {...comment} />
+          ))}
         </section>
       </div>
     </>
   );
 };
 
+{
+  /* <div className="flex flex-col justify-center items-center">
+<p className="font-bold text-lg text-center mt-6">
+  Its empty here
+</p>
+<p className="text-xl">😢</p>
+</div> */
+}
 export default Post;

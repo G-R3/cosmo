@@ -35,13 +35,8 @@ const Comment: React.FC<Props> = ({
           <span className="text-grayAlt">{user.name}</span>
           {/* <span>{createdAt}</span> */}
         </div>
-        <div>
+        <div className="mb-5">
           <Markdown content={content} />
-        </div>
-        <div className="flex items-center gap-2 text-grayAlt">
-          <button>Upvote</button>
-          <span>0</span>
-          <button>Downvote</button>
         </div>
       </div>
     </div>
