@@ -1,6 +1,7 @@
 import { Switch } from "@headlessui/react";
 import { useTheme } from "next-themes";
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 
 export const ThemeToggler: React.FC = () => {
   const [toggle, setToggle] = useState(true);
@@ -9,9 +10,11 @@ export const ThemeToggler: React.FC = () => {
   return (
     <Switch.Group
       as={"div"}
-      className="flex justify-between rounded-md px-2 py-2 hover:bg-whiteAlt text-sm dark:hover:bg-darkTwo"
+      className="flex items-center justify-between rounded-md  hover:bg-whiteAlt text-sm dark:hover:bg-darkTwo"
     >
-      <Switch.Label className="cursor-pointer flex-grow">Theme</Switch.Label>
+      <Switch.Label className="cursor-pointer flex-grow p-2">
+        Theme
+      </Switch.Label>
       <Switch
         checked={toggle}
         onChange={setToggle}
@@ -21,7 +24,8 @@ export const ThemeToggler: React.FC = () => {
         } relative inline-flex h-6 w-11 items-center rounded-full`}
       >
         <span className="sr-only">Toggle Theme</span>
-        <span
+        <motion.span
+          layout
           className={`${
             theme === "dark"
               ? "translate-x-6 bg-background"
