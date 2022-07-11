@@ -1,14 +1,14 @@
 import { useRouter } from "next/router";
-import Link from "next/link";
 import React from "react";
-import { BiErrorCircle } from "react-icons/bi";
-import { trpc } from "../../../../../utils/trpc";
-import Markdown from "../../../../../components/Markdown";
-import Comment from "../../../../../components/Comment";
-import useTextarea from "../../../../../hooks/useTextarea";
+import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { BiErrorCircle } from "react-icons/bi";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import CommentSkeleton from "../../../../../components/CommentSkeleton";
+import { trpc } from "@/utils/trpc";
+import Markdown from "@/components/Markdown";
+import Comment from "@/components/Comment";
+import useTextarea from "@/hooks/useTextarea";
+import CommentSkeleton from "@/components/CommentSkeleton";
 
 const Post = () => {
   const { data: session } = useSession();
@@ -16,12 +16,10 @@ const Post = () => {
   const postId = useRouter().query.postId;
   const { content, setContent, textareaRef } = useTextarea("");
   const utils = trpc.useContext();
-  const postQuery = trpc.useQuery(
-    ["post.get-by-id", { slug, id: Number(postId) }],
-    {
-      refetchOnWindowFocus: false,
-    },
-  );
+  const postQuery = trpc.useQuery([
+    "post.get-by-id",
+    { slug, id: Number(postId) },
+  ]);
   const commentQuery = trpc.useQuery(
     ["comment.get-by-postId", { postId: Number(postQuery.data?.post.id) }],
     {

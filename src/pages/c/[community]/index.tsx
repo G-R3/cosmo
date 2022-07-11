@@ -1,9 +1,9 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { trpc } from "../../../utils/trpc";
-import Post from "../../../components/Post";
-import PostSkeleton from "../../../components/PostSkeleton";
-import useLike from "../../../hooks/useLike";
+import { trpc } from "@/utils/trpc";
+import Post from "@/components/Post";
+import PostSkeleton from "@/components/PostSkeleton";
+import useLike from "@/hooks/useLike";
 
 const Index = () => {
   const query = useRouter().query.community as string;
