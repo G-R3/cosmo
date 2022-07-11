@@ -169,7 +169,11 @@ const Post = () => {
           <div className="flex justify-between text-grayAlt">
             <button
               data-cy="like-post"
-              onClick={isLikedByUser ? () => onUnlike(id) : () => onLike(id)}
+              onClick={
+                isLikedByUser
+                  ? () => onUnlike(postQuery.data.post.id)
+                  : () => onLike(postQuery.data.post.id)
+              }
               className="flex justify-center items-center gap-2 text-grayAlt group"
             >
               {isLikedByUser ? (
