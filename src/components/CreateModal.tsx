@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import { Dialog } from "@headlessui/react";
+import { motion } from "framer-motion";
 import { trpc } from "../utils/trpc";
 
 interface Props {
@@ -32,8 +33,17 @@ const CreateModal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
       onClose={() => setIsOpen(false)}
       className="z-10 relative"
     >
-      <div className="fixed inset-0 flex bg-background justify-center py-10 bg-opacity-80">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { duration: 0.1 } }}
+        exit={{ opacity: 0, transition: { duration: 0.2 } }}
+        className="fixed inset-0 flex bg-background justify-center py-10 bg-opacity-80"
+      >
         <Dialog.Panel
+          as={motion.div}
+          initial={{ opacity: 0, y: -100 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -100, transition: { duration: 0.2 } }}
           className="w-full max-w-xl max-h-[530px] rounded bg-white dark:bg-darkOne px-10
         py-8 relative flex flex-col justify-between"
         >
@@ -100,7 +110,7 @@ const CreateModal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
             </button>
           </div>
         </Dialog.Panel>
-      </div>
+      </motion.div>
     </Dialog>
   );
 };
