@@ -9,6 +9,7 @@ import Markdown from "@/components/Markdown";
 import Comment from "@/components/Comment";
 import useTextarea from "@/hooks/useTextarea";
 import CommentSkeleton from "@/components/CommentSkeleton";
+import MarkdownTipsModal from "@/components/MarkdownTipsModal";
 
 const Post = () => {
   const { data: session } = useSession();
@@ -141,7 +142,7 @@ const Post = () => {
               <span>Failed to like the post</span>
             </div>
           ))}
-        <section className="p-5 bg-whiteAlt dark:bg-darkOne">
+        <section className="p-5 bg-whiteAlt dark:bg-darkOne rounded-md">
           <h1 className="text-2xl">{postQuery.data.post.title}</h1>
           <small>
             Posted to{" "}
@@ -197,7 +198,7 @@ const Post = () => {
           </div>
         </section>
 
-        <section className="mt-5 bg-whiteAlt dark:bg-darkOne p-5 flex flex-col gap-2">
+        <section className="mt-5 bg-whiteAlt dark:bg-darkOne p-5 flex flex-col gap-2 rounded-md">
           <div className="flex items-center justify-between">
             <h2 className="text-lg">Post a comment</h2>
             {commentMutation.error && (
@@ -210,17 +211,20 @@ const Post = () => {
               </div>
             )}
           </div>
-          <textarea
-            data-cy="comment-textarea"
-            ref={textareaRef}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            name="comment"
-            id="comment"
-            placeholder="What are you thoughts?"
-            rows={5}
-            className=" py-3 px-4 border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-grayAlt dark:bg-darkOne dark:text-foreground overflow-hidden resize-none"
-          ></textarea>
+          <div className="flex flex-col gap-2 mb-3">
+            <MarkdownTipsModal />
+            <textarea
+              data-cy="comment-textarea"
+              ref={textareaRef}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              name="comment"
+              id="comment"
+              placeholder="What are you thoughts?"
+              rows={5}
+              className=" py-3 px-4 border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-grayAlt dark:bg-darkOne dark:text-foreground overflow-hidden resize-none"
+            ></textarea>
+          </div>
           <button
             data-cy="create-comment"
             disabled={commentMutation.isLoading}
