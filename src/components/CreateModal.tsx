@@ -44,7 +44,7 @@ const CreateModal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
           initial={{ opacity: 0, y: -100 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -100, transition: { duration: 0.2 } }}
-          className="w-full max-w-xl max-h-[530px] rounded bg-whiteAlt dark:bg-darkOne px-10
+          className="w-full max-w-xl max-h-[550px] rounded bg-whiteAlt dark:bg-darkOne px-10
         py-8 relative flex flex-col justify-between"
         >
           <div>
@@ -92,7 +92,7 @@ const CreateModal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
             </div>
           </div>
 
-          <div className="self-end flex gap-2">
+          <div className="self-end flex gap-2 mt-3">
             <button
               data-cy="close-modal"
               onClick={() => setIsOpen(false)}

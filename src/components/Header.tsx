@@ -41,7 +41,7 @@ const Header: React.FC = () => {
       <header
         className={`backdrop-saturate-50 backdrop-blur-sm fixed top-0 left-0 w-full z-10 transition-all duration-200 ease-in`}
       >
-        <div className="relative px-8 h-14 lg:h-16 ">
+        <div className="relative px-5 h-14 lg:h-16 ">
           <div className="flex">
             <div className="flex-shrink-0">
               <Link href={"/"}>
