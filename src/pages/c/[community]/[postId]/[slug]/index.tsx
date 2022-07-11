@@ -14,7 +14,7 @@ const Post = () => {
   const { data: session } = useSession();
   const slug = useRouter().query.slug as string;
   const postId = useRouter().query.postId;
-  const { content, setContent, textareaRef } = useTextarea("");
+  const { content, setContent, textareaRef } = useTextarea("", 100);
   const utils = trpc.useContext();
   const postQuery = trpc.useQuery([
     "post.get-by-id",
@@ -199,7 +199,7 @@ const Post = () => {
 
         <section className="mt-5 bg-whiteAlt dark:bg-darkOne p-5 flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <h2 className="text-md text-grayAlt">Post comment</h2>
+            <h2 className="text-lg">Post a comment</h2>
             {commentMutation.error && (
               <div
                 data-cy="alert-error"
@@ -219,13 +219,13 @@ const Post = () => {
             id="comment"
             placeholder="What are you thoughts?"
             rows={5}
-            className=" py-3 px-4 rounded-md bg-foreground text-darkTwo placeholder:text-slate-400 dark:bg-darkTwo dark:text-foreground  focus:outline-offset-2 focus:outline focus:outline-2 focus:outline-darkTwo dark:focus:outline-grayAlt transition-all overflow-hidden min-h-[200px] resize-none"
+            className=" py-3 px-4 border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-grayAlt dark:bg-darkOne dark:text-foreground overflow-hidden resize-none"
           ></textarea>
           <button
             data-cy="create-comment"
             disabled={commentMutation.isLoading}
             onClick={(e) => handleSubmit(e, postQuery.data.post?.id, content)}
-            className="bg-foreground text-darkTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:outline-[3px] focus-visible:focus:outline-highlight"
+            className="bg-whiteAlt border-2 text-darkTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:outline-[3px] focus-visible:focus:outline-highlight"
           >
             Post
           </button>

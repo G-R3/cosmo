@@ -44,7 +44,7 @@ const CreateModal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
           initial={{ opacity: 0, y: -100 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -100, transition: { duration: 0.2 } }}
-          className="w-full max-w-xl max-h-[530px] rounded bg-white dark:bg-darkOne px-10
+          className="w-full max-w-xl max-h-[530px] rounded bg-whiteAlt dark:bg-darkOne px-10
         py-8 relative flex flex-col justify-between"
         >
           <div>
@@ -104,7 +104,7 @@ const CreateModal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
               data-cy="confirm-create"
               onClick={createCommunity}
               disabled={communityMutation.isLoading}
-              className="bg-whiteAlt text-darkOne h-12 p-4 rounded-md flex items-center border-2 border-transparent disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline"
+              className="bg-whiteAlt border-2 text-darkTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:outline-[3px] focus-visible:focus:outline-highlight"
             >
               Create
             </button>

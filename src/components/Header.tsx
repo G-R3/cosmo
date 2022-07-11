@@ -99,7 +99,7 @@ const Header: React.FC = () => {
                               animate={{ opacity: 1 }}
                               exit={{ opacity: 0 }}
                               transition={{ duration: 0.2 }}
-                              className="border dark:border-darkTwo bg-foreground dark:bg-darkOne absolute right-0 mt-2 w-56 rounded-md shadow-lg dark:ring-darkTwo"
+                              className="border dark:border-darkTwo bg-whiteAlt dark:bg-darkOne absolute right-0 mt-2 w-56 rounded-md shadow-lg dark:ring-darkTwo"
                             >
                               <div className="p-2">
                                 <Menu.Item>
@@ -115,7 +115,7 @@ const Header: React.FC = () => {
                                   ) : (
                                     <button
                                       onClick={() => signOut()}
-                                      className="flex w-full items-center rounded-md px-2 py-2 hover:bg-whiteAlt text-sm dark:hover:bg-darkTwo"
+                                      className="flex w-full items-center rounded-md px-2 py-2 hover:bg-foreground text-sm dark:hover:bg-darkTwo"
                                     >
                                       Sign out
                                     </button>
