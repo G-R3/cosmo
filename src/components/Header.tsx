@@ -1,14 +1,12 @@
-import { forwardRef, ReactNode, useState } from "react";
+import { forwardRef, ReactNode } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { Menu } from "@headlessui/react";
 import { FiPlus } from "react-icons/fi";
-import { MdGroups } from "react-icons/md";
 import { motion } from "framer-motion";
-import { ThemeToggler } from "./ThemeToggler";
-import CreateModal from "./CreateModal";
 import { AnimatePresence } from "framer-motion";
-
+import { ThemeToggler } from "./ThemeToggler";
+import CreateCommunityModal from "@/components/CreateCommunityModal";
 interface Props {
   href: string;
   children: ReactNode;
@@ -31,7 +29,6 @@ const DropdownLink = forwardRef<HTMLAnchorElement, Props>((props, ref) => {
 
 const Header: React.FC = () => {
   const { data: session, status } = useSession();
-  const [isOpen, setIsOpen] = useState(false);
   const loading = status === "loading";
 
   if (loading) return null;
@@ -52,13 +49,7 @@ const Header: React.FC = () => {
             </div>
             <div className="flex gap-5 justify-end items-center flex-grow">
               <nav className="flex justify-center items-center gap-3">
-                <button
-                  data-cy="create-community-modal"
-                  onClick={() => setIsOpen(true)}
-                  className="flex items-center px-2 h-6 lg:h-8 cursor-pointer"
-                >
-                  <MdGroups size={25} />
-                </button>
+                <CreateCommunityModal />
                 <Link href="/submit">
                   <a
                     tabIndex={0}
@@ -134,10 +125,6 @@ const Header: React.FC = () => {
           </div>
         </div>
       </header>
-
-      <AnimatePresence>
-        {isOpen && <CreateModal isOpen={isOpen} setIsOpen={setIsOpen} />}
-      </AnimatePresence>
     </>
   );
 };
