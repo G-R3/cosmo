@@ -1,88 +1,17 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import { trpc } from "../../../utils/trpc";
 import Post from "../../../components/Post";
 import PostSkeleton from "../../../components/PostSkeleton";
+import useLike from "../../../hooks/useLike";
 
 const Index = () => {
-  const { data: session } = useSession();
   const query = useRouter().query.community as string;
-  const utils = trpc.useContext();
   const communityQuery = trpc.useQuery(["community.get", { query }], {
     refetchOnWindowFocus: false,
   });
   const postQuery = trpc.useQuery(["post.get-by-community", { query }]);
-
-  const likeMutation = trpc.useMutation(["post.like"], {
-    onMutate: async (likedPost) => {
-      await utils.cancelQuery(["post.get-by-community", { query }]);
-      const previousData = utils.getQueryData([
-        "post.get-by-community",
-        { query },
-      ]);
-
-      if (previousData) {
-        utils.setQueryData(["post.get-by-community", { query }], {
-          ...previousData,
-          posts: previousData.posts.map((post) =>
-            post.id === likedPost.postId
-              ? {
-                  ...post,
-                  likes: [
-                    ...post.likes,
-                    {
-                      userId: session?.user.id!,
-                      postId: likedPost.postId,
-                    },
-                  ],
-                }
-              : post,
-          ),
-        });
-      }
-
-      return { previousData };
-    },
-    onError: (err, data, context) => {
-      if (context?.previousData) {
-        utils.setQueryData(["post.get-by-community"], context?.previousData);
-      }
-    },
-  });
-
-  const unlikeMutation = trpc.useMutation(["post.unlike"], {
-    onMutate: async (unLikedPost) => {
-      await utils.cancelQuery(["post.get-by-community", { query }]);
-      const previousData = utils.getQueryData([
-        "post.get-by-community",
-        { query },
-      ]);
-
-      if (previousData) {
-        utils.setQueryData(["post.get-by-community", { query }], {
-          ...previousData,
-          posts: previousData.posts.map((post) =>
-            post.id === unLikedPost.postId
-              ? {
-                  ...post,
-                  likes: post.likes.filter(
-                    (like) => like.userId !== session?.user.id!,
-                  ),
-                }
-              : post,
-          ),
-        });
-      }
-
-      return { previousData };
-    },
-    onError: (err, data, context) => {
-      if (context?.previousData) {
-        utils.setQueryData(["post.get-by-community"], context?.previousData);
-      }
-    },
-  });
+  const { onLike, onUnlike } = useLike("post.get-by-community", { query });
 
   if (communityQuery.error) {
     return (
@@ -100,13 +29,6 @@ const Index = () => {
   if (communityQuery.isLoading) {
     return <div>Loading...</div>;
   }
-
-  const onLike = (postId: number) => {
-    likeMutation.mutate({ postId });
-  };
-  const onUnlike = (postId: number) => {
-    unlikeMutation.mutate({ postId });
-  };
 
   return (
     <div>
