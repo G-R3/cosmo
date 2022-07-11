@@ -1,15 +1,12 @@
-import { useState, FC, Dispatch, SetStateAction } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import { BiErrorCircle } from "react-icons/bi";
-import { AiOutlineQuestion } from "react-icons/ai";
-import { AnimatePresence } from "framer-motion";
 import { trpc } from "../../utils/trpc";
 import useTextarea from "../../hooks/useTextarea";
 import SearchCommunity from "../../components/SearchCommunity";
-import MarkdownHelpModal from "@/components/MarkdownHelpModal";
+import MarkdownTipsModal from "@/components/MarkdownTipsModal";
 
 const Submit = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
   const [community, setCommunity] = useState("");
   const { content, setContent, textareaRef } = useTextarea("");
@@ -51,16 +48,7 @@ const Submit = () => {
           className="border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-grayAlt dark:bg-darkOne dark:text-foreground"
         />
         <div className="flex flex-col gap-2">
-          <button
-            onClick={() => setIsOpen(true)}
-            className="flex items-center gap-2 text-grayAlt cursor-pointer w-fit"
-          >
-            Markdown Supported
-            <AiOutlineQuestion
-              size={18}
-              className="border rounded-full border-grayAlt"
-            />
-          </button>
+          <MarkdownTipsModal />
           <textarea
             data-cy="post-body"
             ref={textareaRef}
@@ -82,10 +70,6 @@ const Submit = () => {
           Post
         </button>
       </div>
-
-      <AnimatePresence>
-        {isOpen && <MarkdownHelpModal isOpen={isOpen} setIsOpen={setIsOpen} />}
-      </AnimatePresence>
     </section>
   );
 };
