@@ -12,10 +12,10 @@ const useTextarea = (value: string, height = minHeight) => {
       const scrollHeight = textareaRef.current.scrollHeight;
       textareaRef.current.style.height = `${Math.max(
         textareaRef.current.scrollHeight,
-        minHeight,
+        height,
       )}px`;
     }
-  }, [content]);
+  }, [content, height]);
 
   return { content, setContent, textareaRef };
 };
