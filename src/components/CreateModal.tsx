@@ -70,7 +70,12 @@ const CreateModal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
                     id="community-name"
                     className="border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-slate-400 dark:bg-darkOne dark:text-foreground"
                   />
-                  <span className="text-grayAlt">25 characters</span>
+                  <div className="flex justify-between text-grayAlt">
+                    <span>25 characters max</span>
+                    <span className={`${name.length >= 25 && "text-error"}`}>
+                      {name.length}/25
+                    </span>
+                  </div>
                 </div>
               </div>
 
