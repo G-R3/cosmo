@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { GetServerSideProps } from "next";
 import { BiErrorCircle } from "react-icons/bi";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../api/auth/[...nextauth]";
 import { trpc } from "../../utils/trpc";
 import useTextarea from "../../hooks/useTextarea";
 import SearchCommunity from "../../components/SearchCommunity";
