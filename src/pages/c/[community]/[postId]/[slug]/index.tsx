@@ -158,27 +158,35 @@ const Post = () => {
             by {postQuery.data.post.user.name} 10 hrs ago
           </small>
 
-          <Markdown
-            content={
-              postQuery.data.post.content ? postQuery.data.post.content : ""
-            }
-          />
-          <div className="flex justify-between mt-3 text-grayAlt">
+          <div className="mt-6 mb-10">
+            <Markdown
+              content={
+                postQuery.data.post.content ? postQuery.data.post.content : ""
+              }
+            />
+          </div>
+
+          <div className="flex justify-between text-grayAlt">
             <button
               data-cy="like-post"
-              onClick={
-                isLikedByUser
-                  ? () => onUnlike(postQuery.data.post.id)
-                  : () => onLike(postQuery.data.post.id)
-              }
-              className="flex justify-center items-center gap-2 text-grayAlt px-3"
+              onClick={isLikedByUser ? () => onUnlike(id) : () => onLike(id)}
+              className="flex justify-center items-center gap-2 text-grayAlt group"
             >
               {isLikedByUser ? (
-                <AiFillHeart size={20} />
+                <span className="rounded-full p-1 group-hover:bg-red-500/20 group-hover:outline outline-2 outline-red-500/25 transition-all">
+                  <AiFillHeart
+                    size={20}
+                    className={`${isLikedByUser ? "text-red-500" : ""}`}
+                  />
+                </span>
               ) : (
-                <AiOutlineHeart size={20} />
+                <span className="rounded-full p-1 group-hover:bg-red-500/20 group-hover:outline outline-2 outline-red-500/25 transition-all">
+                  <AiOutlineHeart size={20} />
+                </span>
               )}
-              {postQuery.data.post.likes.length}
+              <span className={`${isLikedByUser ? "text-red-500" : ""}`}>
+                {postQuery.data.post.likes.length}
+              </span>
             </button>
             <span>
               {postQuery.data.post.commentCount}{" "}
