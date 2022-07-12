@@ -94,7 +94,7 @@ const Edit = ({
         <button
           data-cy="submit"
           onClick={() => handleSubmit(post.id, content)}
-          disabled={editMutation.isLoading}
+          disabled={editMutation.isLoading || post.content === content}
           className="bg-success text-whiteAlt self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
         >
           Save
