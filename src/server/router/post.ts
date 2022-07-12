@@ -21,7 +21,7 @@ const basePost = {
   content: true,
   createdAt: true,
   updatedAt: true,
-  user: {
+  author: {
     select: {
       id: true,
       name: true,
@@ -42,6 +42,16 @@ const basePost = {
   },
 };
 
+/**
+ * get-by-id
+ * get-by-community
+ * feed
+ * create
+ * edit
+ * like
+ * unlike
+ *
+ */
 export const postRouter = createRouter()
   .query("get-by-id", {
     input: z.object({
@@ -55,6 +65,7 @@ export const postRouter = createRouter()
         },
         select: {
           ...basePost,
+          slug: true,
           _count: {
             select: {
               comments: true,
@@ -168,7 +179,7 @@ export const postRouter = createRouter()
           title: input.title,
           content: input.content,
           slug: slugify(input.title),
-          userId: ctx.session.user.id!,
+          authorId: ctx.session.user.id!,
           communityName: input.community,
         },
       });
@@ -177,6 +188,33 @@ export const postRouter = createRouter()
         success: true,
         message: "Post created successfully",
         post,
+      };
+    },
+  })
+  .mutation("edit", {
+    input: z.object({
+      postId: z.number(),
+      content: z.string().trim(),
+    }),
+    async resolve({ input, ctx }) {
+      if (!ctx.session?.user) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not authorized",
+        });
+      }
+
+      const editedPost = await prisma.post.update({
+        where: {
+          id: input.postId,
+        },
+        data: {
+          content: input.content,
+        },
+      });
+
+      return {
+        post: editedPost,
       };
     },
   })

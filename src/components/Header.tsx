@@ -59,6 +59,8 @@ const Header: React.FC = () => {
                   </a>
                 </Link>
 
+                {!session && <ThemeToggler />}
+
                 {!session && (
                   <Link href="/signin">
                     <a className="flex items-center h-14 lg:h-16">Sign in</a>
