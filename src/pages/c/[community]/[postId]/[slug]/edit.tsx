@@ -25,8 +25,6 @@ const Edit = ({
     editMutation.mutate({ postId, content });
   };
 
-  console.log(post);
-
   return (
     <section className="w-full max-w-xl mx-auto flex flex-col gap-10">
       <div className="flex flex-col">
