@@ -29,7 +29,7 @@ model Post {
   title         String
   content       String?   @db.Text()
   createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   slug          String
   totalVotes    Int       @default(0)
   author        User      @relation(fields: [authorId], references: [id])
