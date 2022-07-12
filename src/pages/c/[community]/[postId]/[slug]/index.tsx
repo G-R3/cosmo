@@ -10,6 +10,7 @@ import Comment from "@/components/Comment";
 import useTextarea from "@/hooks/useTextarea";
 import CommentSkeleton from "@/components/CommentSkeleton";
 import MarkdownTipsModal from "@/components/MarkdownTipsModal";
+import { FiTrash2, FiEdit2 } from "react-icons/fi";
 
 const Post = () => {
   const { data: session } = useSession();
@@ -165,7 +166,7 @@ const Post = () => {
             />
           </div>
 
-          <div className="flex justify-between text-grayAlt">
+          <div className="flex justify-between mt-3">
             <button
               data-cy="like-post"
               onClick={
@@ -191,10 +192,31 @@ const Post = () => {
                 {postQuery.data.post.likes.length}
               </span>
             </button>
-            <span>
-              {postQuery.data.post.commentCount}{" "}
-              {postQuery.data.post.commentCount === 1 ? "comment" : "comments"}
-            </span>
+
+            <div className="flex items-center gap-3 text-grayAlt">
+              {postQuery.data.post.author.id === session?.user.id && (
+                <>
+                  <button className="py-1 px-2 flex items-center gap-[6px] hover:text-red-400 focus:text-red-400">
+                    <FiTrash2 />
+                    Delete
+                  </button>
+                  <Link
+                    href={`/c/${postQuery.data.post.community.name}/${postQuery.data.post.id}/${postQuery.data.post.slug}/edit`}
+                  >
+                    <a className="py-1 px-2 flex items-center gap-[6px] hover:text-blue-400 focus:text-blue-400">
+                      <FiEdit2 />
+                      Edit
+                    </a>
+                  </Link>
+                </>
+              )}
+              <span>
+                {postQuery.data.post.commentCount}{" "}
+                {postQuery.data.post.commentCount === 1
+                  ? "comment"
+                  : "comments"}
+              </span>
+            </div>
           </div>
         </section>
 
@@ -243,18 +265,18 @@ const Post = () => {
           {commentQuery.data?.comments.map((comment) => (
             <Comment key={comment.id} {...comment} />
           ))}
+          {commentQuery.data?.comments.length === 0 && (
+            <div className="flex flex-col justify-center items-center">
+              <p className="font-bold text-lg text-center mt-6">
+                Its empty here
+              </p>
+              <p className="text-xl">😢</p>
+            </div>
+          )}
         </section>
       </div>
     </>
   );
 };
 
-{
-  /* <div className="flex flex-col justify-center items-center">
-<p className="font-bold text-lg text-center mt-6">
-  Its empty here
-</p>
-<p className="text-xl">😢</p>
-</div> */
-}
 export default Post;
