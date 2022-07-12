@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { GetServerSideProps } from "next";
 import { BiErrorCircle } from "react-icons/bi";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../api/auth/[...nextauth]";
 import { trpc } from "../../utils/trpc";
 import useTextarea from "../../hooks/useTextarea";
 import SearchCommunity from "../../components/SearchCommunity";
+import MarkdownTipsModal from "@/components/MarkdownTipsModal";
 
 const Submit = () => {
   const [title, setTitle] = useState<string>("");
@@ -47,9 +45,10 @@ const Submit = () => {
           placeholder="Hello World"
           onChange={(e) => setTitle(e.target.value)}
           value={title}
-          className="border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-slate-400 dark:bg-darkOne dark:text-foreground"
+          className="border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-grayAlt dark:bg-darkOne dark:text-foreground"
         />
-        <div className="grid after:content">
+        <div className="flex flex-col gap-2">
+          <MarkdownTipsModal />
           <textarea
             data-cy="post-body"
             ref={textareaRef}
@@ -58,7 +57,7 @@ const Submit = () => {
               setContent(e.target.value);
             }}
             value={content}
-            className="border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md py-3 px-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-slate-400 dark:bg-darkOne dark:text-foreground overflow-hidden min-h-[200px] resize-none"
+            className="border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md py-3 px-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-grayAlt dark:bg-darkOne dark:text-foreground overflow-hidden resize-none"
           ></textarea>
         </div>
 

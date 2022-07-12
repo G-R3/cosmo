@@ -69,14 +69,23 @@ const Post: React.FC<Props> = ({
       >
         <button
           onClick={isLikedByUser ? () => onUnlike(id) : () => onLike(id)}
-          className="flex justify-center items-center gap-2 text-grayAlt px-3"
+          className="flex justify-center items-center gap-2 text-grayAlt group"
         >
           {isLikedByUser ? (
-            <AiFillHeart size={20} />
+            <span className="rounded-full p-1 group-hover:bg-red-500/20 group-hover:outline outline-2 outline-red-500/25 transition-all">
+              <AiFillHeart
+                size={20}
+                className={`${isLikedByUser ? "text-red-500" : ""}`}
+              />
+            </span>
           ) : (
-            <AiOutlineHeart size={20} />
+            <span className="rounded-full p-1 group-hover:bg-red-500/20 group-hover:outline outline-2 outline-red-500/25 transition-all">
+              <AiOutlineHeart size={20} />
+            </span>
           )}
-          {likes.length}
+          <span className={`${isLikedByUser ? "text-red-500" : ""}`}>
+            {likes.length}
+          </span>
         </button>
 
         <Link href={`/c/${community.name}/${id}/${slug}`}>

@@ -1,81 +1,16 @@
-import { trpc } from "../utils/trpc";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
+import Link from "next/link";
+import { trpc } from "../utils/trpc";
+import PostSkeleton from "../components/PostSkeleton";
 import Post from "../components/Post";
 import UserCard from "../components/UserCard";
-import PostSkeleton from "../components/PostSkeleton";
-import Link from "next/link";
+import useLike from "../hooks/useLike";
 
 const Home = () => {
   const { data: session } = useSession();
-  const utils = trpc.useContext();
   const postQuery = trpc.useQuery(["post.feed"]);
-  const likeMutation = trpc.useMutation(["post.like"], {
-    // optimistic update
-    // I still don't quite get this but it sounded like what i needed.
-    // https://tanstack.com/query/v4/docs/guides/optimistic-updates
-    onMutate: async (likedPost) => {
-      await utils.cancelQuery(["post.feed"]);
-      const previousData = utils.getQueryData(["post.feed"]);
-
-      if (previousData) {
-        utils.setQueryData(["post.feed"], {
-          ...previousData,
-          posts: previousData.posts.map((post) =>
-            post.id === likedPost.postId
-              ? {
-                  ...post,
-                  likes: [
-                    ...post.likes,
-                    {
-                      userId: session?.user.id!,
-                      postId: likedPost.postId,
-                    },
-                  ],
-                }
-              : post,
-          ),
-        });
-      }
-
-      return { previousData };
-    },
-    onError: (err, data, context) => {
-      if (context?.previousData) {
-        utils.setQueryData(["post.feed"], context?.previousData);
-      }
-    },
-  });
-
-  const unlikeMutation = trpc.useMutation(["post.unlike"], {
-    onMutate: async (unLikedPost) => {
-      await utils.cancelQuery(["post.feed"]);
-      const previousData = utils.getQueryData(["post.feed"]);
-
-      if (previousData) {
-        utils.setQueryData(["post.feed"], {
-          ...previousData,
-          posts: previousData.posts.map((post) =>
-            post.id === unLikedPost.postId
-              ? {
-                  ...post,
-                  likes: post.likes.filter(
-                    (like) => like.userId !== session?.user.id!,
-                  ),
-                }
-              : post,
-          ),
-        });
-      }
-
-      return { previousData };
-    },
-    onError: (err, data, context) => {
-      if (context?.previousData) {
-        utils.setQueryData(["post.feed"], context?.previousData);
-      }
-    },
-  });
+  const { onLike, onUnlike } = useLike("post.feed");
 
   if (postQuery.error) {
     return (
@@ -84,13 +19,6 @@ const Home = () => {
       </h1>
     );
   }
-
-  const onLike = (postId: number) => {
-    likeMutation.mutate({ postId });
-  };
-  const onUnlike = (postId: number) => {
-    unlikeMutation.mutate({ postId });
-  };
 
   return (
     <>

@@ -32,7 +32,7 @@ const SearchCommunity: React.FC<Props> = ({ value, setValue }) => {
             autoComplete="false"
             autoCorrect="false"
             placeholder="Search for a community"
-            className="w-full p-4 pl-10 bg-whiteAlt text-darkTwo placeholder:text-slate-400 dark:bg-darkOne dark:text-foreground border-2 dark:border-darkTwo focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md"
+            className="w-full p-4 pl-10 bg-whiteAlt text-darkTwo placeholder:text-grayAlt dark:bg-darkOne dark:text-foreground border-2 dark:border-darkTwo focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md"
           />
 
           <AnimatePresence>

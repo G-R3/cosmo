@@ -44,6 +44,22 @@ describe("Create a community", () => {
     cy.wait("@createCommunity").its("response.statusCode").should("eq", 400);
   });
 
+  it("will not allow name exceeds max characters", () => {
+    const name = "ThisShouldExceedTheCharacterLimit";
+    cy.login();
+    cy.visit("/");
+    cy.wait("@session");
+
+    cy.intercept("POST", "/api/trpc/community.create?*").as("createCommunity");
+    cy.get("[data-cy='create-community-modal']").click();
+
+    // create community
+    cy.get("input").type(name);
+
+    cy.get("[data-cy='confirm-create']").click();
+    cy.wait("@createCommunity").its("response.statusCode").should("eq", 400);
+  });
+
   it("will not allow if community exists", () => {
     const { name } = generateCommunity();
     cy.login();

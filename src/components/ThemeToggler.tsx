@@ -9,9 +9,11 @@ export const ThemeToggler: React.FC = () => {
   return (
     <Switch.Group
       as={"div"}
-      className="flex justify-between rounded-md px-2 py-2 hover:bg-whiteAlt text-sm dark:hover:bg-darkTwo"
+      className="flex items-center justify-between rounded-md  hover:bg-foreground text-sm dark:hover:bg-darkTwo"
     >
-      <Switch.Label className="cursor-pointer flex-grow">Theme</Switch.Label>
+      <Switch.Label className="cursor-pointer flex-grow p-2">
+        Theme
+      </Switch.Label>
       <Switch
         checked={toggle}
         onChange={setToggle}
