@@ -154,7 +154,7 @@ const Post = () => {
                 {postQuery.data.post.community.name}
               </a>
             </Link>{" "}
-            by {postQuery.data.post.user.name} 10 hrs ago
+            by {postQuery.data.post.author.name} 10 hrs ago
           </small>
 
           <div className="mt-6 mb-10">

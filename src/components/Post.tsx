@@ -1,15 +1,16 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
-import Markdown from "../components/Markdown";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import { useSession } from "next-auth/react";
+import Markdown from "../components/Markdown";
 
 interface Props {
   id: number;
   title: string;
   content?: string | null;
   slug: string;
-  user: { id: string; name: string | null; image: string | null };
+  author: { id: string; name: string | null; image: string | null };
   commentCount: number;
   likes: { postId: number; userId: string }[];
   community: { id: number; name: string };
@@ -22,7 +23,7 @@ const Post: React.FC<Props> = ({
   title,
   content,
   slug,
-  user,
+  author,
   commentCount,
   likes,
   community,
@@ -52,7 +53,7 @@ const Post: React.FC<Props> = ({
           <Link href={`/c/${community.name}`}>
             <a className="text-highlight font-semibold">{community.name}</a>
           </Link>{" "}
-          by {user.name} 10 hrs ago
+          by {author.name} 10 hrs ago
         </small>
       </motion.span>
       <motion.div
@@ -87,13 +88,28 @@ const Post: React.FC<Props> = ({
             {likes.length}
           </span>
         </button>
-
-        <Link href={`/c/${community.name}/${id}/${slug}`}>
-          <a data-cy="post-link" className="text-grayAlt">
-            {commentCount}{" "}
-            {commentCount > 1 || commentCount === 0 ? "comments" : "comment"}
-          </a>
-        </Link>
+        <div className="flex items-center gap-3 text-grayAlt">
+          {author.id === session?.user.id && (
+            <>
+              <button className="py-1 px-2 flex items-center gap-[6px] hover:text-red-400 focus:text-red-400">
+                <FiTrash2 />
+                Delete
+              </button>
+              <Link href={`/c/${community.name}/${id}/${slug}/edit`}>
+                <a className="py-1 px-2 flex items-center gap-[6px] hover:text-blue-400 focus:text-blue-400">
+                  <FiEdit2 />
+                  Edit
+                </a>
+              </Link>
+            </>
+          )}
+          <Link href={`/c/${community.name}/${id}/${slug}`}>
+            <a data-cy="post-link">
+              {commentCount}{" "}
+              {commentCount > 1 || commentCount === 0 ? "comments" : "comment"}
+            </a>
+          </Link>
+        </div>
       </motion.div>
     </div>
   );

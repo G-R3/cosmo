@@ -21,7 +21,7 @@ const basePost = {
   content: true,
   createdAt: true,
   updatedAt: true,
-  user: {
+  author: {
     select: {
       id: true,
       name: true,
@@ -168,7 +168,7 @@ export const postRouter = createRouter()
           title: input.title,
           content: input.content,
           slug: slugify(input.title),
-          userId: ctx.session.user.id!,
+          authorId: ctx.session.user.id!,
           communityName: input.community,
         },
       });

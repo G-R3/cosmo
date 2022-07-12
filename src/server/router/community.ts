@@ -73,6 +73,7 @@ export const communityRouter = createRouter()
         data: {
           name: input.name,
           description: input.description,
+          creatorId: ctx.session.user.id!,
         },
       });
 

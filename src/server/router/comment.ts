@@ -18,7 +18,7 @@ export const commentRouter = createRouter()
           content: true,
           createdAt: true,
           updatedAt: true,
-          user: {
+          author: {
             select: {
               id: true,
               name: true,
@@ -50,7 +50,7 @@ export const commentRouter = createRouter()
       await prisma.comment.create({
         data: {
           content: input.content,
-          userId: ctx.session.user.id!,
+          authorId: ctx.session.user.id!,
           postId: input.postId,
         },
       });
