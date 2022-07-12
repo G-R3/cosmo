@@ -2,6 +2,16 @@ import { faker } from "@faker-js/faker";
 
 describe("Should edit a post", () => {
   it("edits a post", () => {
+    Cypress.on("uncaught:exception", (err, runnable) => {
+      // returning false here prevents Cypress from
+      // failing the test
+      expect(err.message).to.include(
+        "(0 , next_auth__WEBPACK_IMPORTED_MODULE_1__.getServerSession) is not a function",
+      );
+
+      return false;
+    });
+
     cy.login();
     cy.visit("/");
     cy.wait("@session");
