@@ -34,7 +34,7 @@ const Submit = () => {
       </div>
       <div className="flex flex-col gap-5 rounded-md">
         {mutation.error && (
-          <div className="bg-error p-3 rounded-md text-foreground flex items-center gap-2">
+          <div className="bg-alert p-3 rounded-md text-foreground flex items-center gap-2">
             <BiErrorCircle size={22} />
             <span>Something has gone terrible wrong!</span>
           </div>

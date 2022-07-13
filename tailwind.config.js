@@ -13,7 +13,7 @@ module.exports = {
         whiteAlt: "#fff",
 
         highlight: "#8b5cf6",
-        error: "#F33",
+        alert: "#F33",
         success: "#0070F3",
         warning: "#F5A623",
       },

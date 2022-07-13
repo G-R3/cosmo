@@ -41,7 +41,7 @@ const UserCard: React.FC<Props> = ({ name, email, image }) => {
           <span>{email}</span>
         </div>
         <div className="flex flex-col gap-2 mt-5">
-          <button className="bg-error text-whiteAlt h-10 p-4 w-full rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all">
+          <button className="bg-alert text-whiteAlt h-10 p-4 w-full rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all">
             Create community
           </button>
           <Link href={"/submit"}>
