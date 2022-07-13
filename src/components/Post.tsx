@@ -32,7 +32,14 @@ const Post: React.FC<Props> = ({
   onUnlike,
 }) => {
   const { data: session } = useSession();
-  const deleteMutation = trpc.useMutation("post.delete");
+  const utils = trpc.useContext();
+  const deleteMutation = trpc.useMutation("post.delete", {
+    onSuccess(data, variables, context) {
+      // change this?
+      utils.invalidateQueries("post.feed");
+      utils.invalidateQueries("post.get-by-community");
+    },
+  });
   const isLikedByUser = likes.find((like) => like.userId === session?.user.id);
 
   const onDelete = (postId: number) => {
