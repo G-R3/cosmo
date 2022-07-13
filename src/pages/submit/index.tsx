@@ -12,9 +12,11 @@ const Submit = () => {
   const { content, setContent, textareaRef } = useTextarea("");
   const router = useRouter();
   const mutation = trpc.useMutation("post.create", {
-    onSuccess(input) {
+    onSuccess(data) {
       // should redirect to the post page
-      router.push("/");
+      router.push(
+        `/c/${data.post.communityName}/${data.post.id}/${data.post.slug}`,
+      );
     },
   });
 

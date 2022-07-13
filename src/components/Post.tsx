@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
-import { FiEdit2, FiTrash2 } from "react-icons/fi";
+import { FiEdit2 } from "react-icons/fi";
 import { useSession } from "next-auth/react";
 import Markdown from "../components/Markdown";
 
@@ -31,7 +31,6 @@ const Post: React.FC<Props> = ({
   onUnlike,
 }) => {
   const { data: session } = useSession();
-
   const isLikedByUser = likes.find((like) => like.userId === session?.user.id);
 
   return (
@@ -90,21 +89,15 @@ const Post: React.FC<Props> = ({
         </button>
         <div className="flex items-center gap-3 text-grayAlt">
           {author.id === session?.user.id && (
-            <>
-              <button className="py-1 px-2 flex items-center gap-[6px] hover:text-red-400 focus:text-red-400">
-                <FiTrash2 />
-                Delete
-              </button>
-              <Link href={`/c/${community.name}/${id}/${slug}/edit`}>
-                <a
-                  data-cy="post-edit-link"
-                  className="py-1 px-2 flex items-center gap-[6px] hover:text-blue-400 focus:text-blue-400"
-                >
-                  <FiEdit2 />
-                  Edit
-                </a>
-              </Link>
-            </>
+            <Link href={`/c/${community.name}/${id}/${slug}/edit`}>
+              <a
+                data-cy="post-edit-link"
+                className="py-1 px-2 flex items-center gap-[6px] hover:text-blue-400 focus:text-blue-400"
+              >
+                <FiEdit2 />
+                Edit
+              </a>
+            </Link>
           )}
           <Link href={`/c/${community.name}/${id}/${slug}`}>
             <a data-cy="post-link">

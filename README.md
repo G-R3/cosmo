@@ -10,7 +10,7 @@ This is the repo for cosmo. A sort of social media like thing I'm making. It's a
 - [x] Create communities
 - [x] Make posts to communities
 - [x] Markdown support
-- [ ] Edit/delete posts
+- [x] Edit/delete posts
 - [ ] Edit/delete comments
 - [ ] Save posts
 - [ ] Image upload support

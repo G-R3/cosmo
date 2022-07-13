@@ -10,12 +10,13 @@ import Comment from "@/components/Comment";
 import useTextarea from "@/hooks/useTextarea";
 import CommentSkeleton from "@/components/CommentSkeleton";
 import MarkdownTipsModal from "@/components/MarkdownTipsModal";
-import { FiTrash2, FiEdit2 } from "react-icons/fi";
+import { FiEdit2 } from "react-icons/fi";
 
 const Post = () => {
+  const router = useRouter();
+  const slug = router.query.slug as string;
+  const postId = router.query.postId;
   const { data: session } = useSession();
-  const slug = useRouter().query.slug as string;
-  const postId = useRouter().query.postId;
   const { content, setContent, textareaRef } = useTextarea("", 100);
   const utils = trpc.useContext();
   const postQuery = trpc.useQuery([
@@ -65,7 +66,6 @@ const Post = () => {
       }
     },
   });
-
   const unlikeMutation = trpc.useMutation(["post.unlike"], {
     onMutate: async (unLikedPost) => {
       await utils.cancelQuery(["post.get-by-id", { slug, id: Number(postId) }]);
@@ -195,20 +195,17 @@ const Post = () => {
 
             <div className="flex items-center gap-3 text-grayAlt">
               {postQuery.data.post.author.id === session?.user.id && (
-                <>
-                  <button className="py-1 px-2 flex items-center gap-[6px] hover:text-red-400 focus:text-red-400">
-                    <FiTrash2 />
-                    Delete
-                  </button>
-                  <Link
-                    href={`/c/${postQuery.data.post.community.name}/${postQuery.data.post.id}/${postQuery.data.post.slug}/edit`}
+                <Link
+                  href={`/c/${postQuery.data.post.community.name}/${postQuery.data.post.id}/${postQuery.data.post.slug}/edit`}
+                >
+                  <a
+                    data-cy="post-edit-link"
+                    className="py-1 px-2 flex items-center gap-[6px] hover:text-blue-400 focus:text-blue-400"
                   >
-                    <a className="py-1 px-2 flex items-center gap-[6px] hover:text-blue-400 focus:text-blue-400">
-                      <FiEdit2 />
-                      Edit
-                    </a>
-                  </Link>
-                </>
+                    <FiEdit2 />
+                    Edit
+                  </a>
+                </Link>
               )}
               <span>
                 {postQuery.data.post.commentCount}{" "}

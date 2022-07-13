@@ -9,6 +9,7 @@ import { trpc } from "@/utils/trpc";
 import { prisma } from "../../../../../db/client";
 import { authOptions } from "src/pages/api/auth/[...nextauth]";
 import { AiFillHeart } from "react-icons/ai";
+import DeletePostModal from "@/components/DeletePostModal";
 
 const Edit = ({
   post,
@@ -89,14 +90,17 @@ const Edit = ({
           ></textarea>
         </div>
 
-        <button
-          data-cy="submit"
-          onClick={() => handleSubmit(post.id, content)}
-          disabled={editMutation.isLoading || post.content === content}
-          className="bg-success text-whiteAlt self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
-        >
-          Save
-        </button>
+        <div className="flex justify-end gap-5">
+          <DeletePostModal postId={post.id} />
+          <button
+            data-cy="submit"
+            onClick={() => handleSubmit(post.id, content)}
+            disabled={editMutation.isLoading || post.content === content}
+            className="bg-success text-whiteAlt self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
+          >
+            Save
+          </button>
+        </div>
       </div>
     </section>
   );
