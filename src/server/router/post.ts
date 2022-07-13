@@ -218,6 +218,29 @@ export const postRouter = createRouter()
       };
     },
   })
+  .mutation("delete", {
+    input: z.object({
+      postId: z.number(),
+    }),
+    async resolve({ input, ctx }) {
+      if (!ctx.session?.user) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not authorized",
+        });
+      }
+
+      const deletedPost = await prisma.post.delete({
+        where: {
+          id: input.postId,
+        },
+      });
+
+      return {
+        post: deletedPost,
+      };
+    },
+  })
   .mutation("like", {
     input: z.object({
       postId: z.number(),
