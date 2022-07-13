@@ -42,11 +42,11 @@ const Index = () => {
           Array(13)
             .fill(0)
             .map((skeleton, idx) => <PostSkeleton key={idx} />)}
-        {postQuery?.data?.posts ? (
+        {postQuery?.data?.posts &&
           postQuery?.data?.posts.map((post) => (
             <Post key={post.id} {...post} onLike={onLike} onUnlike={onUnlike} />
-          ))
-        ) : (
+          ))}
+        {postQuery.data?.posts.length === 0 && (
           <div className="flex items-center flex-col gap-5 mt-10">
             <h1 className="text-grayAlt text-2xl font-bold">
               Looks like nothing has been posted to {communityQuery.data?.name}{" "}
