@@ -12,7 +12,7 @@ const Home = () => {
   const postQuery = trpc.useQuery(["post.feed"]);
   const { onLike, onUnlike } = useLike("post.feed");
 
-  if (postQuery.alert) {
+  if (postQuery.isError) {
     return (
       <h1 className="text-grayAlt font-bold text-2xl text-center">
         Something happened and posts could not be fetched

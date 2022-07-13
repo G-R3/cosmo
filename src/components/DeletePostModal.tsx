@@ -30,7 +30,7 @@ const DeletePostModal: FC<{ postId: number }> = ({ postId }) => {
         data-cy="post-delete"
         disabled={deleteMutation.isLoading}
         onClick={() => setIsOpen(true)}
-        className="py-1 px-2 bg-red-500 text-whiteAlt rounded-md flex items-center gap-[6px] disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
+        className="py-1 px-2 border-2 text-foreground border-alert rounded-md flex items-center gap-[6px] disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
       >
         <FiTrash2 />
         Delete
