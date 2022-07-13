@@ -5,6 +5,7 @@ import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import { useSession } from "next-auth/react";
 import Markdown from "../components/Markdown";
 import { trpc } from "@/utils/trpc";
+import DeletePostModal from "./DeletePostModal";
 
 interface Props {
   id: number;
@@ -32,19 +33,7 @@ const Post: React.FC<Props> = ({
   onUnlike,
 }) => {
   const { data: session } = useSession();
-  const utils = trpc.useContext();
-  const deleteMutation = trpc.useMutation("post.delete", {
-    onSuccess(data, variables, context) {
-      // change this?
-      utils.invalidateQueries("post.feed");
-      utils.invalidateQueries("post.get-by-community");
-    },
-  });
   const isLikedByUser = likes.find((like) => like.userId === session?.user.id);
-
-  const onDelete = (postId: number) => {
-    deleteMutation.mutate({ postId });
-  };
 
   return (
     <div className="bg-whiteAlt dark:bg-darkOne border-2 border-transparent hover:border-highlight w-full rounded-md p-5 transition-all">
@@ -103,14 +92,7 @@ const Post: React.FC<Props> = ({
         <div className="flex items-center gap-3 text-grayAlt">
           {author.id === session?.user.id && (
             <>
-              <button
-                disabled={deleteMutation.isLoading}
-                onClick={() => onDelete(id)}
-                className="py-1 px-2 flex items-center gap-[6px] hover:text-red-400 focus:text-red-400 disabled:opacity-70"
-              >
-                <FiTrash2 />
-                Delete
-              </button>
+              <DeletePostModal postId={id} />
               <Link href={`/c/${community.name}/${id}/${slug}/edit`}>
                 <a
                   data-cy="post-edit-link"

@@ -11,6 +11,7 @@ import useTextarea from "@/hooks/useTextarea";
 import CommentSkeleton from "@/components/CommentSkeleton";
 import MarkdownTipsModal from "@/components/MarkdownTipsModal";
 import { FiTrash2, FiEdit2 } from "react-icons/fi";
+import DeletePostModal from "@/components/DeletePostModal";
 
 const Post = () => {
   const router = useRouter();
@@ -30,11 +31,7 @@ const Post = () => {
     },
   );
   const commentMutation = trpc.useMutation("comment.create");
-  const deletePostMutation = trpc.useMutation("post.delete", {
-    onSuccess(data, variables, context) {
-      router.push(`/c/${postQuery.data?.post.community.name}`);
-    },
-  });
+
   const likeMutation = trpc.useMutation(["post.like"], {
     onMutate: async (likedPost) => {
       await utils.cancelQuery(["post.get-by-id", { slug, id: Number(postId) }]);
@@ -129,9 +126,6 @@ const Post = () => {
   const onUnlike = (postId: number) => {
     unlikeMutation.mutate({ postId });
   };
-  const onDelete = (postId: number) => {
-    deletePostMutation.mutate({ postId });
-  };
 
   const isLikedByUser = postQuery.data.post.likes.find(
     (like) => like.userId === session?.user.id,
@@ -203,13 +197,7 @@ const Post = () => {
             <div className="flex items-center gap-3 text-grayAlt">
               {postQuery.data.post.author.id === session?.user.id && (
                 <>
-                  <button
-                    onClick={() => onDelete(postQuery.data.post.id)}
-                    className="py-1 px-2 flex items-center gap-[6px] hover:text-red-400 focus:text-red-400"
-                  >
-                    <FiTrash2 />
-                    {deletePostMutation.isLoading ? "Deleting..." : "Delete"}
-                  </button>
+                  <DeletePostModal postId={postQuery.data.post.id} />
                   <Link
                     href={`/c/${postQuery.data.post.community.name}/${postQuery.data.post.id}/${postQuery.data.post.slug}/edit`}
                   >
