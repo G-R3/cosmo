@@ -10,8 +10,7 @@ import Comment from "@/components/Comment";
 import useTextarea from "@/hooks/useTextarea";
 import CommentSkeleton from "@/components/CommentSkeleton";
 import MarkdownTipsModal from "@/components/MarkdownTipsModal";
-import { FiTrash2, FiEdit2 } from "react-icons/fi";
-import DeletePostModal from "@/components/DeletePostModal";
+import { FiEdit2 } from "react-icons/fi";
 
 const Post = () => {
   const router = useRouter();
@@ -196,17 +195,14 @@ const Post = () => {
 
             <div className="flex items-center gap-3 text-grayAlt">
               {postQuery.data.post.author.id === session?.user.id && (
-                <>
-                  <DeletePostModal postId={postQuery.data.post.id} />
-                  <Link
-                    href={`/c/${postQuery.data.post.community.name}/${postQuery.data.post.id}/${postQuery.data.post.slug}/edit`}
-                  >
-                    <a className="py-1 px-2 flex items-center gap-[6px] hover:text-blue-400 focus:text-blue-400">
-                      <FiEdit2 />
-                      Edit
-                    </a>
-                  </Link>
-                </>
+                <Link
+                  href={`/c/${postQuery.data.post.community.name}/${postQuery.data.post.id}/${postQuery.data.post.slug}/edit`}
+                >
+                  <a className="py-1 px-2 flex items-center gap-[6px] hover:text-blue-400 focus:text-blue-400">
+                    <FiEdit2 />
+                    Edit
+                  </a>
+                </Link>
               )}
               <span>
                 {postQuery.data.post.commentCount}{" "}

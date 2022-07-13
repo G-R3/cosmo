@@ -16,9 +16,7 @@ const DeletePostModal: FC<{ postId: number }> = ({ postId }) => {
       utils.invalidateQueries("post.feed");
       utils.invalidateQueries("post.get-by-community");
 
-      if (router.query.community) {
-        router.push(`/c/${router.query.community}`);
-      }
+      router.push("/");
     },
   });
 
@@ -31,7 +29,7 @@ const DeletePostModal: FC<{ postId: number }> = ({ postId }) => {
       <button
         disabled={deleteMutation.isLoading}
         onClick={() => setIsOpen(true)}
-        className="py-1 px-2 flex items-center gap-[6px] hover:text-red-400 focus:text-red-400 disabled:opacity-70"
+        className="py-1 px-2 bg-red-500 text-whiteAlt rounded-md flex items-center gap-[6px] disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
       >
         <FiTrash2 />
         Delete
