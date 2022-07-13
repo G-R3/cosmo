@@ -27,6 +27,7 @@ const DeletePostModal: FC<{ postId: number }> = ({ postId }) => {
   return (
     <>
       <button
+        data-cy="post-delete"
         disabled={deleteMutation.isLoading}
         onClick={() => setIsOpen(true)}
         className="py-1 px-2 bg-red-500 text-whiteAlt rounded-md flex items-center gap-[6px] disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
@@ -44,7 +45,7 @@ const DeletePostModal: FC<{ postId: number }> = ({ postId }) => {
               exit={{ opacity: 0, transition: { duration: 0.2 } }}
               className="fixed inset-0 bg-background py-10 bg-opacity-80 z-10"
             >
-              <div className="flex justify-center p-4">
+              <div data-cy="delete-modal" className="flex justify-center p-4">
                 <Dialog.Panel
                   as={motion.div}
                   initial={{ opacity: 0, y: -100 }}
@@ -53,11 +54,9 @@ const DeletePostModal: FC<{ postId: number }> = ({ postId }) => {
                   className="flex flex-col w-full max-w-xl rounded bg-white dark:bg-darkOne px-10 py-8"
                 >
                   <Dialog.Title className="text-2xl">Delete Post</Dialog.Title>
-                  <Dialog.Description>
-                    <p className="mt-2">
-                      Deleting a post can&apos;t be undone. Are you sure you
-                      want to continue?
-                    </p>
+                  <Dialog.Description className="mt-2">
+                    Deleting a post can&apos;t be undone. Are you sure you want
+                    to continue?
                   </Dialog.Description>
 
                   <div className="mt-5 self-end flex gap-2">
@@ -68,6 +67,7 @@ const DeletePostModal: FC<{ postId: number }> = ({ postId }) => {
                       Cancel
                     </button>
                     <button
+                      data-cy="confirm-delete-post"
                       disabled={deleteMutation.isLoading}
                       onClick={() => onDelete(postId)}
                       className="px-5 py-2 bg-red-500 rounded-md"

@@ -198,7 +198,10 @@ const Post = () => {
                 <Link
                   href={`/c/${postQuery.data.post.community.name}/${postQuery.data.post.id}/${postQuery.data.post.slug}/edit`}
                 >
-                  <a className="py-1 px-2 flex items-center gap-[6px] hover:text-blue-400 focus:text-blue-400">
+                  <a
+                    data-cy="post-edit-link"
+                    className="py-1 px-2 flex items-center gap-[6px] hover:text-blue-400 focus:text-blue-400"
+                  >
                     <FiEdit2 />
                     Edit
                   </a>
