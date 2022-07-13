@@ -80,7 +80,7 @@ const CreateCommunityModal: React.FC = () => {
                         <div className="flex justify-between text-grayAlt">
                           <span>25 characters max</span>
                           <span
-                            className={`${name.length >= 25 && "text-error"}`}
+                            className={`${name.length >= 25 && "text-alert"}`}
                           >
                             {name.length}/25
                           </span>
@@ -113,7 +113,7 @@ const CreateCommunityModal: React.FC = () => {
                   <button
                     data-cy="close-modal"
                     onClick={() => setIsOpen(false)}
-                    className="text-darkOne dark:text-whiteAlt py-4 px-6 h-12 p-4 rounded-md flex items-center border-2 border-transparent disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:border-error hover:border-error"
+                    className="text-darkOne dark:text-whiteAlt py-4 px-6 h-12 p-4 rounded-md flex items-center border-2 border-transparent disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:border-alert hover:border-alert"
                   >
                     Cancel
                   </button>

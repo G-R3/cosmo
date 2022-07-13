@@ -3,39 +3,32 @@ import { FC, useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
 import { Dialog } from "@headlessui/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useRouter } from "next/router";
 
-const DeletePostModal: FC<{ postId: number }> = ({ postId }) => {
-  const router = useRouter();
+const DeleteCommentModal: FC<{ commentId: number }> = ({ commentId }) => {
   const [isOpen, setIsOpen] = useState(false);
   const utils = trpc.useContext();
-  const deleteMutation = trpc.useMutation("post.delete", {
+  const deleteMutation = trpc.useMutation("comment.delete", {
     onSuccess(data, variables, context) {
       setIsOpen(false);
-      // change this?
-      utils.invalidateQueries("post.feed");
-      utils.invalidateQueries("post.get-by-community");
-
-      router.push("/");
+      utils.invalidateQueries("comment.get-by-postId");
     },
   });
 
-  const onDelete = (postId: number) => {
-    deleteMutation.mutate({ postId });
+  const onDelete = (commentId: number) => {
+    deleteMutation.mutate({ commentId });
   };
 
   return (
     <>
       <button
-        data-cy="post-delete"
+        data-cy="comment-delete"
         disabled={deleteMutation.isLoading}
         onClick={() => setIsOpen(true)}
-        className="py-1 px-2 border-2 text-foreground border-alert rounded-md flex items-center gap-[6px] disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
+        className="flex items-center gap-2 text-grayAlt hover:text-alert"
       >
         <FiTrash2 />
         Delete
       </button>
-
       <AnimatePresence>
         {isOpen && (
           <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
@@ -55,8 +48,8 @@ const DeletePostModal: FC<{ postId: number }> = ({ postId }) => {
                 >
                   <Dialog.Title className="text-2xl">Delete Post</Dialog.Title>
                   <Dialog.Description className="mt-2">
-                    Deleting a post can&apos;t be undone. Are you sure you want
-                    to continue?
+                    Deleting a comment can&apos;t be undone. Are you sure you
+                    want to continue?
                   </Dialog.Description>
 
                   <div className="mt-5 self-end flex gap-2">
@@ -67,9 +60,9 @@ const DeletePostModal: FC<{ postId: number }> = ({ postId }) => {
                       Cancel
                     </button>
                     <button
-                      data-cy="confirm-delete-post"
+                      data-cy="confirm-delete-comment"
                       disabled={deleteMutation.isLoading}
-                      onClick={() => onDelete(postId)}
+                      onClick={() => onDelete(commentId)}
                       className="px-5 py-2 bg-red-500 rounded-md"
                     >
                       {deleteMutation.isLoading ? "Deleting..." : "Delete"}
@@ -85,4 +78,4 @@ const DeletePostModal: FC<{ postId: number }> = ({ postId }) => {
   );
 };
 
-export default DeletePostModal;
+export default DeleteCommentModal;

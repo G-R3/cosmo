@@ -136,8 +136,8 @@ const Post = () => {
         {!!likeMutation.error ||
           (!!unlikeMutation.error && (
             <div
-              data-cy="alert-error"
-              className="bg-error p-3 rounded-md text-foreground flex items-center gap-2"
+              data-cy="alert-alert"
+              className="bg-alert p-3 rounded-md text-foreground flex items-center gap-2"
             >
               <BiErrorCircle size={22} />
               <span>Failed to like the post</span>
@@ -223,7 +223,7 @@ const Post = () => {
             {commentMutation.error && (
               <div
                 data-cy="alert-error"
-                className="bg-error p-3 rounded-md text-foreground flex items-center gap-2"
+                className="bg-alert p-3 rounded-md text-foreground flex items-center gap-2"
               >
                 <BiErrorCircle size={22} />
                 <span>Something has gone terrible wrong!</span>

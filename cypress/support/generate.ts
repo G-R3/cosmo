@@ -28,7 +28,7 @@ const generateCommunity = () => {
 };
 
 const generateCommentBody = () => {
-  return `# ${faker.lorem.words()} \n${faker.lorem.text()}`;
+  return `# ${faker.lorem.words()} \n${faker.lorem.words(20)}`;
 };
 
 export { generatePost, generateCommentBody, generateCommunity };

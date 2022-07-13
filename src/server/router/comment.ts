@@ -60,4 +60,54 @@ export const commentRouter = createRouter()
         message: "Comment created",
       };
     },
+  })
+  .mutation("edit", {
+    input: z.object({
+      commentId: z.number(),
+      content: z.string().min(1),
+    }),
+    async resolve({ input, ctx }) {
+      if (!ctx.session?.user) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not authorized",
+        });
+      }
+
+      const updatedComment = await prisma.comment.update({
+        where: {
+          id: input.commentId,
+        },
+        data: {
+          content: input.content,
+        },
+      });
+
+      return {
+        comment: updatedComment,
+      };
+    },
+  })
+  .mutation("delete", {
+    input: z.object({
+      commentId: z.number(),
+    }),
+    async resolve({ input, ctx }) {
+      if (!ctx.session?.user) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not authorized",
+        });
+      }
+
+      const deletedComment = await prisma.comment.delete({
+        where: {
+          id: input.commentId,
+        },
+      });
+
+      return {
+        comment: deletedComment,
+      };
+    },
   });
