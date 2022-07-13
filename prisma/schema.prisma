@@ -45,7 +45,7 @@ model Comment {
   content   String   @db.Text()
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
-  post      Post     @relation(fields: [postId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId    Int
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String
@@ -53,7 +53,7 @@ model Comment {
 
 model Like {
   id     Int    @unique @default(autoincrement())
-  post   Post   @relation(fields: [postId], references: [id])
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId Int
   user   User   @relation(fields: [userId], references: [id])
   userId String
