@@ -1,12 +1,12 @@
-import useTextarea from "@/hooks/useTextarea";
 import { trpc } from "@/utils/trpc";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { FiEdit2 } from "react-icons/fi";
 import Markdown from "./Markdown";
 import MarkdownTipsModal from "./MarkdownTipsModal";
 import CommentDeleteModal from "./CommentDeleteModal";
+import Textarea from "./TextareaAutosize";
 
 interface Props {
   id: number;
@@ -27,7 +27,7 @@ const Comment: React.FC<Props> = ({
   author,
 }) => {
   const { data: session } = useSession();
-  const { content, setContent, textareaRef } = useTextarea(commentBody, 150);
+  const [content, setContent] = useState(commentBody);
   const [isEditing, setIsEditing] = useState(false);
   const utils = trpc.useContext();
   const commentEditMutation = trpc.useMutation("comment.edit", {
@@ -64,16 +64,13 @@ const Comment: React.FC<Props> = ({
           {isEditing ? (
             <div className="flex flex-col gap-2 mb-3">
               <MarkdownTipsModal />
-              <textarea
+              <Textarea
                 data-cy="comment-edit-textarea"
-                ref={textareaRef}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                name="comment"
-                id="comment"
-                placeholder="What are you thoughts?"
-                className="py-3 px-4 border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-grayAlt dark:bg-darkOne dark:text-foreground overflow-hidden min-h-[150px] resize-none"
-              ></textarea>
+                placeholder="What are your thoughts?"
+                minHeight={220}
+              />
             </div>
           ) : (
             <Markdown content={commentBody} />
@@ -85,7 +82,10 @@ const Comment: React.FC<Props> = ({
             <CommentDeleteModal commentId={id} />
             <button
               data-cy="comment-edit"
-              onClick={() => setIsEditing((prev) => !prev)}
+              onClick={() => {
+                setContent(commentBody);
+                setIsEditing((prev) => !prev);
+              }}
               className="py-1 px-2 flex items-center gap-[6px] text-grayAlt hover:text-blue-400 focus:text-blue-400"
             >
               <FiEdit2 />
@@ -112,4 +112,4 @@ const Comment: React.FC<Props> = ({
   );
 };
 
-export default Comment;
+export default memo(Comment);

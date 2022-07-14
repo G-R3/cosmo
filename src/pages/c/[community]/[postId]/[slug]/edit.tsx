@@ -1,21 +1,22 @@
+import { useState } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { getServerSession } from "next-auth";
+import { unstable_getServerSession } from "next-auth";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { BiErrorCircle } from "react-icons/bi";
-import useTextarea from "@/hooks/useTextarea";
 import MarkdownTipsModal from "@/components/MarkdownTipsModal";
 import { trpc } from "@/utils/trpc";
 import { prisma } from "../../../../../db/client";
 import { authOptions } from "src/pages/api/auth/[...nextauth]";
 import { AiFillHeart } from "react-icons/ai";
 import DeletePostModal from "@/components/DeletePostModal";
+import TextareaAutosize from "@/components/TextareaAutosize";
 
 const Edit = ({
   post,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
-  const { content, setContent, textareaRef } = useTextarea(post.content);
+  const [content, setContent] = useState(post.content);
   const editMutation = trpc.useMutation("post.edit", {
     onSuccess(data, variables, context) {
       router.push(`/c/${post.communityName}/${post.id}/${post.slug}`);
@@ -78,16 +79,15 @@ const Edit = ({
 
         <div className="flex flex-col gap-2">
           <MarkdownTipsModal />
-          <textarea
+          <TextareaAutosize
             data-cy="edit-post-body"
-            ref={textareaRef}
-            placeholder={`# Your Post \nLet the world know what you're thinking. Start with a title and then add some content to spice up your post! 😀`}
+            value={content}
             onChange={(e) => {
               setContent(e.target.value);
             }}
-            value={content}
-            className="border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md py-3 px-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-grayAlt dark:bg-darkOne dark:text-foreground overflow-hidden resize-none"
-          ></textarea>
+            placeholder={`# Your Post \nLet the world know what you're thinking. Start with a title and then add some content to spice up your post! 😀`}
+            minHeight={250}
+          />
         </div>
 
         <div className="flex justify-end gap-5">
@@ -107,7 +107,11 @@ const Edit = ({
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getServerSession(context, authOptions);
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions,
+  );
 
   if (!session) {
     return {

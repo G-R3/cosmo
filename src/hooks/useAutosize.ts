@@ -1,15 +1,18 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 const minHeight = 200;
 
-const useTextarea = (value: string, height = minHeight) => {
+const useAutosize = (
+  content: string | number | readonly string[] | undefined,
+  height = minHeight,
+) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [content, setContent] = useState(value);
 
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "inherit";
       const scrollHeight = textareaRef.current.scrollHeight;
+
       textareaRef.current.style.height = `${Math.max(
         textareaRef.current.scrollHeight,
         height,
@@ -17,7 +20,7 @@ const useTextarea = (value: string, height = minHeight) => {
     }
   }, [content, height]);
 
-  return { content, setContent, textareaRef };
+  return { textareaRef };
 };
 
-export default useTextarea;
+export default useAutosize;

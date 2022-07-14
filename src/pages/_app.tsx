@@ -21,7 +21,7 @@ const App = ({
     <SessionProvider session={session}>
       <ThemeProvider
         storageKey="theme"
-        defaultTheme="system"
+        defaultTheme="dark"
         enableSystem={true}
         themes={["light", "dark"]}
         attribute="class"

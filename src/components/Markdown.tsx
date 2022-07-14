@@ -1,3 +1,4 @@
+import { memo } from "react";
 import ReactMarkdown from "react-markdown";
 
 const Markdown: React.FC<{ content: string }> = ({ content }) => {
@@ -50,4 +51,4 @@ const Markdown: React.FC<{ content: string }> = ({ content }) => {
   );
 };
 
-export default Markdown;
+export default memo(Markdown);
