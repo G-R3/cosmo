@@ -7,7 +7,7 @@ describe("Deleting a post", () => {
     cy.wait("@session");
   });
 
-  it("should create and delete a post", (done) => {
+  it("should create and delete a post", () => {
     const { postTitle, postBody, postSlug } = generatePost();
     const searchField = "Skateboarding";
     cy.intercept("POST", "/api/trpc/post.create?*").as("createPost");

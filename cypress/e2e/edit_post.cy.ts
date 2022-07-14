@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 
 describe("Should edit a post", () => {
-  it("edits a post", (done) => {
+  it("edits a post", () => {
     cy.login();
     cy.visit("/");
     cy.wait("@session");
