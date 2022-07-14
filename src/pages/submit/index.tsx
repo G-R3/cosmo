@@ -2,14 +2,15 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { BiErrorCircle } from "react-icons/bi";
 import { trpc } from "../../utils/trpc";
-import useTextarea from "../../hooks/useTextarea";
+
 import SearchCommunity from "../../components/SearchCommunity";
 import MarkdownTipsModal from "@/components/MarkdownTipsModal";
+import TextareaAutosize from "@/components/TextareaAutosize";
 
 const Submit = () => {
   const [title, setTitle] = useState<string>("");
   const [community, setCommunity] = useState("");
-  const { content, setContent, textareaRef } = useTextarea("");
+  const [content, setContent] = useState("");
   const router = useRouter();
   const mutation = trpc.useMutation("post.create", {
     onSuccess(data) {
@@ -51,16 +52,15 @@ const Submit = () => {
         />
         <div className="flex flex-col gap-2">
           <MarkdownTipsModal />
-          <textarea
+          <TextareaAutosize
             data-cy="post-body"
-            ref={textareaRef}
-            placeholder={`# Your Post \nLet the world know what you're thinking. Start with a title and then add some content to spice up your post! 😀`}
             onChange={(e) => {
               setContent(e.target.value);
             }}
             value={content}
-            className="border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md py-3 px-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-grayAlt dark:bg-darkOne dark:text-foreground overflow-hidden resize-none"
-          ></textarea>
+            placeholder={`# Your Post \nLet the world know what you're thinking. Start with a title and then add some content to spice up your post! 😀`}
+            minHeight={250}
+          />
         </div>
 
         <button

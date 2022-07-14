@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { BiErrorCircle } from "react-icons/bi";
@@ -7,17 +7,18 @@ import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { trpc } from "@/utils/trpc";
 import Markdown from "@/components/Markdown";
 import Comment from "@/components/Comment";
-import useTextarea from "@/hooks/useTextarea";
+import useTextarea from "@/hooks/useAutosize";
 import CommentSkeleton from "@/components/CommentSkeleton";
 import MarkdownTipsModal from "@/components/MarkdownTipsModal";
 import { FiEdit2 } from "react-icons/fi";
+import TextareaAutosize from "@/components/TextareaAutosize";
 
 const Post = () => {
   const router = useRouter();
   const slug = router.query.slug as string;
   const postId = router.query.postId;
   const { data: session } = useSession();
-  const { content, setContent, textareaRef } = useTextarea("", 100);
+  const [commentContent, setCommentContent] = useState("");
   const utils = trpc.useContext();
   const postQuery = trpc.useQuery([
     "post.get-by-id",
@@ -120,7 +121,7 @@ const Post = () => {
       postId,
     });
 
-    setContent("");
+    setCommentContent("");
   };
 
   const onLike = (postId: number) => {
@@ -236,22 +237,22 @@ const Post = () => {
           </div>
           <div className="flex flex-col gap-2 mb-3">
             <MarkdownTipsModal />
-            <textarea
+            <TextareaAutosize
               data-cy="comment-textarea"
-              ref={textareaRef}
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
+              value={commentContent}
+              onChange={(e) => setCommentContent(e.target.value)}
               name="comment"
               id="comment"
               placeholder="What are you thoughts?"
-              rows={5}
-              className=" py-3 px-4 border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-grayAlt dark:bg-darkOne dark:text-foreground overflow-hidden resize-none"
-            ></textarea>
+              minHeight={200}
+            />
           </div>
           <button
             data-cy="create-comment"
             disabled={commentMutation.isLoading}
-            onClick={(e) => handleSubmit(e, postQuery.data.post?.id, content)}
+            onClick={(e) =>
+              handleSubmit(e, postQuery.data.post?.id, commentContent)
+            }
             className="bg-whiteAlt border-2 text-darkTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:outline-[3px] focus-visible:focus:outline-highlight"
           >
             Post
