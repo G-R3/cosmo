@@ -13,8 +13,8 @@ const DeletePostModal: FC<{ postId: number }> = ({ postId }) => {
     onSuccess(data, variables, context) {
       setIsOpen(false);
       // change this?
-      utils.invalidateQueries("post.feed");
-      utils.invalidateQueries("post.get-by-community");
+      // utils.invalidateQueries("post.feed");
+      // utils.invalidateQueries("post.get-by-community");
 
       router.push("/");
     },

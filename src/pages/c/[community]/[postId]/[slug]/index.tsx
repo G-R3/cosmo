@@ -29,7 +29,11 @@ const Post = () => {
       enabled: !!postQuery.data?.post.id,
     },
   );
-  const commentMutation = trpc.useMutation("comment.create");
+  const commentMutation = trpc.useMutation("comment.create", {
+    onSuccess(data, variables, context) {
+      utils.invalidateQueries("comment.get-by-postId");
+    },
+  });
 
   const likeMutation = trpc.useMutation(["post.like"], {
     onMutate: async (likedPost) => {
