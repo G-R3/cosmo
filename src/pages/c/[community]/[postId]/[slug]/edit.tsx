@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { getServerSession } from "next-auth";
+import { unstable_getServerSession } from "next-auth";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { BiErrorCircle } from "react-icons/bi";
@@ -107,7 +107,11 @@ const Edit = ({
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getServerSession(context, authOptions);
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions,
+  );
 
   if (!session) {
     return {
