@@ -9,6 +9,7 @@ const MarkdownTipsModal: FC = () => {
   return (
     <>
       <button
+        type="button"
         onClick={() => setIsOpen(true)}
         className="flex items-center justify-center gap-2 text-grayAlt cursor-pointer w-fit"
       >
