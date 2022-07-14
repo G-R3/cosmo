@@ -1,17 +1,15 @@
 import { faker } from "@faker-js/faker";
 
 describe("Should edit a post", () => {
-  it("edits a post", (done) => {
+  it("edits a post", () => {
     Cypress.on("uncaught:exception", (err, runnable) => {
-      expect(err.message).to.include(
-        "(0 , next_auth__WEBPACK_IMPORTED_MODULE_1__.getServerSession) is not a function",
-      );
-
-      done();
-
-      // returning false here prevents Cypress from
-      // failing the test
-      return false;
+      if (
+        err.message.includes(
+          "(0 , next_auth__WEBPACK_IMPORTED_MODULE_1__.getServerSession) is not a function",
+        )
+      ) {
+        return false;
+      }
     });
 
     cy.login();

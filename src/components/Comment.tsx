@@ -65,6 +65,7 @@ const Comment: React.FC<Props> = ({
             <div className="flex flex-col gap-2 mb-3">
               <MarkdownTipsModal />
               <Textarea
+                data-cy="comment-edit-textarea"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="What are your thoughts?"

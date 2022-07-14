@@ -16,7 +16,7 @@ const Edit = ({
   post,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(post.content);
   const editMutation = trpc.useMutation("post.edit", {
     onSuccess(data, variables, context) {
       router.push(`/c/${post.communityName}/${post.id}/${post.slug}`);
