@@ -1,8 +1,7 @@
-import useTextarea from "@/hooks/useAutosize";
 import { trpc } from "@/utils/trpc";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { FiEdit2 } from "react-icons/fi";
 import Markdown from "./Markdown";
 import MarkdownTipsModal from "./MarkdownTipsModal";
@@ -112,4 +111,4 @@ const Comment: React.FC<Props> = ({
   );
 };
 
-export default Comment;
+export default memo(Comment);
