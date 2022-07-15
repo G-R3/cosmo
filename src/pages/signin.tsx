@@ -2,7 +2,7 @@ import { getProviders, signIn } from "next-auth/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { AiFillGithub, AiFillGoogleCircle } from "react-icons/ai";
-import { getServerSession } from "next-auth";
+import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
 
 interface ProviderProps {
@@ -53,7 +53,11 @@ const SignIn = ({
 export default SignIn;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getServerSession(context, authOptions);
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions,
+  );
 
   if (session) {
     return {
