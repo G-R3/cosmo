@@ -73,7 +73,7 @@ const Edit = ({
             {post.title}
           </p>
           <span className="text-grayAlt text-sm">
-            Changing post title is not supported at the momemnt
+            Changing post title is not supported at the moment
           </span>
         </div>
 
