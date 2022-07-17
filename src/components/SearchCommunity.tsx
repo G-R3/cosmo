@@ -6,27 +6,27 @@ import { AnimatePresence, motion } from "framer-motion";
 import { trpc } from "../utils/trpc";
 
 interface Props {
-  value: string;
-  setValue: Dispatch<SetStateAction<string>>;
+  setValue: Dispatch<SetStateAction<number>>;
 }
 
-const SearchCommunity: React.FC<Props> = ({ value, setValue }) => {
-  const [debouncedValue] = useDebounce(value, 1000);
-
-  const communityQuery = trpc.useQuery(["community.search", { query: value }], {
+const SearchCommunity: React.FC<Props> = ({ setValue }) => {
+  const [query, setQuery] = useState("");
+  const [debouncedValue] = useDebounce(query, 1000);
+  const communityQuery = trpc.useQuery(["community.search", { query }], {
     enabled: debouncedValue.trim().length > 0,
   });
 
   return (
-    <Combobox value={value} onChange={setValue}>
+    <Combobox value={query} onChange={setQuery} name="search">
       {({ open }) => (
         <div className="w-full relative">
           <Combobox.Button className="absolute inset-y-0 left-0 flex items-center pl-3">
             <FiSearch />
           </Combobox.Button>
           <Combobox.Input
+            name="search-community"
             data-cy="search-communities"
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e) => setQuery(e.target.value)}
             displayValue={(community: string) => community}
             autoCapitalize="false"
             autoComplete="false"
@@ -43,7 +43,7 @@ const SearchCommunity: React.FC<Props> = ({ value, setValue }) => {
                 initial={{ opacity: 0, y: "-100" }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, transition: { duration: 0.2 } }}
-                className="border-2 dark:border-darkTwo bg-foreground dark:bg-darkOne p-2 rounded-md absolute z-10 w-full mt-2 shadow-xl"
+                className="max-h-80 overflow-hidden overflow-y-auto border-2 dark:border-darkTwo bg-whiteAlt dark:bg-darkOne p-2 rounded-md absolute z-10 w-full mt-2 shadow-xl"
               >
                 {communityQuery.data && communityQuery.data.length > 0 ? (
                   communityQuery.data.map((community) => (
@@ -52,13 +52,14 @@ const SearchCommunity: React.FC<Props> = ({ value, setValue }) => {
                       value={community.name}
                       as={Fragment}
                     >
-                      {({ active, selected }) => (
+                      {({ active }) => (
                         <li
-                          key={community.id}
                           className={`p-2 rounded-md cursor-pointer transition-colors duration-200 ${
-                            active &&
-                            "bg-whiteAlt text-darkOne dark:bg-darkTwo dark:text-white"
+                            active
+                              ? "bg-foreground text-darkOne dark:bg-darkTwo dark:text-white"
+                              : ""
                           }`}
+                          onClick={() => setValue(community.id)}
                         >
                           {community.name}
                         </li>

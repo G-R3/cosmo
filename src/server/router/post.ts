@@ -150,8 +150,8 @@ export const postRouter = createRouter()
   .mutation("create", {
     input: z.object({
       title: z.string().trim().min(1).max(300),
-      content: z.string().trim(),
-      community: z.string().trim().min(1),
+      content: z.string().trim().optional(),
+      communityId: z.number(),
     }),
     async resolve({ input, ctx }) {
       if (!ctx.session?.user) {
@@ -163,7 +163,7 @@ export const postRouter = createRouter()
 
       const communityExists = await prisma.community.findUnique({
         where: {
-          name: input.community,
+          id: input.communityId,
         },
       });
 
@@ -180,7 +180,16 @@ export const postRouter = createRouter()
           content: input.content,
           slug: slugify(input.title),
           authorId: ctx.session.user.id!,
-          communityName: input.community,
+          communityId: input.communityId,
+        },
+        select: {
+          id: true,
+          slug: true,
+          community: {
+            select: {
+              name: true,
+            },
+          },
         },
       });
 
