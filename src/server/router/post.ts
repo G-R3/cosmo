@@ -150,7 +150,7 @@ export const postRouter = createRouter()
   .mutation("create", {
     input: z.object({
       title: z.string().trim().min(1).max(300),
-      content: z.string().trim().optional(),
+      content: z.string().trim().max(500).optional(),
       communityId: z.number(),
     }),
     async resolve({ input, ctx }) {
@@ -203,7 +203,7 @@ export const postRouter = createRouter()
   .mutation("edit", {
     input: z.object({
       postId: z.number(),
-      content: z.string().trim(),
+      content: z.string().trim().max(500).optional(),
     }),
     async resolve({ input, ctx }) {
       if (!ctx.session?.user) {

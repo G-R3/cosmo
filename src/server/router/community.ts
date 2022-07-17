@@ -3,6 +3,8 @@ import { z } from "zod";
 import { prisma } from "../../db/client";
 import { TRPCError } from "@trpc/server";
 
+const regex = new RegExp("^\\w+$");
+
 export const communityRouter = createRouter()
   .query("get", {
     input: z.object({
@@ -45,8 +47,16 @@ export const communityRouter = createRouter()
   })
   .mutation("create", {
     input: z.object({
-      name: z.string().trim().min(1).max(25),
-      description: z.string().nullable(),
+      name: z
+        .string({ required_error: "Community name is required." })
+        .trim()
+        .min(3, { message: "Name must be at least 3 characters long." })
+        .regex(regex, {
+          message:
+            "Community name most only contain letters, numbers, or underscores.",
+        })
+        .max(25, { message: "Name must be less than 25 characters long." }),
+      description: z.string().trim().optional(),
     }),
     async resolve({ input, ctx }) {
       if (!ctx.session?.user) {
@@ -65,7 +75,7 @@ export const communityRouter = createRouter()
       if (communityExist) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "Community already exists",
+          message: `Sorry ${input.name} has already been taken. Try something else.`,
         });
       }
 
