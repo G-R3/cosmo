@@ -6,8 +6,6 @@ export const ThemeToggler: React.FC = () => {
   const [toggle, setToggle] = useState(true);
   const { theme, setTheme } = useTheme();
 
-  console.log(theme);
-
   return (
     <Switch.Group
       as={"div"}

@@ -120,7 +120,10 @@ const CreateCommunityModal: React.FC = () => {
                         />
                       </div>
                       {errors.communityName?.message && (
-                        <span className="text-sm text-alert">
+                        <span
+                          data-cy="community-name-error"
+                          className="text-sm text-alert"
+                        >
                           {errors.communityName.message}
                         </span>
                       )}
@@ -144,7 +147,10 @@ const CreateCommunityModal: React.FC = () => {
                           className="w-full border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md py-3 px-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-slate-400 dark:bg-darkOne dark:text-foreground overflow-hidden min-h-[85px] resize-none overflow-y-auto"
                         ></textarea>
                         {errors.communityDescription?.message && (
-                          <span className="text-sm text-alert">
+                          <span
+                            data-cy="community-description-error"
+                            className="text-sm text-alert"
+                          >
                             {errors.communityDescription.message}
                           </span>
                         )}
