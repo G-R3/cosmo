@@ -243,6 +243,13 @@ export const postRouter = createRouter()
         where: {
           id: input.postId,
         },
+        select: {
+          community: {
+            select: {
+              name: true,
+            },
+          },
+        },
       });
 
       return {

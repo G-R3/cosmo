@@ -16,7 +16,7 @@ const DeletePostModal: FC<{ postId: number }> = ({ postId }) => {
       // utils.invalidateQueries("post.feed");
       // utils.invalidateQueries("post.get-by-community");
 
-      router.push("/");
+      router.push(`/c/${data.post.community.name}`);
     },
   });
 
