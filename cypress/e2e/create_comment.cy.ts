@@ -10,9 +10,14 @@ describe("Create comment", () => {
 
   it("not allow on empty body", () => {
     cy.intercept("POST", "/api/trpc/comment.create?*").as("createComment");
+    cy.get("[data-cy='create-comment']").contains("Post").should("be.disabled");
+
+    cy.get("textarea").type("         ");
     cy.get("[data-cy='create-comment']").contains("Post").click();
 
-    cy.wait("@createComment").its("response.statusCode").should("eq", 400);
+    cy.get("[data-cy='alert-error']").should("be.visible");
+
+    // cy.wait("@createComment").its("response.statusCode").should("eq", 400);
   });
 
   it("add a new comment to post", () => {
