@@ -21,7 +21,7 @@ const TextareaAutosize = ({
       spellCheck="false"
       ref={textareaRef}
       value={value}
-      className={`${baseStyles} ${className}`}
+      className={`${baseStyles} ${className ? className : ""}`}
       {...props}
     ></textarea>
   );

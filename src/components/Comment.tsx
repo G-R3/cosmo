@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { memo, useState } from "react";
 import { FiEdit2 } from "react-icons/fi";
+import { BiErrorCircle } from "react-icons/bi";
 import Markdown from "./Markdown";
 import MarkdownTipsModal from "./MarkdownTipsModal";
 import CommentDeleteModal from "./CommentDeleteModal";
@@ -40,7 +41,8 @@ const Comment: React.FC<Props> = ({
     },
   });
 
-  const handleEdit = (commentId: number, newCommentBody: string) => {
+  const handleEdit = (e: any, commentId: number, newCommentBody: string) => {
+    e.preventDefault();
     commentEditMutation.mutate({ commentId, content: newCommentBody });
   };
 
@@ -62,7 +64,11 @@ const Comment: React.FC<Props> = ({
         </div>
         <div className="mt-5 mb-3">
           {isEditing ? (
-            <div className="flex flex-col gap-2 mb-3">
+            <form
+              id="commentEditForm"
+              className="flex flex-col gap-2 mb-3"
+              onSubmit={(e) => handleEdit(e, id, content)}
+            >
               <MarkdownTipsModal />
               <Textarea
                 data-cy="comment-edit-textarea"
@@ -71,7 +77,7 @@ const Comment: React.FC<Props> = ({
                 placeholder="What are your thoughts?"
                 minHeight={220}
               />
-            </div>
+            </form>
           ) : (
             <Markdown content={commentBody} />
           )}
@@ -93,13 +99,13 @@ const Comment: React.FC<Props> = ({
             </button>
             {isEditing && (
               <button
-                data-cy="save-comment-edit"
-                onClick={() => handleEdit(id, content)}
                 disabled={
                   commentEditMutation.isLoading ||
                   commentBody === content ||
                   !content
                 }
+                form="commentEditForm"
+                data-cy="save-comment-edit"
                 className="bg-success text-whiteAlt self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
               >
                 Save

@@ -1,5 +1,5 @@
 import { createRouter } from "../createRouter";
-import { z } from "zod";
+import { z, ZodError } from "zod";
 import { prisma } from "../../db/client";
 import { TRPCError } from "@trpc/server";
 
@@ -36,7 +36,11 @@ export const commentRouter = createRouter()
   })
   .mutation("create", {
     input: z.object({
-      content: z.string().trim().min(1),
+      content: z
+        .string()
+        .trim()
+        .min(1, { message: "Comment must be at least 1 character long" })
+        .max(500, { message: "Comment must be less than 500 characters" }),
       postId: z.number(),
     }),
     async resolve({ input, ctx }) {
@@ -44,6 +48,15 @@ export const commentRouter = createRouter()
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You are not authorized",
+        });
+      }
+
+      // I'm not sure if I'm handling zod erros correctly here. pain...
+      if (input.content.length < 1 || input.content.length > 500) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "You are not authorized",
+          cause: ZodError,
         });
       }
 
@@ -64,13 +77,26 @@ export const commentRouter = createRouter()
   .mutation("edit", {
     input: z.object({
       commentId: z.number(),
-      content: z.string().min(1),
+      content: z
+        .string()
+        .trim()
+        .min(1, { message: "Comment must be at least 1 character long" })
+        .max(500, { message: "Comment must be less than 500 characters" }),
     }),
     async resolve({ input, ctx }) {
       if (!ctx.session?.user) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You are not authorized",
+        });
+      }
+
+      // I'm not sure if I'm handling zod erros correctly here. pain...
+      if (input.content.length < 1 || input.content.length > 500) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "You are not authorized",
+          cause: ZodError,
         });
       }
 

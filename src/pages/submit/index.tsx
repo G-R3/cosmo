@@ -18,7 +18,6 @@ const Submit = () => {
   const [community, setCommunity] = useState<number>(0);
   const {
     register,
-    watch,
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
