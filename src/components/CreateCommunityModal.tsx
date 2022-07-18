@@ -2,25 +2,57 @@ import { useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { MdGroups } from "react-icons/md";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { trpc } from "../utils/trpc";
+import { BiErrorCircle } from "react-icons/bi";
+
+type Inputs = {
+  communityName: string;
+  communityDescription?: string;
+};
+
+const regex = new RegExp("^\\w+$");
+
+const schema = z.object({
+  communityName: z
+    .string({ required_error: "Community name is required." })
+    .trim()
+    .min(3, { message: "Name must be at least 3 characters long." })
+    .regex(regex, {
+      message:
+        "Community name most only contain letters, numbers, or underscores.",
+    })
+    .max(25, { message: "Name must be less than 25 characters long." }),
+  communityDescription: z.string().trim().max(500).optional(),
+});
 
 const CreateCommunityModal: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<Inputs>({
+    resolver: zodResolver(schema),
+  });
 
   const communityMutation = trpc.useMutation("community.create", {
     onSuccess(data, variables, context) {
-      setName("");
-      setDescription("");
+      reset({
+        communityName: "",
+        communityDescription: "",
+      });
       setIsOpen(false);
     },
   });
 
-  const createCommunity = () => {
+  const createCommunity: SubmitHandler<Inputs> = (data) => {
     communityMutation.mutate({
-      name,
-      description,
+      name: data.communityName,
+      description: data.communityDescription,
     });
   };
 
@@ -44,15 +76,14 @@ const CreateCommunityModal: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1, transition: { duration: 0.1 } }}
               exit={{ opacity: 0, transition: { duration: 0.2 } }}
-              className="fixed inset-0 flex bg-background justify-center py-10 bg-opacity-80"
+              className="fixed inset-0 bg-background py-10 bg-opacity-80"
             >
               <Dialog.Panel
                 as={motion.div}
                 initial={{ opacity: 0, y: -100 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -100, transition: { duration: 0.2 } }}
-                className="w-full max-w-xl max-h-[550px] rounded bg-whiteAlt dark:bg-darkOne px-10
-        py-8 relative flex flex-col justify-between"
+                className="w-full max-w-xl mx-auto rounded bg-whiteAlt dark:bg-darkOne px-10 py-8 relative flex flex-col gap-10"
               >
                 <div>
                   <div className="flex flex-col gap-2">
@@ -63,29 +94,39 @@ const CreateCommunityModal: React.FC = () => {
                       Join the fun and create a community of your own
                     </Dialog.Description>
                   </div>
-                  <div className="mt-10 flex flex-col gap-8">
+                  {communityMutation.error?.message && (
+                    <div className="mt-2 bg-alert p-3 rounded-md text-foreground flex items-center gap-2">
+                      <BiErrorCircle size={22} />
+                      <p className="text-sm md:text-sm">
+                        {communityMutation.error?.message}
+                      </p>
+                    </div>
+                  )}
+                  <form
+                    id="createCommunity"
+                    className="mt-4 flex flex-col gap-10"
+                    onSubmit={handleSubmit(createCommunity)}
+                  >
                     <div className="flex flex-col gap-2">
                       <label htmlFor="community-name" className="text-md">
                         Name
                       </label>
                       <div className="flex flex-col gap-2">
                         <input
-                          onChange={(e) => setName(e.target.value)}
-                          value={name}
-                          type="text"
-                          name="community-name"
                           id="community-name"
-                          className="border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-slate-400 dark:bg-darkOne dark:text-foreground"
+                          defaultValue=""
+                          {...register("communityName")}
+                          className="w-full border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-slate-400 dark:bg-darkOne dark:text-foreground"
                         />
-                        <div className="flex justify-between text-grayAlt">
-                          <span>25 characters max</span>
-                          <span
-                            className={`${name.length >= 25 && "text-alert"}`}
-                          >
-                            {name.length}/25
-                          </span>
-                        </div>
                       </div>
+                      {errors.communityName?.message && (
+                        <span
+                          data-cy="community-name-error"
+                          className="text-sm text-alert"
+                        >
+                          {errors.communityName.message}
+                        </span>
+                      )}
                     </div>
 
                     <div className="flex flex-col gap-2">
@@ -94,22 +135,31 @@ const CreateCommunityModal: React.FC = () => {
                         className="text-md"
                       >
                         Description
+                        <span className="ml-2 inline-block text-sm text-grayAlt">
+                          (Optional)
+                        </span>
                       </label>
                       <div className="flex flex-col">
                         <textarea
-                          onChange={(e) => setDescription(e.target.value)}
-                          value={description}
-                          className="border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md py-3 px-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-slate-400 dark:bg-darkOne dark:text-foreground overflow-hidden min-h-[85px] resize-none overflow-y-auto"
+                          id="community-description"
+                          defaultValue=""
+                          {...register("communityDescription")}
+                          className="w-full border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md py-3 px-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-slate-400 dark:bg-darkOne dark:text-foreground overflow-hidden min-h-[85px] resize-none overflow-y-auto"
                         ></textarea>
-                        <span className="text-grayAlt">
-                          You can always change this later
-                        </span>
+                        {errors.communityDescription?.message && (
+                          <span
+                            data-cy="community-description-error"
+                            className="text-sm text-alert"
+                          >
+                            {errors.communityDescription.message}
+                          </span>
+                        )}
                       </div>
                     </div>
-                  </div>
+                  </form>
                 </div>
 
-                <div className="self-end flex gap-2 mt-3">
+                <div className="self-end flex gap-2">
                   <button
                     data-cy="close-modal"
                     onClick={() => setIsOpen(false)}
@@ -118,8 +168,8 @@ const CreateCommunityModal: React.FC = () => {
                     Cancel
                   </button>
                   <button
+                    form="createCommunity"
                     data-cy="confirm-create"
-                    onClick={createCommunity}
                     disabled={communityMutation.isLoading}
                     className="bg-whiteAlt border-2 text-darkTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:outline-[3px] focus-visible:focus:outline-highlight"
                   >

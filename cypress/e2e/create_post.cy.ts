@@ -15,7 +15,8 @@ describe("Post creation", () => {
     cy.visit("/submit");
 
     cy.get("[data-cy='search-communities']").type(searchField);
-    cy.get("ul").eq(0).should("contain.text", searchField).click();
+    // cy.get("ul").eq(0).should("contain.text", searchField).click();
+    cy.get("ul").find("li").contains(searchField, { matchCase: false }).click();
 
     cy.get("[data-cy='post-title']").type(postTitle);
 

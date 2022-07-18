@@ -4,13 +4,13 @@ import { unstable_getServerSession } from "next-auth";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { BiErrorCircle } from "react-icons/bi";
-import MarkdownTipsModal from "@/components/MarkdownTipsModal";
-import { trpc } from "@/utils/trpc";
-import { prisma } from "../../../../../db/client";
 import { authOptions } from "src/pages/api/auth/[...nextauth]";
 import { AiFillHeart } from "react-icons/ai";
+import MarkdownTipsModal from "@/components/MarkdownTipsModal";
+import { trpc } from "@/utils/trpc";
 import DeletePostModal from "@/components/DeletePostModal";
 import TextareaAutosize from "@/components/TextareaAutosize";
+import { prisma } from "../../../../../db/client";
 
 const Edit = ({
   post,
@@ -131,7 +131,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       title: true,
       content: true,
       slug: true,
-      communityName: true,
+      community: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
       author: {
         select: {
           id: true,

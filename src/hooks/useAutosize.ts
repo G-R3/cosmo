@@ -1,10 +1,8 @@
 import { useEffect, useRef } from "react";
 
-const minHeight = 200;
-
 const useAutosize = (
   content: string | number | readonly string[] | undefined,
-  height = minHeight,
+  height: number,
 ) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 

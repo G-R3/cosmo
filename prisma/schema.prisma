@@ -25,19 +25,19 @@ model Community {
 }
 
 model Post {
-  id            Int       @id @default(autoincrement())
-  title         String
-  content       String?   @db.Text()
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  slug          String
-  totalVotes    Int       @default(0)
-  author        User      @relation(fields: [authorId], references: [id])
-  authorId      String
-  comments      Comment[]
-  likes         Like[]
-  community     Community @relation(fields: [communityName], references: [name])
-  communityName String
+  id          Int       @id @default(autoincrement())
+  title       String
+  content     String?   @db.Text()
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  slug        String
+  totalVotes  Int       @default(0)
+  author      User      @relation(fields: [authorId], references: [id])
+  authorId    String
+  comments    Comment[]
+  likes       Like[]
+  community   Community @relation(fields: [communityId], references: [id])
+  communityId Int
 }
 
 model Comment {

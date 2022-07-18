@@ -7,7 +7,6 @@ import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { trpc } from "@/utils/trpc";
 import Markdown from "@/components/Markdown";
 import Comment from "@/components/Comment";
-import useTextarea from "@/hooks/useAutosize";
 import CommentSkeleton from "@/components/CommentSkeleton";
 import MarkdownTipsModal from "@/components/MarkdownTipsModal";
 import { FiEdit2 } from "react-icons/fi";
@@ -33,6 +32,7 @@ const Post = () => {
   const commentMutation = trpc.useMutation("comment.create", {
     onSuccess(data, variables, context) {
       utils.invalidateQueries("comment.get-by-postId");
+      setCommentContent("");
     },
   });
 
@@ -116,12 +116,12 @@ const Post = () => {
   }
 
   const handleSubmit = (e: any, postId: number, comment: string) => {
+    e.preventDefault();
+
     commentMutation.mutate({
       content: comment,
       postId,
     });
-
-    setCommentContent("");
   };
 
   const onLike = (postId: number) => {
@@ -223,19 +223,29 @@ const Post = () => {
         </section>
 
         <section className="mt-5 bg-whiteAlt dark:bg-darkOne p-5 flex flex-col gap-2 rounded-md">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row md:items-center gap-2 justify-between">
             <h2 className="text-lg">Post a comment</h2>
-            {commentMutation.error && (
+            {commentMutation.error?.data && (
               <div
                 data-cy="alert-error"
                 className="bg-alert p-3 rounded-md text-foreground flex items-center gap-2"
               >
                 <BiErrorCircle size={22} />
-                <span>Something has gone terrible wrong!</span>
+                <span>
+                  {
+                    commentMutation.error.data.zodError?.fieldErrors
+                      .content?.[0]
+                  }
+                </span>
               </div>
             )}
           </div>
-          <div className="flex flex-col gap-2 mb-3">
+          <form
+            className="flex flex-col gap-2 mb-3"
+            onSubmit={(e) =>
+              handleSubmit(e, postQuery.data.post?.id, commentContent)
+            }
+          >
             <MarkdownTipsModal />
             <TextareaAutosize
               data-cy="comment-textarea"
@@ -246,17 +256,14 @@ const Post = () => {
               placeholder="What are you thoughts?"
               minHeight={200}
             />
-          </div>
-          <button
-            data-cy="create-comment"
-            disabled={commentMutation.isLoading}
-            onClick={(e) =>
-              handleSubmit(e, postQuery.data.post?.id, commentContent)
-            }
-            className="bg-whiteAlt border-2 text-darkTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:outline-[3px] focus-visible:focus:outline-highlight"
-          >
-            Post
-          </button>
+            <button
+              data-cy="create-comment"
+              disabled={commentMutation.isLoading || !commentContent}
+              className="bg-whiteAlt border-2 text-darkTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:outline-[3px] focus-visible:focus:outline-highlight"
+            >
+              Post
+            </button>
+          </form>
         </section>
 
         <section className="mt-5 rounded-md py-5 flex flex-col gap-5">

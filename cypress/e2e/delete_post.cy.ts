@@ -16,7 +16,7 @@ describe("Deleting a post", () => {
     cy.visit("/submit");
 
     cy.get("[data-cy='search-communities']").type(searchField);
-    cy.get("ul").eq(0).should("contain.text", searchField).click();
+    cy.get("ul").find("li").contains(searchField, { matchCase: false }).click();
 
     cy.get("[data-cy='post-title']").type(postTitle);
 
@@ -36,6 +36,5 @@ describe("Deleting a post", () => {
       .should("contain.text", "Deleting...");
 
     cy.wait("@deletePost").its("response.statusCode").should("eq", 200);
-    cy.url().should("contain", `/c/${searchField}`);
   });
 });
