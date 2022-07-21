@@ -21,8 +21,9 @@ const UserTabs: FC<{ user: string }> = ({ user }) => {
     enabled: selectedTab === 2,
     cacheTime: 0,
   });
-  const { onLike, onUnlike } = useLike("user.get-posts", { user });
+
   // lol
+  const { onLike, onUnlike } = useLike("user.get-posts", { user });
   const { onLike: onLikeLikedPost, onUnlike: onUnlikeLikedPost } = useLike(
     "user.get-liked-posts",
     { user },
@@ -34,7 +35,7 @@ const UserTabs: FC<{ user: string }> = ({ user }) => {
         <Tab as={Fragment}>
           {({ selected }) => (
             <button
-              className={`font-semibold text-lg ${
+              className={`font-semibold text-sm ${
                 selected ? "text-whiteAlt" : "text-grayAlt"
               }`}
             >
@@ -45,7 +46,7 @@ const UserTabs: FC<{ user: string }> = ({ user }) => {
         <Tab as={Fragment}>
           {({ selected }) => (
             <button
-              className={`font-semibold text-lg ${
+              className={`font-semibold text-sm ${
                 selected ? "text-whiteAlt" : "text-grayAlt"
               }`}
             >
@@ -56,11 +57,33 @@ const UserTabs: FC<{ user: string }> = ({ user }) => {
         <Tab as={Fragment}>
           {({ selected }) => (
             <button
-              className={`font-semibold text-lg ${
+              className={`font-semibold text-sm ${
                 selected ? "text-whiteAlt" : "text-grayAlt"
               }`}
             >
               Comments
+            </button>
+          )}
+        </Tab>
+        <Tab as={Fragment}>
+          {({ selected }) => (
+            <button
+              className={`font-semibold text-sm ${
+                selected ? "text-whiteAlt" : "text-grayAlt"
+              }`}
+            >
+              Saved posts
+            </button>
+          )}
+        </Tab>
+        <Tab as={Fragment}>
+          {({ selected }) => (
+            <button
+              className={`font-semibold text-sm ${
+                selected ? "text-whiteAlt" : "text-grayAlt"
+              }`}
+            >
+              Saved Comments
             </button>
           )}
         </Tab>
