@@ -1,7 +1,11 @@
 import { useSession } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 
-type Paths = "post.feed" | "post.get-by-community" | "user.get-posts";
+type Paths =
+  | "post.feed"
+  | "post.get-by-community"
+  | "user.get-posts"
+  | "user.get-liked-posts";
 
 const useLike = (path: Paths, query?: any) => {
   const { data: session } = useSession();

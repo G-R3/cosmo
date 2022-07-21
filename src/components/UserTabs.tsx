@@ -11,13 +11,22 @@ const UserTabs: FC<{ user: string }> = ({ user }) => {
   const [selectedTab, setSelectedTab] = useState(0);
   const postQuery = trpc.useQuery(["user.get-posts", { user }], {
     enabled: selectedTab === 0,
+    cacheTime: 0,
   });
-  const likedPostQuery = trpc.useQuery(["user.get-liked-posts", { user }]);
-  const commentQuery = trpc.useQuery(["user.get-comments", { user }]);
-  const { onLike, onUnlike } = useLike("user.get-posts", {
-    user,
-    index: selectedTab,
+  const likedPostQuery = trpc.useQuery(["user.get-liked-posts", { user }], {
+    enabled: selectedTab === 1,
+    cacheTime: 0,
   });
+  const commentQuery = trpc.useQuery(["user.get-comments", { user }], {
+    enabled: selectedTab === 2,
+    cacheTime: 0,
+  });
+  const { onLike, onUnlike } = useLike("user.get-posts", { user });
+  // lol
+  const { onLike: onLikeLikedPost, onUnlike: onUnlikeLikedPost } = useLike(
+    "user.get-liked-posts",
+    { user },
+  );
 
   return (
     <Tab.Group manual selectedIndex={selectedTab} onChange={setSelectedTab}>
@@ -73,6 +82,12 @@ const UserTabs: FC<{ user: string }> = ({ user }) => {
                   onUnlike={onUnlike}
                 />
               ))}
+            {postQuery.data?.posts.length === 0 && (
+              <div className="flex flex-col items-center text-grayAlt">
+                <p className="font-bold text-lg mt-6">Its empty here</p>
+                <p className="text-xl">😢</p>
+              </div>
+            )}
           </div>
         </Tab.Panel>
         <Tab.Panel>
@@ -87,10 +102,16 @@ const UserTabs: FC<{ user: string }> = ({ user }) => {
                 <Post
                   key={post.id}
                   {...post}
-                  onLike={onLike}
-                  onUnlike={onUnlike}
+                  onLike={onLikeLikedPost}
+                  onUnlike={onUnlikeLikedPost}
                 />
               ))}
+            {likedPostQuery.data?.posts.length === 0 && (
+              <div className="flex flex-col items-center text-grayAlt">
+                <p className="font-bold text-lg mt-6">Its empty here</p>
+                <p className="text-xl">😢</p>
+              </div>
+            )}
           </div>
         </Tab.Panel>
         <Tab.Panel className="flex flex-col gap-6 mt-6">
@@ -101,6 +122,12 @@ const UserTabs: FC<{ user: string }> = ({ user }) => {
           {commentQuery.data?.comments.map((comment) => (
             <Comment key={comment.id} {...comment} />
           ))}
+          {commentQuery.data?.comments.length === 0 && (
+            <div className="flex flex-col items-center text-grayAlt">
+              <p className="font-bold text-lg mt-6">Its empty here</p>
+              <p className="text-xl">😢</p>
+            </div>
+          )}
         </Tab.Panel>
       </Tab.Panels>
     </Tab.Group>
