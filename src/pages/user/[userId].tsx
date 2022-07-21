@@ -19,6 +19,7 @@ const Profile = () => {
         <div className="grid grid-cols-12 gap-2">
           <div className="col-span-full md:col-start-1 md:col-end-10">
             <UserBanner
+              id={userQuery.data.user?.id!}
               imageSrc={userQuery.data.user?.image!}
               displayName={userQuery.data.user?.name!}
             />
