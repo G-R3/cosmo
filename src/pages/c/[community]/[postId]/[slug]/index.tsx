@@ -160,7 +160,13 @@ const Post = () => {
                 {postQuery.data.post.community.name}
               </a>
             </Link>{" "}
-            by {postQuery.data.post.author.name} 10 hrs ago
+            by{" "}
+            <Link href={`/user/${postQuery.data.post.author.id}`}>
+              <a className="text-darkOne dark:text-foreground hover:underline hover:underline-offset-1">
+                {postQuery.data.post.author.name}
+              </a>
+            </Link>{" "}
+            10 hrs ago
           </small>
 
           <div className="mt-6 mb-10">

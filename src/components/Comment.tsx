@@ -1,9 +1,9 @@
 import { trpc } from "@/utils/trpc";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import { memo, useState } from "react";
 import { FiEdit2 } from "react-icons/fi";
-import { BiErrorCircle } from "react-icons/bi";
 import Markdown from "./Markdown";
 import MarkdownTipsModal from "./MarkdownTipsModal";
 import CommentDeleteModal from "./CommentDeleteModal";
@@ -51,18 +51,24 @@ const Comment: React.FC<Props> = ({
     <div className="bg-whiteAlt flex gap-5 dark:bg-darkOne py-3 px-5 rounded-md">
       <div className="bg-foreground dark:bg-darkTwo min-h-full min-w-[4px] rounded-full"></div>
       <div className="flex flex-col flex-grow">
-        <div className="flex items-center gap-3">
-          <Image
-            src={author?.image ?? ""}
-            alt={author.name ? author.name : `${author.name} Avatar`}
-            width={28}
-            height={28}
-            className="rounded-full"
-            priority
-          />
-          <span className="text-grayAlt">{author.name}</span>
-          {/* <span>{createdAt}</span> */}
-        </div>
+        <Link href={`/user/${author.id}`}>
+          <a className="w-fit group">
+            <div className="flex items-center gap-3">
+              <Image
+                src={author?.image ?? ""}
+                alt={author.name ? author.name : `${author.name} Avatar`}
+                width={28}
+                height={28}
+                className="rounded-full"
+                priority
+              />
+              <span className="text-grayAlt group-hover:underline group-hover:underline-offset-1">
+                {author.name}
+              </span>
+              {/* <span>{createdAt}</span> */}
+            </div>
+          </a>
+        </Link>
         <div className="mt-5 mb-3">
           {isEditing ? (
             <form

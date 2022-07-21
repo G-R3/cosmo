@@ -3,8 +3,10 @@ import Image from "next/image";
 import { BsGear } from "react-icons/bs";
 import { Popover } from "@headlessui/react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useSession } from "next-auth/react";
 
 type Props = {
+  id: string;
   imageSrc: string;
   displayName: string;
 };
@@ -54,14 +56,15 @@ const colorArray = [
   },
 ];
 
-const BannerBackground = () => {
+const BannerBackground: FC<{ userId: string }> = ({ userId }) => {
+  const { data: session } = useSession();
   const [banneColor, setBannerColor] = useState(() => {
     const color = localStorage.getItem("bannerColor");
     try {
-      return color ? `${JSON.parse(color)}` : "ef4444";
+      return color ? `${JSON.parse(color)}` : colorArray[0]?.value;
     } catch (e) {
       console.error("Error loading banner color from localstorage");
-      return "ef4444";
+      return colorArray[0]?.value;
     }
   });
 
@@ -81,13 +84,15 @@ const BannerBackground = () => {
         <Popover className="relative">
           {({ open }) => (
             <>
-              <Popover.Button className="group">
-                <span className="sr-only">Menu</span>
-                <BsGear
-                  size={20}
-                  className="group-hover:rotate-180 transition-transform duration-700 text-darkTwo"
-                />
-              </Popover.Button>
+              {userId === session?.user.id && (
+                <Popover.Button className="group">
+                  <span className="sr-only">Menu</span>
+                  <BsGear
+                    size={20}
+                    className="group-hover:rotate-180 transition-transform duration-700 text-darkTwo"
+                  />
+                </Popover.Button>
+              )}
 
               <AnimatePresence>
                 {open && (
@@ -134,10 +139,10 @@ const BannerBackground = () => {
   );
 };
 
-const UserBanner: FC<Props> = ({ imageSrc, displayName }) => {
+const UserBanner: FC<Props> = ({ id, imageSrc, displayName }) => {
   return (
     <div className="relative py-5">
-      <BannerBackground />
+      <BannerBackground userId={id} />
       <div className="relative top-24 flex items-center gap-4 px-5">
         <Image
           src={imageSrc}

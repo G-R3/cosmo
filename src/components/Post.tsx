@@ -52,7 +52,13 @@ const Post: React.FC<Props> = ({
           <Link href={`/c/${community.name}`}>
             <a className="text-highlight font-semibold">{community.name}</a>
           </Link>{" "}
-          by {author.name} 10 hrs ago
+          by{" "}
+          <Link href={`/user/${author.id}`}>
+            <a className="text-darkOne dark:text-foreground hover:underline hover:underline-offset-1">
+              {author.name}
+            </a>
+          </Link>{" "}
+          10 hrs ago
         </small>
       </motion.span>
       <motion.div
