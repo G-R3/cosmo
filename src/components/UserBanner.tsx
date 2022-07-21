@@ -85,7 +85,7 @@ const BannerBackground = () => {
                 <span className="sr-only">Menu</span>
                 <BsGear
                   size={20}
-                  className="group-hover:rotate-180 transition-transform duration-700 text-foreground dark:text-darkOne"
+                  className="group-hover:rotate-180 transition-transform duration-700 text-darkTwo"
                 />
               </Popover.Button>
 

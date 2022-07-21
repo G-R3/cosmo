@@ -7,6 +7,8 @@ import Post from "./Post";
 import CommentSkeleton from "./CommentSkeleton";
 import Comment from "./Comment";
 
+// this is a cursed component o.O
+
 const UserTabs: FC<{ user: string }> = ({ user }) => {
   const [selectedTab, setSelectedTab] = useState(0);
   const postQuery = trpc.useQuery(["user.get-posts", { user }], {
@@ -36,7 +38,7 @@ const UserTabs: FC<{ user: string }> = ({ user }) => {
           {({ selected }) => (
             <button
               className={`font-semibold text-sm ${
-                selected ? "text-whiteAlt" : "text-grayAlt"
+                selected ? "text-darkOne dark:text-whiteAlt" : "text-grayAlt"
               }`}
             >
               Posts
@@ -47,7 +49,7 @@ const UserTabs: FC<{ user: string }> = ({ user }) => {
           {({ selected }) => (
             <button
               className={`font-semibold text-sm ${
-                selected ? "text-whiteAlt" : "text-grayAlt"
+                selected ? "text-darkOne dark:text-whiteAlt" : "text-grayAlt"
               }`}
             >
               Liked Posts
@@ -58,7 +60,7 @@ const UserTabs: FC<{ user: string }> = ({ user }) => {
           {({ selected }) => (
             <button
               className={`font-semibold text-sm ${
-                selected ? "text-whiteAlt" : "text-grayAlt"
+                selected ? "text-darkOne dark:text-whiteAlt" : "text-grayAlt"
               }`}
             >
               Comments
@@ -69,7 +71,7 @@ const UserTabs: FC<{ user: string }> = ({ user }) => {
           {({ selected }) => (
             <button
               className={`font-semibold text-sm ${
-                selected ? "text-whiteAlt" : "text-grayAlt"
+                selected ? "text-darkOne dark:text-whiteAlt" : "text-grayAlt"
               }`}
             >
               Saved posts
@@ -80,7 +82,7 @@ const UserTabs: FC<{ user: string }> = ({ user }) => {
           {({ selected }) => (
             <button
               className={`font-semibold text-sm ${
-                selected ? "text-whiteAlt" : "text-grayAlt"
+                selected ? "text-darkOne dark:text-whiteAlt" : "text-grayAlt"
               }`}
             >
               Saved Comments

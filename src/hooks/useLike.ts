@@ -1,6 +1,8 @@
 import { useSession } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 
+// this is a cursed hook O.o
+
 type Paths =
   | "post.feed"
   | "post.get-by-community"
@@ -48,6 +50,12 @@ const useLike = (path: Paths, query?: any) => {
         utils.setQueryData(queryArg, context?.previousData);
       }
     },
+    onSettled(data, error, variables, context) {
+      utils.invalidateQueries(["post.feed"]);
+      utils.invalidateQueries(["post.get-by-community"]);
+      utils.invalidateQueries(["user.get-posts"]);
+      utils.invalidateQueries(["user.get-liked-posts"]);
+    },
   });
 
   const unlikeMutation = trpc.useMutation(["post.unlike"], {
@@ -77,6 +85,11 @@ const useLike = (path: Paths, query?: any) => {
       if (context?.previousData) {
         utils.setQueryData(queryArg, context?.previousData);
       }
+    },
+    onSettled(data, error, variables, context) {
+      utils.invalidateQueries(["post.feed"]);
+      utils.invalidateQueries(["post.get-by-community"]);
+      utils.invalidateQueries(["user.get-posts"]);
     },
   });
 
