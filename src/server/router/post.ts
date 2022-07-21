@@ -15,7 +15,7 @@ const slugify = (...args: (string | number)[]): string => {
     .replace(/\s+/g, "-"); // separator
 };
 
-const basePost = {
+export const basePost = {
   id: true,
   title: true,
   content: true,

@@ -37,6 +37,7 @@ const Comment: React.FC<Props> = ({
         "comment.get-by-postId",
         { postId: data.comment.postId },
       ]);
+      utils.invalidateQueries(["user.get-comments"]);
       setIsEditing(false);
     },
   });

@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode } from "react";
+import { ReactNode, forwardRef } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { Menu } from "@headlessui/react";
@@ -7,11 +7,12 @@ import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
 import { ThemeToggler } from "./ThemeToggler";
 import CreateCommunityModal from "@/components/CreateCommunityModal";
+
 interface Props {
   href: string;
   children: ReactNode;
 }
-// eslint-disable-next-line react/display-name
+
 const DropdownLink = forwardRef<HTMLAnchorElement, Props>((props, ref) => {
   let { href, children, ...rest } = props;
   return (
@@ -19,13 +20,15 @@ const DropdownLink = forwardRef<HTMLAnchorElement, Props>((props, ref) => {
       <a
         ref={ref}
         {...rest}
-        className="flex w-full items-center rounded-md px-2 py-2 text-sm hover:bg-whiteAlt dark:hover:bg-darkTwo"
+        className="flex w-full rounded-md px-2 py-2 hover:bg-foreground text-sm dark:hover:bg-darkTwo"
       >
         {children}
       </a>
     </Link>
   );
 });
+
+DropdownLink.displayName = "DropdownLink";
 
 const Header: React.FC = () => {
   const { data: session, status } = useSession();
@@ -95,29 +98,35 @@ const Header: React.FC = () => {
                             className="border dark:border-darkTwo bg-whiteAlt dark:bg-darkOne absolute right-0 mt-2 w-56 rounded-md shadow-lg dark:ring-darkTwo origin-top-right"
                           >
                             <div className="p-2">
-                              <Menu.Item>
+                              <Menu.Item as="div">
+                                <ThemeToggler />
+                              </Menu.Item>
+
+                              {session?.user ? (
                                 <>
-                                  <ThemeToggler />
+                                  <Menu.Item>
+                                    <DropdownLink
+                                      href={`/user/${session?.user.id}`}
+                                    >
+                                      Profile
+                                    </DropdownLink>
+                                  </Menu.Item>
+                                  <Menu.Item>
+                                    <button
+                                      onClick={() => signOut()}
+                                      className="flex w-full rounded-md px-2 py-2 hover:bg-foreground text-sm dark:hover:bg-darkTwo"
+                                    >
+                                      Sign out
+                                    </button>
+                                  </Menu.Item>
                                 </>
-                              </Menu.Item>
-                              <Menu.Item>
-                                {!session ? (
-                                  <>
-                                    <Link href={"/signin"}>
-                                      <a className="flex w-full items-center rounded-md px-2 py-2 text-sm hover:bg-foreground dark:hover:bg-darkTwo">
-                                        Sign in
-                                      </a>
-                                    </Link>
-                                  </>
-                                ) : (
-                                  <button
-                                    onClick={() => signOut()}
-                                    className="flex w-full items-center rounded-md px-2 py-2 hover:bg-foreground text-sm dark:hover:bg-darkTwo"
-                                  >
-                                    Sign out
-                                  </button>
-                                )}
-                              </Menu.Item>
+                              ) : (
+                                <Menu.Item>
+                                  <DropdownLink href="/signin">
+                                    Sign In
+                                  </DropdownLink>
+                                </Menu.Item>
+                              )}
                             </div>
                           </Menu.Items>
                         )}
