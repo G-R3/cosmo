@@ -51,17 +51,19 @@ const UserTabs: FC<{ user: string }> = ({ user }) => {
             </button>
           )}
         </Tab>
-        <Tab as={Fragment}>
-          {({ selected }) => (
-            <button
-              className={`font-semibold text-sm ${
-                selected ? "text-darkOne dark:text-whiteAlt" : "text-grayAlt"
-              }`}
-            >
-              Liked Posts
-            </button>
-          )}
-        </Tab>
+        {session?.user.id === user && (
+          <Tab as={Fragment}>
+            {({ selected }) => (
+              <button
+                className={`font-semibold text-sm ${
+                  selected ? "text-darkOne dark:text-whiteAlt" : "text-grayAlt"
+                }`}
+              >
+                Liked Posts
+              </button>
+            )}
+          </Tab>
+        )}
         <Tab as={Fragment}>
           {({ selected }) => (
             <button
