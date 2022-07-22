@@ -2,8 +2,11 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { FiEdit2 } from "react-icons/fi";
+import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 import { useSession } from "next-auth/react";
 import Markdown from "../components/Markdown";
+import { trpc } from "@/utils/trpc";
+import { useContext } from "react";
 
 interface Props {
   id: number;
@@ -14,6 +17,7 @@ interface Props {
   commentCount: number;
   likes: { postId: number; userId: string }[];
   community: { id: number; name: string };
+  savedBy: { postId: number; userId: string }[];
   onLike: (postId: number) => void;
   onUnlike: (postId: number) => void;
 }
@@ -27,11 +31,34 @@ const Post: React.FC<Props> = ({
   commentCount,
   likes,
   community,
+  savedBy,
   onLike,
   onUnlike,
 }) => {
   const { data: session } = useSession();
+  const utils = trpc.useContext();
   const isLikedByUser = likes.find((like) => like.userId === session?.user.id);
+  const isSavedByUser = savedBy.find(
+    (save) => save.userId === session?.user.id,
+  );
+  const savePostMutation = trpc.useMutation("post.save", {
+    onSuccess(data, variables, context) {
+      utils.invalidateQueries({
+        predicate(query: any) {
+          return query.queryKey[0].startsWith("post");
+        },
+      });
+    },
+  });
+  const unSavePostMutation = trpc.useMutation("post.unsave", {
+    onSuccess(data, variables, context) {
+      utils.invalidateQueries({
+        predicate(query: any) {
+          return query.queryKey[0].startsWith("post");
+        },
+      });
+    },
+  });
 
   return (
     <div className="bg-whiteAlt dark:bg-darkOne border-2 border-transparent hover:border-highlight w-full rounded-md p-5 transition-all">
@@ -94,17 +121,32 @@ const Post: React.FC<Props> = ({
           </span>
         </button>
         <div className="flex items-center gap-3 text-grayAlt">
+          <button
+            onClick={
+              isSavedByUser
+                ? () => unSavePostMutation.mutate({ postId: id })
+                : () => savePostMutation.mutate({ postId: id })
+            }
+            disabled={
+              unSavePostMutation.isLoading || savePostMutation.isLoading
+            }
+            className="flex items-center gap-[6px] hover:text-whiteAlt focus:text-whiteAlt transition-colors"
+          >
+            {isSavedByUser ? <BsBookmarkFill /> : <BsBookmark />}
+            {isSavedByUser ? "Unsave" : "Save"}
+          </button>
           {author.id === session?.user.id && (
             <Link href={`/c/${community.name}/${id}/${slug}/edit`}>
               <a
                 data-cy="post-edit-link"
-                className="py-1 px-2 flex items-center gap-[6px] hover:text-blue-400 focus:text-blue-400"
+                className="py-1 px-2 flex items-center gap-[6px] hover:text-blue-400 focus:text-blue-400 transition-colors"
               >
                 <FiEdit2 />
                 Edit
               </a>
             </Link>
           )}
+
           <Link href={`/c/${community.name}/${id}/${slug}`}>
             <a data-cy="post-link">
               {commentCount}{" "}

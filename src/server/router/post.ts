@@ -129,6 +129,12 @@ export const postRouter = createRouter()
           ...basePost,
           slug: true,
           comments: false,
+          savedBy: {
+            select: {
+              postId: true,
+              userId: true,
+            },
+          },
           _count: {
             select: {
               comments: true,
@@ -309,5 +315,59 @@ export const postRouter = createRouter()
       });
 
       return deletedLike;
+    },
+  })
+  .mutation("save", {
+    input: z.object({
+      postId: z.number(),
+    }),
+    async resolve({ input, ctx }) {
+      if (!ctx.session?.user) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not authorized",
+        });
+      }
+
+      const newSave = await prisma.save.create({
+        data: {
+          post: {
+            connect: {
+              id: input.postId,
+            },
+          },
+          user: {
+            connect: {
+              id: ctx.session.user.id,
+            },
+          },
+        },
+      });
+
+      return newSave;
+    },
+  })
+  .mutation("unsave", {
+    input: z.object({
+      postId: z.number(),
+    }),
+    async resolve({ input, ctx }) {
+      if (!ctx.session?.user) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not authorized",
+        });
+      }
+
+      const unSaved = await prisma.save.delete({
+        where: {
+          saveId: {
+            postId: input.postId,
+            userId: ctx.session.user.id,
+          },
+        },
+      });
+
+      return unSaved;
     },
   });
