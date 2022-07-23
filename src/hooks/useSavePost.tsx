@@ -7,7 +7,8 @@ type Paths =
   | "post.feed"
   | "post.get-by-community"
   | "user.get-posts"
-  | "user.get-liked-posts";
+  | "user.get-liked-posts"
+  | "user.get-saved-posts";
 
 const useSavePost = (path: Paths, query?: any) => {
   const { data: session } = useSession();
