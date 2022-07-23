@@ -7,6 +7,7 @@ import Post from "./Post";
 import CommentSkeleton from "./CommentSkeleton";
 import Comment from "./Comment";
 import { useSession } from "next-auth/react";
+import useSavePost from "@/hooks/useSavePost";
 
 // this is a cursed component o.O
 
@@ -36,6 +37,7 @@ const UserTabs: FC<{ user: string }> = ({ user }) => {
     "user.get-liked-posts",
     { user },
   );
+  const { onSave, onUnsave } = useSavePost("user.get-posts", { user });
 
   return (
     <Tab.Group manual selectedIndex={selectedTab} onChange={setSelectedTab}>
@@ -103,6 +105,8 @@ const UserTabs: FC<{ user: string }> = ({ user }) => {
                 {...post}
                 onLike={onLike}
                 onUnlike={onUnlike}
+                onSave={onSave}
+                onUnsave={onUnsave}
               />
             ))}
           {postQuery.data?.posts.length === 0 && (
@@ -125,6 +129,8 @@ const UserTabs: FC<{ user: string }> = ({ user }) => {
                 {...post}
                 onLike={onLikeLikedPost}
                 onUnlike={onUnlikeLikedPost}
+                onSave={onSave}
+                onUnsave={onUnsave}
               />
             ))}
           {likedPostQuery.data?.posts.length === 0 && (
@@ -162,6 +168,8 @@ const UserTabs: FC<{ user: string }> = ({ user }) => {
                 {...post}
                 onLike={onLike}
                 onUnlike={onUnlike}
+                onSave={onSave}
+                onUnsave={onUnsave}
               />
             ))}
           {savedPostQuery.data?.posts.length === 0 && (

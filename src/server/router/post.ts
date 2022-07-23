@@ -40,6 +40,12 @@ export const basePost = {
       userId: true,
     },
   },
+  savedBy: {
+    select: {
+      postId: true,
+      userId: true,
+    },
+  },
 };
 
 /**

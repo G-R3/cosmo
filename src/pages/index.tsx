@@ -6,12 +6,13 @@ import PostSkeleton from "../components/PostSkeleton";
 import Post from "../components/Post";
 import UserCard from "../components/UserCard";
 import useLike from "../hooks/useLike";
+import useSavePost from "@/hooks/useSavePost";
 
 const Home = () => {
   const { data: session } = useSession();
   const postQuery = trpc.useQuery(["post.feed"]);
   const { onLike, onUnlike } = useLike("post.feed");
-
+  const { onSave, onUnsave } = useSavePost("post.feed");
   if (postQuery.isError) {
     return (
       <h1 className="text-grayAlt font-bold text-2xl text-center">
@@ -41,6 +42,8 @@ const Home = () => {
                 {...post}
                 onLike={onLike}
                 onUnlike={onUnlike}
+                onSave={onSave}
+                onUnsave={onUnsave}
               />
             ))}
 
