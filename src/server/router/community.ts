@@ -45,6 +45,21 @@ export const communityRouter = createRouter()
       return communities;
     },
   })
+  .middleware(async ({ ctx, next }) => {
+    if (!ctx.session?.user) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "You are not authorized",
+      });
+    }
+
+    return next({
+      ctx: {
+        ...ctx,
+        user: ctx.session.user,
+      },
+    });
+  })
   .mutation("create", {
     input: z.object({
       name: z
@@ -59,13 +74,6 @@ export const communityRouter = createRouter()
       description: z.string().trim().optional(),
     }),
     async resolve({ input, ctx }) {
-      if (!ctx.session?.user) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You are not authorized",
-        });
-      }
-
       const communityExist = await prisma.community.findUnique({
         where: {
           name: input.name,
@@ -83,7 +91,7 @@ export const communityRouter = createRouter()
         data: {
           name: input.name,
           description: input.description,
-          creatorId: ctx.session.user.id!,
+          creatorId: ctx.user.id,
         },
       });
 
