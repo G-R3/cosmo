@@ -7,7 +7,8 @@ type Paths =
   | "post.feed"
   | "post.get-by-community"
   | "user.get-posts"
-  | "user.get-liked-posts";
+  | "user.get-liked-posts"
+  | "user.get-saved-posts";
 
 const useLike = (path: Paths, query?: any) => {
   const { data: session } = useSession();
@@ -50,12 +51,6 @@ const useLike = (path: Paths, query?: any) => {
         utils.setQueryData(queryArg, context?.previousData);
       }
     },
-    onSettled(data, error, variables, context) {
-      utils.invalidateQueries(["post.feed"]);
-      utils.invalidateQueries(["post.get-by-community"]);
-      utils.invalidateQueries(["user.get-posts"]);
-      utils.invalidateQueries(["user.get-liked-posts"]);
-    },
   });
 
   const unlikeMutation = trpc.useMutation(["post.unlike"], {
@@ -85,11 +80,6 @@ const useLike = (path: Paths, query?: any) => {
       if (context?.previousData) {
         utils.setQueryData(queryArg, context?.previousData);
       }
-    },
-    onSettled(data, error, variables, context) {
-      utils.invalidateQueries(["post.feed"]);
-      utils.invalidateQueries(["post.get-by-community"]);
-      utils.invalidateQueries(["user.get-posts"]);
     },
   });
 
