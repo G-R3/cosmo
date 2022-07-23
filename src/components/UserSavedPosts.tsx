@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { trpc } from "@/utils/trpc";
-import useLike from "@/hooks/useLike";
+import useLikePost from "@/hooks/useLikePost";
 import PostSkeleton from "./PostSkeleton";
 import Post from "./Post";
 import useSavePost from "@/hooks/useSavePost";
@@ -12,7 +12,7 @@ const UserSavedPosts: FC<{ user: string; isSelected: boolean }> = ({
   const savedPostQuery = trpc.useQuery(["user.get-saved-posts", { user }], {
     enabled: isSelected,
   });
-  const { onLike, onUnlike } = useLike("user.get-saved-posts", { user });
+  const { onLike, onUnlike } = useLikePost("user.get-saved-posts", { user });
   const { onSave, onUnsave } = useSavePost("user.get-saved-posts", { user });
 
   return (

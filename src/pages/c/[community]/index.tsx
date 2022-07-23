@@ -3,7 +3,8 @@ import Link from "next/link";
 import { trpc } from "@/utils/trpc";
 import Post from "@/components/Post";
 import PostSkeleton from "@/components/PostSkeleton";
-import useLike from "@/hooks/useLike";
+import useLikePost from "@/hooks/useLikePost";
+import useSavePost from "@/hooks/useSavePost";
 
 const Index = () => {
   const query = useRouter().query.community as string;
@@ -11,7 +12,8 @@ const Index = () => {
     refetchOnWindowFocus: false,
   });
   const postQuery = trpc.useQuery(["post.get-by-community", { query }]);
-  const { onLike, onUnlike } = useLike("post.get-by-community", { query });
+  const { onLike, onUnlike } = useLikePost("post.get-by-community", { query });
+  const { onSave, onUnsave } = useSavePost("post.get-by-community", { query });
 
   if (communityQuery.error) {
     return (
@@ -44,7 +46,14 @@ const Index = () => {
             .map((skeleton, idx) => <PostSkeleton key={idx} />)}
         {postQuery?.data?.posts &&
           postQuery?.data?.posts.map((post) => (
-            <Post key={post.id} {...post} onLike={onLike} onUnlike={onUnlike} />
+            <Post
+              key={post.id}
+              {...post}
+              onLike={onLike}
+              onUnlike={onUnlike}
+              onSave={onSave}
+              onUnsave={onUnsave}
+            />
           ))}
         {postQuery.data?.posts.length === 0 && (
           <div className="flex items-center flex-col gap-5 mt-10">

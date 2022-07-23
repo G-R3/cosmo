@@ -10,7 +10,7 @@ type Paths =
   | "user.get-liked-posts"
   | "user.get-saved-posts";
 
-const useLike = (path: Paths, query?: any) => {
+const useLikePost = (path: Paths, query?: any) => {
   const { data: session } = useSession();
   const utils = trpc.useContext();
 
@@ -93,4 +93,4 @@ const useLike = (path: Paths, query?: any) => {
   return { onLike, onUnlike };
 };
 
-export default useLike;
+export default useLikePost;

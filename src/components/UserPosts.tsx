@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { trpc } from "@/utils/trpc";
-import useLike from "@/hooks/useLike";
+import useLikePost from "@/hooks/useLikePost";
 import useSavePost from "@/hooks/useSavePost";
 import PostSkeleton from "./PostSkeleton";
 import Post from "./Post";
@@ -13,7 +13,7 @@ const UserPosts: FC<{ user: string; isSelected: boolean }> = ({
     enabled: isSelected,
   });
 
-  const { onLike, onUnlike } = useLike("user.get-posts", { user });
+  const { onLike, onUnlike } = useLikePost("user.get-posts", { user });
   const { onSave, onUnsave } = useSavePost("user.get-posts", { user });
 
   return (
