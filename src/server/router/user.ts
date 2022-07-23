@@ -34,6 +34,12 @@ export const userRouter = createRouter()
         select: {
           ...basePost,
           slug: true,
+          savedBy: {
+            select: {
+              postId: true,
+              userId: true,
+            },
+          },
           _count: {
             select: {
               comments: true,
@@ -68,6 +74,52 @@ export const userRouter = createRouter()
         select: {
           ...basePost,
           slug: true,
+          savedBy: {
+            select: {
+              postId: true,
+              userId: true,
+            },
+          },
+          _count: {
+            select: {
+              comments: true,
+            },
+          },
+        },
+      });
+
+      return {
+        posts: [
+          ...posts.map((post) => ({
+            ...post,
+            commentCount: post._count.comments,
+          })),
+        ],
+      };
+    },
+  })
+  .query("get-saved-posts", {
+    input: z.object({
+      user: z.string(),
+    }),
+    async resolve({ input }) {
+      const posts = await prisma.post.findMany({
+        where: {
+          savedBy: {
+            some: {
+              userId: input.user,
+            },
+          },
+        },
+        select: {
+          ...basePost,
+          slug: true,
+          savedBy: {
+            select: {
+              postId: true,
+              userId: true,
+            },
+          },
           _count: {
             select: {
               comments: true,
