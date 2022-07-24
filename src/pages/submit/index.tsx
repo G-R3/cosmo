@@ -76,10 +76,10 @@ const Submit = () => {
           </div>
         )}
         <div className="flex flex-col gap-2">
+          <SearchCommunity setValue={setValue} reset={reset} />
           {errors.postCommunityId?.message && (
             <span className="text-alert">{errors.postCommunityId.message}</span>
           )}
-          <SearchCommunity setValue={setValue} reset={reset} />
         </div>
         <div className="flex flex-col gap-2">
           <input
@@ -97,9 +97,10 @@ const Submit = () => {
         <div className="flex flex-col gap-2">
           <MarkdownTipsModal />
           <TextareaAutosize
+            id="post-content"
             data-cy="post-body"
             placeholder={`# Your Post \nLet the world know what you're thinking. Start with a title and then add some content to spice up your post! 😀`}
-            register={register}
+            register={register("postContent")}
           />
           {errors.postContent?.message && (
             <span className="text-alert">{errors.postContent.message}</span>

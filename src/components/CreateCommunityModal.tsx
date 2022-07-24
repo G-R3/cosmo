@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { trpc } from "../utils/trpc";
 import { BiErrorCircle } from "react-icons/bi";
+import TextareaAutosize from "./TextareaAutosize";
 
 type Inputs = {
   communityName: string;
@@ -25,7 +26,11 @@ const schema = z.object({
         "Community name most only contain letters, numbers, or underscores.",
     })
     .max(25, { message: "Name must be less than 25 characters long." }),
-  communityDescription: z.string().trim().max(500).optional(),
+  communityDescription: z
+    .string()
+    .trim()
+    .max(200, { message: "Description must be less than 200 characters" })
+    .optional(),
 });
 
 const CreateCommunityModal: React.FC = () => {
@@ -51,8 +56,8 @@ const CreateCommunityModal: React.FC = () => {
 
   const createCommunity: SubmitHandler<Inputs> = (data) => {
     communityMutation.mutate({
-      name: data.communityName,
-      description: data.communityDescription,
+      communityName: data.communityName,
+      communityDescription: data.communityDescription,
     });
   };
 
@@ -76,14 +81,14 @@ const CreateCommunityModal: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1, transition: { duration: 0.1 } }}
               exit={{ opacity: 0, transition: { duration: 0.2 } }}
-              className="fixed inset-0 bg-background py-10 bg-opacity-80"
+              className="fixed inset-0 flex flex-col bg-background py-10 bg-opacity-80 z-10"
             >
               <Dialog.Panel
                 as={motion.div}
                 initial={{ opacity: 0, y: -100 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -100, transition: { duration: 0.2 } }}
-                className="w-full max-w-xl mx-auto rounded bg-whiteAlt dark:bg-darkOne px-10 py-8 relative flex flex-col gap-10"
+                className="w-full max-w-xl mx-auto rounded bg-whiteAlt dark:bg-darkOne px-10 py-8 relative flex flex-col gap-10 overflow-hidden overflow-y-auto "
               >
                 <div>
                   <div className="flex flex-col gap-2">
@@ -140,12 +145,11 @@ const CreateCommunityModal: React.FC = () => {
                         </span>
                       </label>
                       <div className="flex flex-col">
-                        <textarea
+                        <TextareaAutosize
                           id="community-description"
-                          defaultValue=""
-                          {...register("communityDescription")}
-                          className="w-full border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md py-3 px-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-slate-400 dark:bg-darkOne dark:text-foreground overflow-hidden min-h-[85px] resize-none overflow-y-auto"
-                        ></textarea>
+                          register={register("communityDescription")}
+                          minHeight={100}
+                        />
                         {errors.communityDescription?.message && (
                           <span
                             data-cy="community-description-error"
