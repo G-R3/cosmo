@@ -1,7 +1,9 @@
 import { ChangeEvent, ComponentPropsWithRef, useRef } from "react";
+import { UseFormRegisterReturn } from "react-hook-form";
 
 type customProps = {
-  register: any;
+  register: UseFormRegisterReturn;
+  minHeight?: number;
 };
 type TextareaProps = customProps & ComponentPropsWithRef<"textarea">;
 
@@ -9,23 +11,28 @@ const TextareaAutosize = ({
   className,
   value,
   register,
-  onChange = () => {},
+  minHeight = 200,
   ...props
 }: TextareaProps) => {
-  const { ref, onChange: postOnChange, ...rest } = register("postContent");
+  const { ref, onChange: registerOnChange, ...rest } = register;
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const baseStyles = `py-3 px-4 border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-grayAlt dark:bg-darkOne dark:text-foreground overflow-hidden resize-none min-h-[200px]`;
+  const baseStyles = `py-3 px-4 border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-grayAlt dark:bg-darkOne dark:text-foreground overflow-hidden resize-none`;
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "inherit";
       const scrollHeight = textareaRef.current.scrollHeight;
 
-      textareaRef.current.style.height = `${Math.max(scrollHeight, 200)}px`;
+      textareaRef.current.style.height = `${Math.max(
+        scrollHeight,
+        minHeight,
+      )}px`;
     }
 
-    postOnChange(e);
-    onChange(e);
+    registerOnChange(e);
+    if (props.onChange) {
+      props.onChange(e);
+    }
   };
 
   return (
@@ -37,6 +44,10 @@ const TextareaAutosize = ({
       }}
       className={`${baseStyles} ${className ? className : ""}`}
       onChange={handleChange}
+      style={{
+        ...props.style,
+        minHeight: minHeight,
+      }}
       {...rest}
       {...props}
     ></textarea>
