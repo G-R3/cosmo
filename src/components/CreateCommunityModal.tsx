@@ -146,6 +146,7 @@ const CreateCommunityModal: React.FC = () => {
                       </label>
                       <div className="flex flex-col">
                         <TextareaAutosize
+                          data-cy="community-description"
                           id="community-description"
                           register={register("communityDescription")}
                           minHeight={100}

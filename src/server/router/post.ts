@@ -232,7 +232,11 @@ export const postRouter = createRouter()
   .mutation("edit", {
     input: z.object({
       postId: z.number(),
-      content: z.string().trim().max(500).optional(),
+      postContent: z
+        .string()
+        .trim()
+        .max(1000, { message: "Post body must be less than 1000 characters" })
+        .optional(),
     }),
     async resolve({ input }) {
       const editedPost = await prisma.post.update({
@@ -240,7 +244,7 @@ export const postRouter = createRouter()
           id: input.postId,
         },
         data: {
-          content: input.content,
+          content: input.postContent,
         },
       });
 

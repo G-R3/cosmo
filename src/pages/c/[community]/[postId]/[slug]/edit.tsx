@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { unstable_getServerSession } from "next-auth";
 import { useRouter } from "next/router";
@@ -11,20 +10,46 @@ import { trpc } from "@/utils/trpc";
 import DeletePostModal from "@/components/DeletePostModal";
 import TextareaAutosize from "@/components/TextareaAutosize";
 import { prisma } from "../../../../../db/client";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+type Inputs = {
+  postId: number;
+  postContent: string;
+};
+
+const schema = z.object({
+  postId: z.number(),
+  postContent: z
+    .string()
+    .trim()
+    .max(1000, { message: "Post body must be less than 1000 characters" })
+    .optional(),
+});
 
 const Edit = ({
   post,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
-  const [content, setContent] = useState(post.content);
+  const {
+    register,
+    watch,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>({
+    defaultValues: { postId: post.id, postContent: post.content },
+    resolver: zodResolver(schema),
+  });
   const editMutation = trpc.useMutation("post.edit", {
     onSuccess(data, variables, context) {
       router.push(`/c/${post.communityName}/${post.id}/${post.slug}`);
     },
   });
 
-  const handleSubmit = (postId: number, content: string) => {
-    editMutation.mutate({ postId, content });
+  const updatePost: SubmitHandler<Inputs> = (data) => {
+    console.log(data.postId);
+    editMutation.mutate({ postId: data.postId, postContent: data.postContent });
   };
 
   return (
@@ -68,39 +93,43 @@ const Edit = ({
           </div>
         </div>
 
-        <div>
-          <p className="opacity-70 border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt text-darkTwo dark:border-darkTwo  dark:bg-darkOne dark:text-foreground cursor-not-allowed">
-            {post.title}
-          </p>
-          <span className="text-grayAlt text-sm">
-            Changing post title is not supported at the moment
-          </span>
-        </div>
+        <form
+          onSubmit={handleSubmit((data) => updatePost(data, post.id))}
+          className="flex flex-col gap-5 rounded-md"
+        >
+          <div>
+            <p className="opacity-70 border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt text-darkTwo dark:border-darkTwo  dark:bg-darkOne dark:text-foreground cursor-not-allowed">
+              {post.title}
+            </p>
+            <span className="text-grayAlt text-sm">
+              Changing post title is not supported at the moment
+            </span>
+          </div>
 
-        <div className="flex flex-col gap-2">
-          <MarkdownTipsModal />
-          <TextareaAutosize
-            data-cy="edit-post-body"
-            value={content}
-            onChange={(e) => {
-              setContent(e.target.value);
-            }}
-            placeholder={`# Your Post \nLet the world know what you're thinking. Start with a title and then add some content to spice up your post! 😀`}
-            minHeight={250}
-          />
-        </div>
+          <div className="flex flex-col gap-2">
+            <MarkdownTipsModal />
+            <TextareaAutosize
+              data-cy="edit-post-body"
+              placeholder={`# Your Post \nLet the world know what you're thinking. Start with a title and then add some content to spice up your post! 😀`}
+              register={register("postContent")}
+              minHeight={250}
+            />
+            {errors.postContent?.message && (
+              <span className="text-alert">{errors.postContent.message}</span>
+            )}
+          </div>
 
-        <div className="flex justify-end gap-5">
-          <DeletePostModal postId={post.id} />
-          <button
-            data-cy="submit"
-            onClick={() => handleSubmit(post.id, content)}
-            disabled={editMutation.isLoading || post.content === content}
-            className="bg-success text-whiteAlt self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
-          >
-            Save
-          </button>
-        </div>
+          <div className="flex justify-end gap-5">
+            <DeletePostModal postId={post.id} />
+            <button
+              data-cy="submit"
+              disabled={watch("postContent") === post.content}
+              className="bg-success text-whiteAlt self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
+            >
+              Save
+            </button>
+          </div>
+        </form>
       </div>
     </section>
   );
@@ -150,6 +179,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     },
   });
+
+  if (!post) {
+    return {
+      notFound: true,
+    };
+  }
 
   if (post?.author.id !== session.user.id) {
     return {
