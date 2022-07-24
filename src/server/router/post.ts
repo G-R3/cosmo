@@ -176,9 +176,18 @@ export const postRouter = createRouter()
   })
   .mutation("create", {
     input: z.object({
-      title: z.string().trim().min(1).max(300),
-      content: z.string().trim().max(500).optional(),
-      communityId: z.number(),
+      communityId: z
+        .number({
+          required_error: "Community is required",
+          invalid_type_error: "Community is required",
+        })
+        .positive({ message: "Community is required" }),
+      title: z.string().trim().min(1, { message: "Post title is required" }),
+      content: z
+        .string()
+        .trim()
+        .max(1000, { message: "Post body must be less than 1000 characters" })
+        .optional(),
     }),
     async resolve({ input, ctx }) {
       const communityExists = await prisma.community.findUnique({

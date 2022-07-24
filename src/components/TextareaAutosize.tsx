@@ -7,13 +7,14 @@ type TextareaProps = customProps & ComponentPropsWithRef<"textarea">;
 
 const TextareaAutosize = ({
   className,
+  value,
   register,
   onChange = () => {},
   ...props
 }: TextareaProps) => {
   const { ref, onChange: postOnChange, ...rest } = register("postContent");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const baseStyles = `py-3 px-4 border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-grayAlt dark:bg-darkOne dark:text-foreground overflow-hidden resize-none`;
+  const baseStyles = `py-3 px-4 border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-grayAlt dark:bg-darkOne dark:text-foreground overflow-hidden resize-none min-h-[200px]`;
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     if (textareaRef.current) {

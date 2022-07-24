@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useRouter } from "next/router";
 import { BiErrorCircle } from "react-icons/bi";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -6,24 +5,44 @@ import { trpc } from "../../utils/trpc";
 import SearchCommunity from "../../components/SearchCommunity";
 import MarkdownTipsModal from "@/components/MarkdownTipsModal";
 import TextareaAutosize from "@/components/TextareaAutosize";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 type Inputs = {
-  community: string;
+  postCommunityId: number;
   postTitle: string;
   postContent?: string;
 };
 
+const schema = z.object({
+  postCommunityId: z
+    .number({
+      required_error: "Community is required",
+      invalid_type_error: "Community is required",
+    })
+    .positive({ message: "Community is required" }),
+  postTitle: z.string().trim().min(1, { message: "Post title is required" }),
+  postContent: z
+    .string()
+    .trim()
+    .max(1000, { message: "Post body must be less than 1000 characters" })
+    .optional(),
+});
+
 const Submit = () => {
   const router = useRouter();
-  const [community, setCommunity] = useState<number>(0);
   const {
     register,
     handleSubmit,
+    setValue,
+    reset,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<Inputs>({
+    resolver: zodResolver(schema),
+  });
+
   const createPostMutation = trpc.useMutation("post.create", {
     onSuccess(data) {
-      // should redirect to the post page
       router.push(
         `/c/${data.post.community.name}/${data.post.id}/${data.post.slug}`,
       );
@@ -34,7 +53,7 @@ const Submit = () => {
     createPostMutation.mutate({
       title: data.postTitle,
       content: data.postContent,
-      communityId: community,
+      communityId: data.postCommunityId,
     });
   };
 
@@ -56,7 +75,12 @@ const Submit = () => {
             <span>Something has gone terrible wrong!</span>
           </div>
         )}
-        <SearchCommunity setValue={setCommunity} />
+        <div className="flex flex-col gap-2">
+          {errors.postCommunityId?.message && (
+            <span className="text-alert">{errors.postCommunityId.message}</span>
+          )}
+          <SearchCommunity setValue={setValue} reset={reset} />
+        </div>
         <div className="flex flex-col gap-2">
           <input
             id="postTitle"
@@ -75,15 +99,17 @@ const Submit = () => {
           <TextareaAutosize
             data-cy="post-body"
             placeholder={`# Your Post \nLet the world know what you're thinking. Start with a title and then add some content to spice up your post! 😀`}
-            minHeight={250}
+            register={register}
           />
+          {errors.postContent?.message && (
+            <span className="text-alert">{errors.postContent.message}</span>
+          )}
         </div>
         <input
           data-cy="submit"
           type="submit"
           value="Post"
           disabled={createPostMutation.isLoading}
-          {...register("postContent")}
           className="bg-whiteAlt text-darkOne self-end py-3 px-4 cursor-pointer rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
         />
       </form>
