@@ -1,14 +1,15 @@
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { trpc } from "../utils/trpc";
-import PostSkeleton from "../components/PostSkeleton";
-import Post from "../components/Post";
-import UserCard from "../components/UserCard";
-import useLikePost from "../hooks/useLikePost";
+import { NextPage } from "next";
+import { trpc } from "@/utils/trpc";
+import PostSkeleton from "@/components/PostSkeleton";
+import Post from "@/components/Post";
+import UserCard from "@/components/UserCard";
+import useLikePost from "@/hooks/useLikePost";
 import useSavePost from "@/hooks/useSavePost";
 
-const Home = () => {
+const Home: NextPage = () => {
   const { data: session } = useSession();
   const postQuery = trpc.useQuery(["post.feed"]);
   const { onLike, onUnlike } = useLikePost("post.feed");

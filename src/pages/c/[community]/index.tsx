@@ -1,12 +1,13 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { NextPage } from "next";
 import { trpc } from "@/utils/trpc";
 import Post from "@/components/Post";
 import PostSkeleton from "@/components/PostSkeleton";
 import useLikePost from "@/hooks/useLikePost";
 import useSavePost from "@/hooks/useSavePost";
 
-const Index = () => {
+const Index: NextPage = () => {
   const query = useRouter().query.community as string;
   const communityQuery = trpc.useQuery(["community.get", { query }], {
     refetchOnWindowFocus: false,

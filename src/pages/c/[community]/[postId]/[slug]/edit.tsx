@@ -1,18 +1,22 @@
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import {
+  GetServerSideProps,
+  InferGetServerSidePropsType,
+  NextPage,
+} from "next";
 import { unstable_getServerSession } from "next-auth";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { BiErrorCircle } from "react-icons/bi";
 import { authOptions } from "src/pages/api/auth/[...nextauth]";
 import { AiFillHeart } from "react-icons/ai";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import MarkdownTipsModal from "@/components/MarkdownTipsModal";
 import { trpc } from "@/utils/trpc";
 import DeletePostModal from "@/components/DeletePostModal";
 import TextareaAutosize from "@/components/TextareaAutosize";
 import { prisma } from "../../../../../db/client";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 type Inputs = {
   postId: number;
@@ -28,7 +32,7 @@ const schema = z.object({
     .optional(),
 });
 
-const Edit = ({
+const Edit: NextPage = ({
   post,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();

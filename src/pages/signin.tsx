@@ -1,5 +1,9 @@
 import { getProviders, signIn } from "next-auth/react";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import {
+  GetServerSideProps,
+  InferGetServerSidePropsType,
+  NextPage,
+} from "next";
 import { useRouter } from "next/router";
 import { AiFillGithub, AiFillGoogleCircle } from "react-icons/ai";
 import { unstable_getServerSession } from "next-auth";
@@ -21,7 +25,7 @@ const providerStyles: Record<string, ProviderProps> = {
   },
 };
 
-const SignIn = ({
+const SignIn: NextPage = ({
   providers,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const callbackUrl = useRouter().query.callbackUrl as string;

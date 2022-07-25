@@ -1,4 +1,3 @@
-import React from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { BiErrorCircle } from "react-icons/bi";
@@ -6,19 +5,24 @@ import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { FiEdit2 } from "react-icons/fi";
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import { appRouter } from "src/server/router/_app";
-import { createSSGHelpers } from "@trpc/react/ssg";
+import {
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+  NextPage,
+} from "next";
 import superjson from "superjson";
+import { DehydratedState } from "react-query";
+import { appRouter } from "src/server/router/_app";
+import { createContext } from "src/server/context";
+import { createSSGHelpers } from "@trpc/react/ssg";
 import { trpc } from "@/utils/trpc";
 import Markdown from "@/components/Markdown";
 import Comment from "@/components/Comment";
 import CommentSkeleton from "@/components/CommentSkeleton";
 import MarkdownTipsModal from "@/components/MarkdownTipsModal";
 import TextareaAutosize from "@/components/TextareaAutosize";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { createContext } from "src/server/context";
 
 type Inputs = {
   postId: number;
@@ -34,9 +38,15 @@ const schema = z.object({
     .max(500, { message: "Comment must be less than 500 characters" }),
 });
 
-const Post = (
-  props: InferGetServerSidePropsType<typeof getServerSideProps>,
-) => {
+/**
+ * This is cursed
+ */
+
+const Post: NextPage<{
+  trpcState: DehydratedState;
+  slug: string;
+  postId: number;
+}> = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const { postId, slug } = props;
   const { data: session } = useSession();
   // isValid was always returning false even when mode was set to "onChange"
@@ -200,12 +210,12 @@ const Post = (
     },
   });
 
-  if (postQuery.error) {
-    return <div>No post was found</div>;
-  }
-
   if (postQuery.isLoading) {
     return <div>Loading...</div>;
+  }
+
+  if (postQuery.error) {
+    return <div>No post was found</div>;
   }
 
   if (!postQuery.data) {
