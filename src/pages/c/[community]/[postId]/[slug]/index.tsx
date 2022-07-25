@@ -38,15 +38,15 @@ const Post = (
 ) => {
   const { postId, slug } = props;
   const { data: session } = useSession();
+  // isValid was always returning false even when mode was set to "onChange"
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isDirty, isValid },
+    formState: { errors, isDirty },
   } = useForm<Inputs>({
     defaultValues: { commentContent: "", postId },
     resolver: zodResolver(schema),
-    mode: "onChange",
   });
   const utils = trpc.useContext();
   const postQuery = trpc.useQuery(["post.get-by-id", { slug, id: postId }]);
@@ -296,7 +296,9 @@ const Post = (
             <button
               form="createComment"
               data-cy="create-comment"
-              disabled={commentMutation.isLoading || !(isDirty && isValid)}
+              disabled={
+                commentMutation.isLoading || !isDirty || !!errors.commentContent
+              }
               className="bg-whiteAlt border-2 text-darkTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:outline-[3px] focus-visible:focus:outline-highlight"
             >
               Post

@@ -74,8 +74,6 @@ const Comment: React.FC<Props> = ({
     });
   };
 
-  console.log(errors);
-
   return (
     <div className="bg-whiteAlt flex gap-5 dark:bg-darkOne py-3 px-5 rounded-md">
       <div className="bg-foreground dark:bg-darkTwo min-h-full min-w-[4px] rounded-full"></div>
@@ -97,7 +95,7 @@ const Comment: React.FC<Props> = ({
             </div>
           </a>
         </Link>
-        <div className="mt-5 mb-3">
+        <div className="mt-5 mb-3 ">
           {isEditing ? (
             <form
               id="commentEditForm"
