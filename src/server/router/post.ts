@@ -246,10 +246,20 @@ export const postRouter = createRouter()
         data: {
           content: input.postContent,
         },
+        select: {
+          ...basePost,
+          slug: true,
+          _count: {
+            select: {
+              comments: true,
+            },
+          },
+        },
       });
 
       return {
         post: editedPost,
+        commentCount: editedPost._count.comments,
       };
     },
   })

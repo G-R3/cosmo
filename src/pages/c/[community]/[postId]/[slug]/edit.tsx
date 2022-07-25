@@ -45,14 +45,21 @@ const Edit: NextPage = ({
     defaultValues: { postId: post.id, postContent: post.content },
     resolver: zodResolver(schema),
   });
+  const utils = trpc.useContext();
   const editMutation = trpc.useMutation("post.edit", {
-    onSuccess(data, variables, context) {
+    onSuccess: (data, variables, context) => {
+      utils.setQueryData(
+        ["post.get-by-id", { slug: data.post.slug, id: data.post.id }],
+        {
+          post: data.post,
+          commentCount: data.commentCount,
+        },
+      );
       router.push(`/c/${post.communityName}/${post.id}/${post.slug}`);
     },
   });
 
   const updatePost: SubmitHandler<Inputs> = (data) => {
-    console.log(data.postId);
     editMutation.mutate({ postId: data.postId, postContent: data.postContent });
   };
 
