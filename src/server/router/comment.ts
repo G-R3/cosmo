@@ -51,12 +51,12 @@ export const commentRouter = createRouter()
   })
   .mutation("create", {
     input: z.object({
+      postId: z.number(),
       content: z
         .string()
         .trim()
-        .min(1, { message: "Comment must be at least 1 character long" })
+        .min(1, { message: "Comment can't be empty" })
         .max(500, { message: "Comment must be less than 500 characters" }),
-      postId: z.number(),
     }),
     async resolve({ input, ctx }) {
       // I'm not sure if I'm handling zod erros correctly here. pain...

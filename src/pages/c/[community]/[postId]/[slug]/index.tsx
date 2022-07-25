@@ -1,28 +1,55 @@
-import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { BiErrorCircle } from "react-icons/bi";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { FiEdit2 } from "react-icons/fi";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { appRouter } from "src/server/router/_app";
+import { createSSGHelpers } from "@trpc/react/ssg";
+import superjson from "superjson";
 import { trpc } from "@/utils/trpc";
 import Markdown from "@/components/Markdown";
 import Comment from "@/components/Comment";
 import CommentSkeleton from "@/components/CommentSkeleton";
 import MarkdownTipsModal from "@/components/MarkdownTipsModal";
-import { FiEdit2 } from "react-icons/fi";
 import TextareaAutosize from "@/components/TextareaAutosize";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createContext } from "src/server/context";
 
-const Post = () => {
-  const router = useRouter();
-  const slug = router.query.slug as string;
-  const postId = router.query.postId;
+type Inputs = {
+  postId: number;
+  commentContent: string;
+};
+
+const schema = z.object({
+  postId: z.number(),
+  commentContent: z
+    .string()
+    .trim()
+    .min(1, { message: "Comment can't be empty" })
+    .max(500, { message: "Comment must be less than 500 characters" }),
+});
+
+const Post = (
+  props: InferGetServerSidePropsType<typeof getServerSideProps>,
+) => {
+  const { postId, slug } = props;
   const { data: session } = useSession();
-  const [commentContent, setCommentContent] = useState("");
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isDirty, isValid },
+  } = useForm<Inputs>({
+    defaultValues: { commentContent: "", postId },
+    resolver: zodResolver(schema),
+    mode: "onChange",
+  });
   const utils = trpc.useContext();
-  const postQuery = trpc.useQuery([
-    "post.get-by-id",
-    { slug, id: Number(postId) },
-  ]);
+  const postQuery = trpc.useQuery(["post.get-by-id", { slug, id: postId }]);
   const commentQuery = trpc.useQuery(
     ["comment.get-by-postId", { postId: Number(postQuery.data?.post.id) }],
     {
@@ -32,7 +59,9 @@ const Post = () => {
   const commentMutation = trpc.useMutation("comment.create", {
     onSuccess(data, variables, context) {
       utils.invalidateQueries("comment.get-by-postId");
-      setCommentContent("");
+      reset({
+        commentContent: "",
+      });
     },
   });
 
@@ -115,12 +144,10 @@ const Post = () => {
     return <div>There doesn&apos;t seem be anything here.</div>;
   }
 
-  const handleSubmit = (e: any, postId: number, comment: string) => {
-    e.preventDefault();
-
+  const createComment: SubmitHandler<Inputs> = (data) => {
     commentMutation.mutate({
-      content: comment,
-      postId,
+      postId: data.postId,
+      content: data.commentContent,
     });
   };
 
@@ -247,24 +274,29 @@ const Post = () => {
             )}
           </div>
           <form
+            id="createComment"
             className="flex flex-col gap-2 mb-3"
-            onSubmit={(e) =>
-              handleSubmit(e, postQuery.data.post?.id, commentContent)
-            }
+            onSubmit={handleSubmit(createComment)}
           >
-            <MarkdownTipsModal />
+            <div className="flex justify-between items-center flex-wrap">
+              <MarkdownTipsModal />
+              {errors.commentContent?.message && (
+                <span className="text-alert">
+                  {errors.commentContent.message}
+                </span>
+              )}
+            </div>
             <TextareaAutosize
               data-cy="comment-textarea"
-              value={commentContent}
-              onChange={(e) => setCommentContent(e.target.value)}
-              name="comment"
               id="comment"
               placeholder="What are you thoughts?"
               minHeight={200}
+              register={register("commentContent")}
             />
             <button
+              form="createComment"
               data-cy="create-comment"
-              disabled={commentMutation.isLoading || !commentContent}
+              disabled={commentMutation.isLoading || !(isDirty && isValid)}
               className="bg-whiteAlt border-2 text-darkTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:outline-[3px] focus-visible:focus:outline-highlight"
             >
               Post
@@ -292,6 +324,29 @@ const Post = () => {
       </div>
     </>
   );
+};
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext,
+) => {
+  const ssg = await createSSGHelpers({
+    router: appRouter,
+    ctx: await createContext(),
+    transformer: superjson,
+  });
+
+  const postId = Number(context.params?.postId);
+  const slug = context.params?.slug as string;
+
+  await ssg.fetchQuery("post.get-by-id", { slug, id: postId });
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+      slug,
+      postId,
+    },
+  };
 };
 
 export default Post;
