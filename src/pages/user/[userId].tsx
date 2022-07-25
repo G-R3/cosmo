@@ -1,6 +1,5 @@
 import { trpc } from "@/utils/trpc";
 import Head from "next/head";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import UserTabs from "@/components/UserTabs";
 import UserBanner from "@/components/UserBanner";
