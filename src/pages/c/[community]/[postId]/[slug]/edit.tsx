@@ -69,12 +69,12 @@ const Edit = ({
         <div className="flex justify-between items-center flex-wrap">
           <p className="mr-5 mb-2">
             Posted to{" "}
-            <Link href={`/c/${post.communityName}`}>
+            <Link href={`/c/${post.community.name}`}>
               <a
                 data-cy="post-community"
                 className="text-highlight font-semibold"
               >
-                {post.communityName}
+                {post.community.name}
               </a>
             </Link>{" "}
           </p>
