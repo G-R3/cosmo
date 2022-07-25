@@ -1,12 +1,13 @@
 import { useRouter } from "next/router";
 import { BiErrorCircle } from "react-icons/bi";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { trpc } from "../../utils/trpc";
-import SearchCommunity from "../../components/SearchCommunity";
-import MarkdownTipsModal from "@/components/MarkdownTipsModal";
-import TextareaAutosize from "@/components/TextareaAutosize";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { trpc } from "@/utils/trpc";
+import SearchCommunity from "@/components/SearchCommunity";
+import MarkdownTipsModal from "@/components/MarkdownTipsModal";
+import TextareaAutosize from "@/components/TextareaAutosize";
+import { NextPageWithAuth } from "@/components/Auth";
 
 type Inputs = {
   postCommunityId: number;
@@ -29,7 +30,7 @@ const schema = z.object({
     .optional(),
 });
 
-const Submit = () => {
+const Submit: NextPageWithAuth = () => {
   const router = useRouter();
   const {
     register,
