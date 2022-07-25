@@ -5,8 +5,6 @@ import { FiEdit2 } from "react-icons/fi";
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 import { useSession } from "next-auth/react";
 import Markdown from "../components/Markdown";
-import { trpc } from "@/utils/trpc";
-import { useContext } from "react";
 
 interface Props {
   id: number;
@@ -14,10 +12,10 @@ interface Props {
   content?: string | null;
   slug: string;
   author: { id: string; name: string | null; image: string | null };
-  commentCount: number;
   likes: { postId: number; userId: string }[];
   community: { id: number; name: string };
   savedBy: { postId: number; userId: string }[];
+  _count: { comments: number };
   onLike: (postId: number) => void;
   onUnlike: (postId: number) => void;
   onSave: (postId: number) => void;
@@ -30,10 +28,10 @@ const Post: React.FC<Props> = ({
   content,
   slug,
   author,
-  commentCount,
   likes,
   community,
   savedBy,
+  _count,
   onLike,
   onUnlike,
   onSave,
@@ -131,8 +129,10 @@ const Post: React.FC<Props> = ({
 
           <Link href={`/c/${community.name}/${id}/${slug}`}>
             <a data-cy="post-link">
-              {commentCount}{" "}
-              {commentCount > 1 || commentCount === 0 ? "comments" : "comment"}
+              {_count.comments}{" "}
+              {_count.comments > 1 || _count.comments === 0
+                ? "comments"
+                : "comment"}
             </a>
           </Link>
         </div>

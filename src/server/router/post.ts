@@ -21,6 +21,7 @@ export const basePost = {
   content: true,
   createdAt: true,
   updatedAt: true,
+  slug: true,
   author: {
     select: {
       id: true,
@@ -44,6 +45,11 @@ export const basePost = {
     select: {
       postId: true,
       userId: true,
+    },
+  },
+  _count: {
+    select: {
+      comments: true,
     },
   },
 };
@@ -71,12 +77,6 @@ export const postRouter = createRouter()
         },
         select: {
           ...basePost,
-          slug: true,
-          _count: {
-            select: {
-              comments: true,
-            },
-          },
         },
       });
 
@@ -88,10 +88,7 @@ export const postRouter = createRouter()
       }
 
       return {
-        post: {
-          ...post,
-          commentCount: post._count.comments,
-        },
+        post,
       };
     },
   })
@@ -108,23 +105,11 @@ export const postRouter = createRouter()
         },
         select: {
           ...basePost,
-          slug: true,
-          comments: false,
-          _count: {
-            select: {
-              comments: true,
-            },
-          },
         },
       });
 
       return {
-        posts: [
-          ...posts.map((post) => ({
-            ...post,
-            commentCount: post._count.comments,
-          })),
-        ],
+        posts,
       };
     },
   })
@@ -133,29 +118,11 @@ export const postRouter = createRouter()
       const posts = await prisma.post.findMany({
         select: {
           ...basePost,
-          slug: true,
-          comments: false,
-          savedBy: {
-            select: {
-              postId: true,
-              userId: true,
-            },
-          },
-          _count: {
-            select: {
-              comments: true,
-            },
-          },
         },
       });
 
       return {
-        posts: [
-          ...posts.map((post) => ({
-            ...post,
-            commentCount: post._count.comments,
-          })),
-        ],
+        posts,
       };
     },
   })
@@ -216,6 +183,7 @@ export const postRouter = createRouter()
           slug: true,
           community: {
             select: {
+              id: true,
               name: true,
             },
           },
@@ -239,7 +207,7 @@ export const postRouter = createRouter()
         .optional(),
     }),
     async resolve({ input }) {
-      const editedPost = await prisma.post.update({
+      const post = await prisma.post.update({
         where: {
           id: input.postId,
         },
@@ -248,18 +216,11 @@ export const postRouter = createRouter()
         },
         select: {
           ...basePost,
-          slug: true,
-          _count: {
-            select: {
-              comments: true,
-            },
-          },
         },
       });
 
       return {
-        post: editedPost,
-        commentCount: editedPost._count.comments,
+        post,
       };
     },
   })
@@ -275,6 +236,7 @@ export const postRouter = createRouter()
         select: {
           community: {
             select: {
+              id: true,
               name: true,
             },
           },

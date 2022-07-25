@@ -52,7 +52,6 @@ const Edit: NextPage = ({
         ["post.get-by-id", { slug: data.post.slug, id: data.post.id }],
         {
           post: data.post,
-          commentCount: data.commentCount,
         },
       );
       router.push(`/c/${post.communityName}/${post.id}/${post.slug}`);

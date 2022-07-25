@@ -69,9 +69,11 @@ const Post: NextPage<{
   );
   const commentMutation = trpc.useMutation("comment.create", {
     onSuccess(data, variables, context) {
-      utils.invalidateQueries("comment.get-by-postId");
+      utils.invalidateQueries(["post.get-by-id", { slug, id: postId }]);
+      utils.invalidateQueries(["comment.get-by-postId"]);
       reset({
         commentContent: "",
+        postId: postId,
       });
     },
   });
@@ -347,8 +349,8 @@ const Post: NextPage<{
                 </Link>
               )}
               <span>
-                {postQuery.data.post.commentCount}{" "}
-                {postQuery.data.post.commentCount === 1
+                {postQuery.data.post._count.comments}{" "}
+                {postQuery.data.post._count.comments === 1
                   ? "comment"
                   : "comments"}
               </span>
