@@ -2,14 +2,13 @@ import { ChangeEvent, ComponentPropsWithRef, useEffect, useRef } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
 
 type customProps = {
-  register: UseFormRegisterReturn;
+  register: UseFormRegisterReturn<string>;
   minHeight?: number;
 };
 type TextareaProps = customProps & ComponentPropsWithRef<"textarea">;
 
 const TextareaAutosize = ({
   className,
-  value,
   register,
   minHeight = 200,
   ...props
@@ -60,8 +59,8 @@ const TextareaAutosize = ({
         ...props.style,
         minHeight: minHeight,
       }}
-      {...rest}
       {...props}
+      {...rest}
     ></textarea>
   );
 };
