@@ -40,29 +40,11 @@ const Post: React.FC<Props> = ({
   onUnsave,
 }) => {
   const { data: session } = useSession();
-  const utils = trpc.useContext();
+
   const isLikedByUser = likes.find((like) => like.userId === session?.user.id);
   const isSavedByUser = savedBy.find(
     (save) => save.userId === session?.user.id,
   );
-  // const savePostMutation = trpc.useMutation("post.save", {
-  //   onSuccess(data, variables, context) {
-  //     utils.invalidateQueries({
-  //       predicate(query: any) {
-  //         return query.queryKey[0].startsWith("post");
-  //       },
-  //     });
-  //   },
-  // });
-  // const unSavePostMutation = trpc.useMutation("post.unsave", {
-  //   onSuccess(data, variables, context) {
-  //     utils.invalidateQueries({
-  //       predicate(query: any) {
-  //         return query.queryKey[0].startsWith("post");
-  //       },
-  //     });
-  //   },
-  // });
 
   return (
     <div className="bg-whiteAlt dark:bg-darkOne border-2 border-transparent hover:border-highlight w-full rounded-md p-5 transition-all">

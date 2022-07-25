@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { BiErrorCircle } from "react-icons/bi";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { FiEdit2 } from "react-icons/fi";
+import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
@@ -132,6 +133,73 @@ const Post = (
     },
   });
 
+  const saveMutation = trpc.useMutation(["post.save"], {
+    onMutate: async (savedPost) => {
+      await utils.cancelQuery(["post.get-by-id", { slug, id: Number(postId) }]);
+      const previousData = utils.getQueryData([
+        "post.get-by-id",
+        { slug, id: Number(postId) },
+      ]);
+
+      if (previousData) {
+        utils.setQueryData(["post.get-by-id", { slug, id: Number(postId) }], {
+          ...previousData,
+          post: {
+            ...previousData.post,
+            savedBy: [
+              ...previousData.post.savedBy,
+              {
+                userId: session?.user.id!,
+                postId: savedPost.postId,
+              },
+            ],
+          },
+        });
+      }
+
+      return { previousData };
+    },
+    onError: (err, data, context) => {
+      if (context?.previousData) {
+        utils.setQueryData(
+          ["post.get-by-id", { slug, id: Number(postId) }],
+          context?.previousData,
+        );
+      }
+    },
+  });
+  const unSaveMutation = trpc.useMutation(["post.unsave"], {
+    onMutate: async (unSavedPost) => {
+      await utils.cancelQuery(["post.get-by-id", { slug, id: Number(postId) }]);
+      const previousData = utils.getQueryData([
+        "post.get-by-id",
+        { slug, id: Number(postId) },
+      ]);
+
+      if (previousData) {
+        utils.setQueryData(["post.get-by-id", { slug, id: Number(postId) }], {
+          ...previousData,
+          post: {
+            ...previousData.post,
+            savedBy: previousData.post.savedBy.filter(
+              (save) => save.userId !== session?.user.id!,
+            ),
+          },
+        });
+      }
+
+      return { previousData };
+    },
+    onError: (err, data, context) => {
+      if (context?.previousData) {
+        utils.setQueryData(
+          ["post.get-by-id", { slug, id: Number(postId) }],
+          context?.previousData,
+        );
+      }
+    },
+  });
+
   if (postQuery.error) {
     return <div>No post was found</div>;
   }
@@ -157,9 +225,18 @@ const Post = (
   const onUnlike = (postId: number) => {
     unlikeMutation.mutate({ postId });
   };
+  const onSave = (postId: number) => {
+    saveMutation.mutate({ postId });
+  };
+  const onUnsave = (postId: number) => {
+    unSaveMutation.mutate({ postId });
+  };
 
   const isLikedByUser = postQuery.data.post.likes.find(
     (like) => like.userId === session?.user.id,
+  );
+  const isSavedByUser = postQuery.data.post.savedBy.find(
+    (save) => save.userId === session?.user.id,
   );
 
   return (
@@ -232,6 +309,20 @@ const Post = (
             </button>
 
             <div className="flex items-center gap-3 text-grayAlt">
+              <button
+                onClick={
+                  isSavedByUser
+                    ? () => onUnsave(postQuery.data.post.id)
+                    : () => onSave(postQuery.data.post.id)
+                }
+                // disabled={
+                //   unSavePostMutation.isLoading || savePostMutation.isLoading
+                // }
+                className="flex items-center gap-[6px] hover:text-whiteAlt focus:text-whiteAlt transition-colors"
+              >
+                {isSavedByUser ? <BsBookmarkFill /> : <BsBookmark />}
+                {isSavedByUser ? "Unsave" : "Save"}
+              </button>
               {postQuery.data.post.author.id === session?.user.id && (
                 <Link
                   href={`/c/${postQuery.data.post.community.name}/${postQuery.data.post.id}/${postQuery.data.post.slug}/edit`}
