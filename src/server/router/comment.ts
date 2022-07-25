@@ -30,7 +30,6 @@ export const commentRouter = createRouter()
 
       return {
         comments: postComments,
-        total: postComments.length,
       };
     },
   })
