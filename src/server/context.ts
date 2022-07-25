@@ -2,15 +2,12 @@ import * as trpc from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
 import { getSession } from "next-auth/react";
 
-export async function createContext({
-  req,
-  res,
-}: trpcNext.CreateNextContextOptions) {
-  const session = await getSession({ req });
+export async function createContext(opts?: trpcNext.CreateNextContextOptions) {
+  const session = await getSession({ req: opts?.req });
 
   return {
-    req,
-    res,
+    req: opts?.req,
+    res: opts?.res,
     session,
   };
 }
