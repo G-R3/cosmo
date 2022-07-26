@@ -13,8 +13,9 @@ datasource db {
 }
 
 model Community {
-  id          Int     @id @default(autoincrement())
+  id          String  @id @default(cuid())
   name        String  @unique @default("")
+  title       String  @default("")
   description String?
   creator     User    @relation(fields: [creatorId], references: [id])
   creatorId   String
@@ -22,7 +23,7 @@ model Community {
 }
 
 model Post {
-  id          Int       @id @default(autoincrement())
+  id          String    @id @default(cuid())
   title       String
   content     String?   @db.Text()
   createdAt   DateTime  @default(now())
@@ -34,25 +35,25 @@ model Post {
   comments    Comment[]
   likes       Like[]
   community   Community @relation(fields: [communityId], references: [id])
-  communityId Int
+  communityId String
   savedBy     Save[]
 }
 
 model Comment {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid())
   content   String   @db.Text()
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId    Int
+  postId    String
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String
 }
 
 model Like {
-  id     Int    @unique @default(autoincrement())
+  id     String @unique @default(cuid())
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId Int
+  postId String
   user   User   @relation(fields: [userId], references: [id])
   userId String
 
@@ -60,9 +61,9 @@ model Like {
 }
 
 model Save {
-  id     Int    @unique @default(autoincrement())
+  id     String @unique @default(cuid())
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId Int
+  postId String
   user   User   @relation(fields: [userId], references: [id])
   userId String
 
