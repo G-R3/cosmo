@@ -15,7 +15,7 @@ describe("Create comment", () => {
     cy.get("textarea").type("         ");
     cy.get("[data-cy='create-comment']").contains("Post").click();
 
-    cy.get("[data-cy='alert-error']").should("be.visible");
+    cy.get("[data-cy='form-error']").should("be.visible");
 
     // cy.wait("@createComment").its("response.statusCode").should("eq", 400);
   });

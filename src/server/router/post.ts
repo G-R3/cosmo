@@ -21,6 +21,7 @@ export const basePost = {
   content: true,
   createdAt: true,
   updatedAt: true,
+  slug: true,
   author: {
     select: {
       id: true,
@@ -46,6 +47,11 @@ export const basePost = {
       userId: true,
     },
   },
+  _count: {
+    select: {
+      comments: true,
+    },
+  },
 };
 
 /**
@@ -64,19 +70,13 @@ export const postRouter = createRouter()
       slug: z.string(),
       id: z.number(),
     }),
-    async resolve({ input, ctx }) {
+    async resolve({ input }) {
       const post = await prisma.post.findUnique({
         where: {
           id: input.id,
         },
         select: {
           ...basePost,
-          slug: true,
-          _count: {
-            select: {
-              comments: true,
-            },
-          },
         },
       });
 
@@ -88,10 +88,7 @@ export const postRouter = createRouter()
       }
 
       return {
-        post: {
-          ...post,
-          commentCount: post._count.comments,
-        },
+        post,
       };
     },
   })
@@ -99,7 +96,7 @@ export const postRouter = createRouter()
     input: z.object({
       query: z.string().trim().min(1).max(25),
     }),
-    async resolve({ input, ctx }) {
+    async resolve({ input }) {
       const posts = await prisma.post.findMany({
         where: {
           community: {
@@ -108,23 +105,11 @@ export const postRouter = createRouter()
         },
         select: {
           ...basePost,
-          slug: true,
-          comments: false,
-          _count: {
-            select: {
-              comments: true,
-            },
-          },
         },
       });
 
       return {
-        posts: [
-          ...posts.map((post) => ({
-            ...post,
-            commentCount: post._count.comments,
-          })),
-        ],
+        posts,
       };
     },
   })
@@ -133,46 +118,45 @@ export const postRouter = createRouter()
       const posts = await prisma.post.findMany({
         select: {
           ...basePost,
-          slug: true,
-          comments: false,
-          savedBy: {
-            select: {
-              postId: true,
-              userId: true,
-            },
-          },
-          _count: {
-            select: {
-              comments: true,
-            },
-          },
         },
       });
 
       return {
-        posts: [
-          ...posts.map((post) => ({
-            ...post,
-            commentCount: post._count.comments,
-          })),
-        ],
+        posts,
       };
     },
   })
+  .middleware(async ({ ctx, next }) => {
+    if (!ctx.session?.user) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "You are not authorized",
+      });
+    }
+
+    return next({
+      ctx: {
+        ...ctx,
+        user: ctx.session.user,
+      },
+    });
+  })
   .mutation("create", {
     input: z.object({
-      title: z.string().trim().min(1).max(300),
-      content: z.string().trim().max(500).optional(),
-      communityId: z.number(),
+      communityId: z
+        .number({
+          required_error: "Community is required",
+          invalid_type_error: "Community is required",
+        })
+        .positive({ message: "Community is required" }),
+      title: z.string().trim().min(1, { message: "Post title is required" }),
+      content: z
+        .string()
+        .trim()
+        .max(1000, { message: "Post body must be less than 1000 characters" })
+        .optional(),
     }),
     async resolve({ input, ctx }) {
-      if (!ctx.session?.user) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You are not authorized",
-        });
-      }
-
       const communityExists = await prisma.community.findUnique({
         where: {
           id: input.communityId,
@@ -191,7 +175,7 @@ export const postRouter = createRouter()
           title: input.title,
           content: input.content,
           slug: slugify(input.title),
-          authorId: ctx.session.user.id!,
+          authorId: ctx.user.id,
           communityId: input.communityId,
         },
         select: {
@@ -199,6 +183,7 @@ export const postRouter = createRouter()
           slug: true,
           community: {
             select: {
+              id: true,
               name: true,
             },
           },
@@ -215,27 +200,27 @@ export const postRouter = createRouter()
   .mutation("edit", {
     input: z.object({
       postId: z.number(),
-      content: z.string().trim().max(500).optional(),
+      postContent: z
+        .string()
+        .trim()
+        .max(1000, { message: "Post body must be less than 1000 characters" })
+        .optional(),
     }),
-    async resolve({ input, ctx }) {
-      if (!ctx.session?.user) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You are not authorized",
-        });
-      }
-
-      const editedPost = await prisma.post.update({
+    async resolve({ input }) {
+      const post = await prisma.post.update({
         where: {
           id: input.postId,
         },
         data: {
-          content: input.content,
+          content: input.postContent,
+        },
+        select: {
+          ...basePost,
         },
       });
 
       return {
-        post: editedPost,
+        post,
       };
     },
   })
@@ -244,13 +229,6 @@ export const postRouter = createRouter()
       postId: z.number(),
     }),
     async resolve({ input, ctx }) {
-      if (!ctx.session?.user) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You are not authorized",
-        });
-      }
-
       const deletedPost = await prisma.post.delete({
         where: {
           id: input.postId,
@@ -258,6 +236,7 @@ export const postRouter = createRouter()
         select: {
           community: {
             select: {
+              id: true,
               name: true,
             },
           },
@@ -274,13 +253,6 @@ export const postRouter = createRouter()
       postId: z.number(),
     }),
     async resolve({ input, ctx }) {
-      if (!ctx.session?.user) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You are not authorized",
-        });
-      }
-
       const newLike = await prisma.like.create({
         data: {
           post: {
@@ -290,7 +262,7 @@ export const postRouter = createRouter()
           },
           user: {
             connect: {
-              id: ctx.session.user.id,
+              id: ctx.user.id,
             },
           },
         },
@@ -304,17 +276,10 @@ export const postRouter = createRouter()
       postId: z.number(),
     }),
     async resolve({ input, ctx }) {
-      if (!ctx.session?.user) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You are not authorized",
-        });
-      }
-
       const deletedLike = await prisma.like.delete({
         where: {
           likeId: {
-            userId: ctx.session.user.id,
+            userId: ctx.user.id,
             postId: input.postId,
           },
         },
@@ -328,13 +293,6 @@ export const postRouter = createRouter()
       postId: z.number(),
     }),
     async resolve({ input, ctx }) {
-      if (!ctx.session?.user) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You are not authorized",
-        });
-      }
-
       const newSave = await prisma.save.create({
         data: {
           post: {
@@ -344,7 +302,7 @@ export const postRouter = createRouter()
           },
           user: {
             connect: {
-              id: ctx.session.user.id,
+              id: ctx.user.id,
             },
           },
         },
@@ -358,18 +316,11 @@ export const postRouter = createRouter()
       postId: z.number(),
     }),
     async resolve({ input, ctx }) {
-      if (!ctx.session?.user) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You are not authorized",
-        });
-      }
-
       const unSaved = await prisma.save.delete({
         where: {
           saveId: {
             postId: input.postId,
-            userId: ctx.session.user.id,
+            userId: ctx.user.id,
           },
         },
       });

@@ -52,15 +52,19 @@ const Header: React.FC = () => {
             </div>
             <div className="flex gap-5 justify-end items-center flex-grow">
               <nav className="flex justify-center items-center gap-3">
-                <CreateCommunityModal />
-                <Link href="/submit">
-                  <a
-                    tabIndex={0}
-                    className="flex items-center px-2 h-6 lg:h-8 cursor-pointer"
-                  >
-                    <FiPlus size={25} />
-                  </a>
-                </Link>
+                {!!session?.user && (
+                  <>
+                    <CreateCommunityModal />
+                    <Link href="/submit">
+                      <a
+                        tabIndex={0}
+                        className="flex items-center px-2 h-6 lg:h-8 cursor-pointer"
+                      >
+                        <FiPlus size={25} />
+                      </a>
+                    </Link>
+                  </>
+                )}
 
                 <Menu
                   as={"div"}

@@ -30,32 +30,39 @@ export const commentRouter = createRouter()
 
       return {
         comments: postComments,
-        total: postComments.length,
       };
     },
   })
+  .middleware(async ({ ctx, next }) => {
+    if (!ctx.session?.user) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "You are not authorized",
+      });
+    }
+
+    return next({
+      ctx: {
+        ...ctx,
+        user: ctx.session.user,
+      },
+    });
+  })
   .mutation("create", {
     input: z.object({
+      postId: z.number(),
       content: z
         .string()
         .trim()
-        .min(1, { message: "Comment must be at least 1 character long" })
+        .min(1, { message: "Comment can't be empty" })
         .max(500, { message: "Comment must be less than 500 characters" }),
-      postId: z.number(),
     }),
     async resolve({ input, ctx }) {
-      if (!ctx.session?.user) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You are not authorized",
-        });
-      }
-
       // I'm not sure if I'm handling zod erros correctly here. pain...
       if (input.content.length < 1 || input.content.length > 500) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "You are not authorized",
+          message: "Comment must be between 1 and 500 characters.",
           cause: ZodError,
         });
       }
@@ -63,7 +70,7 @@ export const commentRouter = createRouter()
       await prisma.comment.create({
         data: {
           content: input.content,
-          authorId: ctx.session.user.id!,
+          authorId: ctx.user.id,
           postId: input.postId,
         },
       });
@@ -80,22 +87,15 @@ export const commentRouter = createRouter()
       content: z
         .string()
         .trim()
-        .min(1, { message: "Comment must be at least 1 character long" })
+        .min(1, { message: "Comment can't be empty" })
         .max(500, { message: "Comment must be less than 500 characters" }),
     }),
     async resolve({ input, ctx }) {
-      if (!ctx.session?.user) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You are not authorized",
-        });
-      }
-
       // I'm not sure if I'm handling zod erros correctly here. pain...
       if (input.content.length < 1 || input.content.length > 500) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "You are not authorized",
+          message: "Comment must be between 1 and 500 characters.",
           cause: ZodError,
         });
       }
@@ -119,13 +119,6 @@ export const commentRouter = createRouter()
       commentId: z.number(),
     }),
     async resolve({ input, ctx }) {
-      if (!ctx.session?.user) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You are not authorized",
-        });
-      }
-
       const deletedComment = await prisma.comment.delete({
         where: {
           id: input.commentId,

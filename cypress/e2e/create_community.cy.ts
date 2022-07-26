@@ -12,13 +12,7 @@ describe("Create a community", () => {
     cy.visit("/");
     cy.intercept("POST", "/api/trpc/community.create?*").as("createCommunity");
 
-    cy.get("[data-cy='create-community-modal']").click();
-
-    cy.get("input").type(name.replace(/ /g, ""));
-    cy.get("textarea").type(description);
-
-    cy.get("[data-cy='confirm-create']").click();
-    cy.wait("@createCommunity").its("response.statusCode").should("eq", 403);
+    cy.get("[data-cy='create-community-modal']").should("not.exist");
   });
 
   it("will allow if authenticated", () => {

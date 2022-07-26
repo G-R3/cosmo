@@ -45,9 +45,24 @@ export const communityRouter = createRouter()
       return communities;
     },
   })
+  .middleware(async ({ ctx, next }) => {
+    if (!ctx.session?.user) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "You are not authorized",
+      });
+    }
+
+    return next({
+      ctx: {
+        ...ctx,
+        user: ctx.session.user,
+      },
+    });
+  })
   .mutation("create", {
     input: z.object({
-      name: z
+      communityName: z
         .string({ required_error: "Community name is required." })
         .trim()
         .min(3, { message: "Name must be at least 3 characters long." })
@@ -56,34 +71,31 @@ export const communityRouter = createRouter()
             "Community name most only contain letters, numbers, or underscores.",
         })
         .max(25, { message: "Name must be less than 25 characters long." }),
-      description: z.string().trim().optional(),
+      communityDescription: z
+        .string()
+        .trim()
+        .max(200, { message: "Description must be less than 200 characters" })
+        .optional(),
     }),
     async resolve({ input, ctx }) {
-      if (!ctx.session?.user) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You are not authorized",
-        });
-      }
-
       const communityExist = await prisma.community.findUnique({
         where: {
-          name: input.name,
+          name: input.communityName,
         },
       });
 
       if (communityExist) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: `Sorry ${input.name} has already been taken. Try something else.`,
+          message: `Sorry ${input.communityName} has already been taken. Try something else.`,
         });
       }
 
       const community = await prisma.community.create({
         data: {
-          name: input.name,
-          description: input.description,
-          creatorId: ctx.session.user.id!,
+          name: input.communityName,
+          description: input.communityDescription,
+          creatorId: ctx.user.id,
         },
       });
 

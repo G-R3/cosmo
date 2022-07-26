@@ -6,11 +6,10 @@ import { NextComponentType, NextPageContext } from "next";
 import { ThemeProvider } from "next-themes";
 import { AppRouter } from "../server/router/_app";
 import Layout from "../components/Layout";
-import Auth, { AuthEnabledComponentConfig } from "../components/Auth";
+import Auth, { PageAuth } from "../components/Auth";
 
 type AppAuthProps = AppProps & {
-  Component: NextComponentType<NextPageContext, any, {}> &
-    Partial<AuthEnabledComponentConfig>;
+  Component: NextComponentType<NextPageContext, any, {}> & Partial<PageAuth>;
 };
 
 const App = ({

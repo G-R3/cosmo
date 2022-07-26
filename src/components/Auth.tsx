@@ -14,12 +14,11 @@ import React, { ReactNode, useEffect } from "react";
 //     loader: ReactNode;
 //   };
 // }
-export interface AuthEnabledComponentConfig {
+export interface PageAuth {
   auth: boolean;
 }
 
-export type ComponentWithAuth<PropsType = any> = React.FC<PropsType> &
-  AuthEnabledComponentConfig;
+export type NextPageWithAuth<PropsType = any> = React.FC<PropsType> & PageAuth;
 
 interface Props {
   children: ReactNode;

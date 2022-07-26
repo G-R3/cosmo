@@ -11,6 +11,7 @@ const DeleteCommentModal: FC<{ commentId: number }> = ({ commentId }) => {
     onSuccess(data, variables, context) {
       setIsOpen(false);
       utils.invalidateQueries("comment.get-by-postId");
+      utils.invalidateQueries("user.get-comments");
     },
   });
 

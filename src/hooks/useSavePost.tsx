@@ -51,12 +51,6 @@ const useSavePost = (path: Paths, query?: any) => {
         utils.setQueryData(queryArg, context?.previousData);
       }
     },
-    onSettled(data, error, variables, context) {
-      utils.invalidateQueries(["post.feed"]);
-      utils.invalidateQueries(["post.get-by-community"]);
-      utils.invalidateQueries(["user.get-posts"]);
-      utils.invalidateQueries(["user.get-liked-posts"]);
-    },
   });
 
   const unSaveMutation = trpc.useMutation(["post.unsave"], {
@@ -86,11 +80,6 @@ const useSavePost = (path: Paths, query?: any) => {
       if (context?.previousData) {
         utils.setQueryData(queryArg, context?.previousData);
       }
-    },
-    onSettled(data, error, variables, context) {
-      utils.invalidateQueries(["post.feed"]);
-      utils.invalidateQueries(["post.get-by-community"]);
-      utils.invalidateQueries(["user.get-posts"]);
     },
   });
 
