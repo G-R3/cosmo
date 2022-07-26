@@ -12,6 +12,7 @@ This is the repo for cosmo. A sort of social media like thing I'm making. It's a
 - [x] Markdown support
 - [x] Edit/delete posts
 - [x] Edit/delete comments
+- [x] Like/Unlike posts
 - [x] Save posts
 - [ ] Image upload support
 - [ ] Types of posts (text, image, video) (optional)
