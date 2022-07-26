@@ -12,7 +12,7 @@ This is the repo for cosmo. A sort of social media like thing I'm making. It's a
 - [x] Markdown support
 - [x] Edit/delete posts
 - [x] Edit/delete comments
-- [ ] Save posts
+- [x] Save posts
 - [ ] Image upload support
 - [ ] Types of posts (text, image, video) (optional)
 - [ ] community moderations
@@ -23,7 +23,7 @@ This is the repo for cosmo. A sort of social media like thing I'm making. It's a
   - [x] show user posts
     - [ ] published and unpublished if unpublished is a feature
   - [x] show liked posts
-  - [ ] show saved posts
+  - [x] show saved posts
   - [ ] show communities joined
   - [ ] show communities they are mods for
 
