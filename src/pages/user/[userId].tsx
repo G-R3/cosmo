@@ -19,7 +19,11 @@ const Profile: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{userQuery.data.user?.name} - Cosmo</title>
+        <title>{userQuery.data.user?.name} | Cosmo</title>
+        <meta
+          name="description"
+          content="A place to create communities and discuss"
+        />
       </Head>
       <div className="grid grid-cols-12 gap-2">
         <div className="col-span-full md:col-start-1 md:col-end-10">

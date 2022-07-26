@@ -3,6 +3,7 @@ import {
   InferGetServerSidePropsType,
   NextPage,
 } from "next";
+import Head from "next/head";
 import { unstable_getServerSession } from "next-auth";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -63,85 +64,93 @@ const Edit: NextPage = ({
   };
 
   return (
-    <section className="w-full max-w-xl mx-auto flex flex-col gap-10">
-      <div className="flex flex-col">
-        <h1 className="text-2xl font-semibold">Edit Post</h1>
-        <span></span>
-      </div>
-      <div className="flex flex-col gap-5 rounded-md">
-        {editMutation.error && (
-          <div className="bg-alert p-3 rounded-md text-foreground flex items-center gap-2">
-            <BiErrorCircle size={22} />
-            <span>Something has gone terrible wrong!</span>
-          </div>
-        )}
-
-        <div className="flex justify-between items-center flex-wrap">
-          <p className="mr-5 mb-2">
-            Posted to{" "}
-            <Link href={`/c/${post.community.name}`}>
-              <a
-                data-cy="post-community"
-                className="text-highlight font-semibold"
-              >
-                {post.community.name}
-              </a>
-            </Link>{" "}
-          </p>
-
-          <div className="flex items-center gap-4 text-grayAlt">
-            <div className="flex items-center gap-2">
-              <span className="rounded-full p-1 bg-red-500/20 outline outline-2 outline-red-500/25 transition-all">
-                <AiFillHeart size={20} className="text-red-500" />
-              </span>
-              <span className="text-red-500">{post._count.likes}</span>
-            </div>
-            <div>
-              {post._count.comments}{" "}
-              {post._count.comments.length === 1 ? "comment" : "comments"}
-            </div>
-          </div>
+    <>
+      <Head>
+        <title>{post.title} | Edit</title>
+        <meta
+          name="description"
+          content="A place to create communities and discuss"
+        />
+      </Head>
+      <section className="w-full max-w-xl mx-auto flex flex-col gap-10">
+        <div className="flex flex-col">
+          <h1 className="text-2xl font-semibold">Edit Post</h1>
         </div>
+        <div className="flex flex-col gap-5 rounded-md">
+          {editMutation.error && (
+            <div className="bg-alert p-3 rounded-md text-foreground flex items-center gap-2">
+              <BiErrorCircle size={22} />
+              <span>Something has gone terrible wrong!</span>
+            </div>
+          )}
 
-        <form
-          onSubmit={handleSubmit((data) => updatePost(data, post.id))}
-          className="flex flex-col gap-5 rounded-md"
-        >
-          <div>
-            <p className="opacity-70 border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt text-darkTwo dark:border-darkTwo  dark:bg-darkOne dark:text-foreground cursor-not-allowed">
-              {post.title}
+          <div className="flex justify-between items-center flex-wrap">
+            <p className="mr-5 mb-2">
+              Posted to{" "}
+              <Link href={`/c/${post.community.name}`}>
+                <a
+                  data-cy="post-community"
+                  className="text-highlight font-semibold"
+                >
+                  {post.community.name}
+                </a>
+              </Link>{" "}
             </p>
-            <span className="text-grayAlt text-sm">
-              Changing post title is not supported at the moment
-            </span>
+
+            <div className="flex items-center gap-4 text-grayAlt">
+              <div className="flex items-center gap-2">
+                <span className="rounded-full p-1 bg-red-500/20 outline outline-2 outline-red-500/25 transition-all">
+                  <AiFillHeart size={20} className="text-red-500" />
+                </span>
+                <span className="text-red-500">{post._count.likes}</span>
+              </div>
+              <div>
+                {post._count.comments}{" "}
+                {post._count.comments.length === 1 ? "comment" : "comments"}
+              </div>
+            </div>
           </div>
 
-          <div className="flex flex-col gap-2">
-            <MarkdownTipsModal />
-            <TextareaAutosize
-              data-cy="edit-post-body"
-              placeholder={`# Your Post \nLet the world know what you're thinking. Start with a title and then add some content to spice up your post! 😀`}
-              register={register("postContent")}
-              minHeight={250}
-            />
-            {errors.postContent?.message && (
-              <span className="text-alert">{errors.postContent.message}</span>
-            )}
-          </div>
+          <form
+            onSubmit={handleSubmit((data) => updatePost(data, post.id))}
+            className="flex flex-col gap-5 rounded-md"
+          >
+            <div>
+              <p className="opacity-70 border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt text-darkTwo dark:border-darkTwo  dark:bg-darkOne dark:text-foreground cursor-not-allowed">
+                {post.title}
+              </p>
+              <span className="text-grayAlt text-sm">
+                Changing post title is not supported at the moment
+              </span>
+            </div>
 
-          <div className="flex justify-end gap-5">
-            <DeletePostModal postId={post.id} />
-            <button
-              data-cy="submit"
-              disabled={watch("postContent") === post.content}
-              className="bg-success text-whiteAlt self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
-            >
-              Save
-            </button>
-          </div>
-        </form>
-      </div>
-    </section>
+            <div className="flex flex-col gap-2">
+              <MarkdownTipsModal />
+              <TextareaAutosize
+                data-cy="edit-post-body"
+                placeholder={`# Your Post \nLet the world know what you're thinking. Start with a title and then add some content to spice up your post! 😀`}
+                register={register("postContent")}
+                minHeight={250}
+              />
+              {errors.postContent?.message && (
+                <span className="text-alert">{errors.postContent.message}</span>
+              )}
+            </div>
+
+            <div className="flex justify-end gap-5">
+              <DeletePostModal postId={post.id} />
+              <button
+                data-cy="submit"
+                disabled={watch("postContent") === post.content}
+                className="bg-success text-whiteAlt self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
+              >
+                Save
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </>
   );
 };
 

@@ -1,7 +1,8 @@
 import { useSession } from "next-auth/react";
-import { motion } from "framer-motion";
-import Link from "next/link";
 import { NextPage } from "next";
+import Link from "next/link";
+import Head from "next/head";
+import { motion } from "framer-motion";
 import { trpc } from "@/utils/trpc";
 import PostSkeleton from "@/components/PostSkeleton";
 import Post from "@/components/Post";
@@ -24,6 +25,13 @@ const Home: NextPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Cosmo</title>
+        <meta
+          name="description"
+          content="A place to create communities and discuss"
+        />
+      </Head>
       <section className="lg:grid lg:grid-cols-5 gap-x-5 min-h-full">
         <div className="hidden lg:block">
           <div className="bg-neutral rounded-md sticky top-20">

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Head from "next/head";
 import { useSession } from "next-auth/react";
 import { BiErrorCircle } from "react-icons/bi";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
@@ -253,6 +254,15 @@ const Post: NextPage<{
 
   return (
     <>
+      <Head>
+        <title>
+          {postQuery.data.post.title} | {postQuery.data.post.community.name}
+        </title>
+        <meta
+          name="description"
+          content="A place to create communities and discuss"
+        />
+      </Head>
       <div className="max-w-3xl mx-auto">
         {!!likeMutation.error ||
           (!!unlikeMutation.error && (

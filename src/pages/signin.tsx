@@ -4,6 +4,7 @@ import {
   InferGetServerSidePropsType,
   NextPage,
 } from "next";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { AiFillGithub, AiFillGoogleCircle } from "react-icons/ai";
 import { unstable_getServerSession } from "next-auth";
@@ -31,26 +32,37 @@ const SignIn: NextPage = ({
   const callbackUrl = useRouter().query.callbackUrl as string;
 
   return (
-    <div className="flex flex-col items-center justify-center max-w-xl mx-auto">
-      <h1 className="text-3xl font-bold text-center mb-10">Log in to Cosmo</h1>
-      <div className="flex flex-col gap-4">
-        {Object.values(providers).map((provider: any) => {
-          const { styles, icon } = providerStyles[provider.id] as ProviderProps;
-          return (
-            <button
-              key={provider.id}
-              className={`h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all w-full ${styles}`}
-              onClick={() =>
-                signIn(provider.id, { callbackUrl: callbackUrl ?? "/" })
-              }
-            >
-              {icon}
-              Sign in with {provider.name}
-            </button>
-          );
-        })}
+    <>
+      <Head>
+        <title>Sign in | Cosmo</title>
+        <meta name="description" content="Sign in to your Cosmo account" />
+      </Head>
+
+      <div className="flex flex-col items-center justify-center max-w-xl mx-auto">
+        <h1 className="text-3xl font-bold text-center mb-10">
+          Log in to Cosmo
+        </h1>
+        <div className="flex flex-col gap-4">
+          {Object.values(providers).map((provider: any) => {
+            const { styles, icon } = providerStyles[
+              provider.id
+            ] as ProviderProps;
+            return (
+              <button
+                key={provider.id}
+                className={`h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all w-full ${styles}`}
+                onClick={() =>
+                  signIn(provider.id, { callbackUrl: callbackUrl ?? "/" })
+                }
+              >
+                {icon}
+                Sign in with {provider.name}
+              </button>
+            );
+          })}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
