@@ -13,6 +13,7 @@ import {
   InferGetServerSidePropsType,
   NextPage,
 } from "next";
+import { useRouter } from "next/router";
 import superjson from "superjson";
 import { DehydratedState } from "react-query";
 import { appRouter } from "src/server/router/_app";
@@ -48,6 +49,7 @@ const Post: NextPage<{
   slug: string;
   postId: number;
 }> = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  const router = useRouter();
   const { postId, slug } = props;
   const { data: session } = useSession();
   // isValid was always returning false even when mode was set to "onChange"
@@ -394,7 +396,7 @@ const Post: NextPage<{
             <div className="flex justify-between items-center flex-wrap">
               <MarkdownTipsModal />
               {errors.commentContent?.message && (
-                <span className="text-alert">
+                <span data-cy="form-error" className="text-alert">
                   {errors.commentContent.message}
                 </span>
               )}
@@ -406,6 +408,8 @@ const Post: NextPage<{
               minHeight={200}
               register={register("commentContent")}
             />
+          </form>
+          {session?.user ? (
             <button
               form="createComment"
               data-cy="create-comment"
@@ -416,7 +420,17 @@ const Post: NextPage<{
             >
               Post
             </button>
-          </form>
+          ) : (
+            <button
+              onClick={() => router.push("/signin")}
+              disabled={
+                commentMutation.isLoading || !isDirty || !!errors.commentContent
+              }
+              className="bg-whiteAlt border-2 text-darkTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:outline-[3px] focus-visible:focus:outline-highlight"
+            >
+              Post
+            </button>
+          )}
         </section>
 
         <section className="mt-5 rounded-md py-5 flex flex-col gap-5">
