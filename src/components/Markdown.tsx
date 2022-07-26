@@ -40,7 +40,7 @@ const Markdown: React.FC<{ content: string }> = ({ content }) => {
         ),
         h6: "p",
       }}
-      className="min-w-full prose prose-a:text-blue-500 prose-pre:bg-white/50 prose-pre:dark:bg-darkTwo/50 prose-blockquote:dark:text-whiteAlt prose-code:dark:text-whiteAlt rounded-md text-darkOne dark:text-whiteAlt break-words"
+      className="min-w-full prose prose-p:break-words prose-a:text-blue-500 prose-pre:bg-white/50 prose-pre:dark:bg-darkTwo/50 prose-blockquote:dark:text-whiteAlt prose-code:dark:text-whiteAlt rounded-md text-darkOne dark:text-whiteAlt break-words"
     />
   );
 };
