@@ -80,7 +80,7 @@ const Submit: NextPageWithAuth = () => {
           {createPostMutation.error && (
             <div className="bg-alert p-3 rounded-md text-foreground flex items-center gap-2">
               <BiErrorCircle size={22} />
-              <span>Something has gone terrible wrong!</span>
+              <span>Something went wrong while creating your post!</span>
             </div>
           )}
           <div className="flex flex-col gap-2">
