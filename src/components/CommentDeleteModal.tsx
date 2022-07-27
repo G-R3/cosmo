@@ -4,7 +4,7 @@ import { FiTrash2 } from "react-icons/fi";
 import { Dialog } from "@headlessui/react";
 import { AnimatePresence, motion } from "framer-motion";
 
-const DeleteCommentModal: FC<{ commentId: number }> = ({ commentId }) => {
+const DeleteCommentModal: FC<{ commentId: string }> = ({ commentId }) => {
   const [isOpen, setIsOpen] = useState(false);
   const utils = trpc.useContext();
   const deleteMutation = trpc.useMutation("comment.delete", {
@@ -15,7 +15,7 @@ const DeleteCommentModal: FC<{ commentId: number }> = ({ commentId }) => {
     },
   });
 
-  const onDelete = (commentId: number) => {
+  const onDelete = (commentId: string) => {
     deleteMutation.mutate({ commentId });
   };
 

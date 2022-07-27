@@ -68,7 +68,7 @@ export const postRouter = createRouter()
   .query("get-by-id", {
     input: z.object({
       slug: z.string(),
-      id: z.number(),
+      id: z.string(),
     }),
     async resolve({ input }) {
       const post = await prisma.post.findUnique({
@@ -143,12 +143,10 @@ export const postRouter = createRouter()
   })
   .mutation("create", {
     input: z.object({
-      communityId: z
-        .number({
-          required_error: "Community is required",
-          invalid_type_error: "Community is required",
-        })
-        .positive({ message: "Community is required" }),
+      communityId: z.string({
+        required_error: "Community is required",
+        invalid_type_error: "Community is required",
+      }),
       title: z.string().trim().min(1, { message: "Post title is required" }),
       content: z
         .string()
@@ -199,7 +197,7 @@ export const postRouter = createRouter()
   })
   .mutation("edit", {
     input: z.object({
-      postId: z.number(),
+      postId: z.string(),
       postContent: z
         .string()
         .trim()
@@ -226,7 +224,7 @@ export const postRouter = createRouter()
   })
   .mutation("delete", {
     input: z.object({
-      postId: z.number(),
+      postId: z.string(),
     }),
     async resolve({ input, ctx }) {
       const deletedPost = await prisma.post.delete({
@@ -250,7 +248,7 @@ export const postRouter = createRouter()
   })
   .mutation("like", {
     input: z.object({
-      postId: z.number(),
+      postId: z.string(),
     }),
     async resolve({ input, ctx }) {
       const newLike = await prisma.like.create({
@@ -273,7 +271,7 @@ export const postRouter = createRouter()
   })
   .mutation("unlike", {
     input: z.object({
-      postId: z.number(),
+      postId: z.string(),
     }),
     async resolve({ input, ctx }) {
       const deletedLike = await prisma.like.delete({
@@ -290,7 +288,7 @@ export const postRouter = createRouter()
   })
   .mutation("save", {
     input: z.object({
-      postId: z.number(),
+      postId: z.string(),
     }),
     async resolve({ input, ctx }) {
       const newSave = await prisma.save.create({
@@ -313,7 +311,7 @@ export const postRouter = createRouter()
   })
   .mutation("unsave", {
     input: z.object({
-      postId: z.number(),
+      postId: z.string(),
     }),
     async resolve({ input, ctx }) {
       const unSaved = await prisma.save.delete({

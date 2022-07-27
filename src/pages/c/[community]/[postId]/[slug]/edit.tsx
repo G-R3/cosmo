@@ -20,12 +20,12 @@ import TextareaAutosize from "@/components/TextareaAutosize";
 import { prisma } from "../../../../../db/client";
 
 type Inputs = {
-  postId: number;
+  postId: string;
   postContent: string;
 };
 
 const schema = z.object({
-  postId: z.number(),
+  postId: z.string(),
   postContent: z
     .string()
     .trim()
@@ -112,6 +112,7 @@ const Edit: NextPage = ({
           </div>
 
           <form
+            id="edit-form"
             onSubmit={handleSubmit((data) => updatePost(data, post.id))}
             className="flex flex-col gap-5 rounded-md"
           >
@@ -141,6 +142,7 @@ const Edit: NextPage = ({
               <DeletePostModal postId={post.id} />
               <button
                 data-cy="submit"
+                form="edit-form"
                 disabled={watch("postContent") === post.content}
                 className="bg-success text-whiteAlt self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
               >
@@ -172,7 +174,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const post = await prisma.post.findUnique({
     where: {
-      id: Number(context.params?.postId),
+      id: context.params?.postId as string,
     },
     select: {
       id: true,

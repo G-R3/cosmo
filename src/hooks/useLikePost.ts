@@ -83,10 +83,10 @@ const useLikePost = (path: Paths, query?: any) => {
     },
   });
 
-  const onLike = (postId: number) => {
+  const onLike = (postId: string) => {
     likeMutation.mutate({ postId });
   };
-  const onUnlike = (postId: number) => {
+  const onUnlike = (postId: string) => {
     unlikeMutation.mutate({ postId });
   };
 

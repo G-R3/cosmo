@@ -7,19 +7,19 @@ import { useSession } from "next-auth/react";
 import Markdown from "../components/Markdown";
 
 interface Props {
-  id: number;
+  id: string;
   title: string;
   content?: string | null;
   slug: string;
   author: { id: string; name: string | null; image: string | null };
-  likes: { postId: number; userId: string }[];
-  community: { id: number; name: string };
-  savedBy: { postId: number; userId: string }[];
+  likes: { postId: string; userId: string }[];
+  community: { id: string; name: string };
+  savedBy: { postId: string; userId: string }[];
   _count: { comments: number };
-  onLike: (postId: number) => void;
-  onUnlike: (postId: number) => void;
-  onSave: (postId: number) => void;
-  onUnsave: (postId: number) => void;
+  onLike: (postId: string) => void;
+  onUnlike: (postId: string) => void;
+  onSave: (postId: string) => void;
+  onUnsave: (postId: string) => void;
 }
 
 const Post: React.FC<Props> = ({

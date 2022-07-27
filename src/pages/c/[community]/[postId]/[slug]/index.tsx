@@ -27,12 +27,12 @@ import MarkdownTipsModal from "@/components/MarkdownTipsModal";
 import TextareaAutosize from "@/components/TextareaAutosize";
 
 type Inputs = {
-  postId: number;
+  postId: string;
   commentContent: string;
 };
 
 const schema = z.object({
-  postId: z.number(),
+  postId: z.string(),
   commentContent: z
     .string()
     .trim()
@@ -47,7 +47,7 @@ const schema = z.object({
 const Post: NextPage<{
   trpcState: DehydratedState;
   slug: string;
-  postId: number;
+  postId: string;
 }> = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
   const { postId, slug } = props;
@@ -64,12 +64,9 @@ const Post: NextPage<{
   });
   const utils = trpc.useContext();
   const postQuery = trpc.useQuery(["post.get-by-id", { slug, id: postId }]);
-  const commentQuery = trpc.useQuery(
-    ["comment.get-by-postId", { postId: Number(postQuery.data?.post.id) }],
-    {
-      enabled: !!postQuery.data?.post.id,
-    },
-  );
+  const commentQuery = trpc.useQuery(["comment.get-by-postId", { postId }], {
+    enabled: !!postQuery.data?.post.id,
+  });
   const commentMutation = trpc.useMutation("comment.create", {
     onSuccess(data, variables, context) {
       utils.invalidateQueries(["post.get-by-id", { slug, id: postId }]);
@@ -83,14 +80,14 @@ const Post: NextPage<{
 
   const likeMutation = trpc.useMutation(["post.like"], {
     onMutate: async (likedPost) => {
-      await utils.cancelQuery(["post.get-by-id", { slug, id: Number(postId) }]);
+      await utils.cancelQuery(["post.get-by-id", { slug, id: postId }]);
       const previousData = utils.getQueryData([
         "post.get-by-id",
-        { slug, id: Number(postId) },
+        { slug, id: postId },
       ]);
 
       if (previousData) {
-        utils.setQueryData(["post.get-by-id", { slug, id: Number(postId) }], {
+        utils.setQueryData(["post.get-by-id", { slug, id: postId }], {
           ...previousData,
           post: {
             ...previousData.post,
@@ -110,7 +107,7 @@ const Post: NextPage<{
     onError: (err, data, context) => {
       if (context?.previousData) {
         utils.setQueryData(
-          ["post.get-by-id", { slug, id: Number(postId) }],
+          ["post.get-by-id", { slug, id: postId }],
           context?.previousData,
         );
       }
@@ -118,14 +115,14 @@ const Post: NextPage<{
   });
   const unlikeMutation = trpc.useMutation(["post.unlike"], {
     onMutate: async (unLikedPost) => {
-      await utils.cancelQuery(["post.get-by-id", { slug, id: Number(postId) }]);
+      await utils.cancelQuery(["post.get-by-id", { slug, id: postId }]);
       const previousData = utils.getQueryData([
         "post.get-by-id",
-        { slug, id: Number(postId) },
+        { slug, id: postId },
       ]);
 
       if (previousData) {
-        utils.setQueryData(["post.get-by-id", { slug, id: Number(postId) }], {
+        utils.setQueryData(["post.get-by-id", { slug, id: postId }], {
           ...previousData,
           post: {
             ...previousData.post,
@@ -141,7 +138,7 @@ const Post: NextPage<{
     onError: (err, data, context) => {
       if (context?.previousData) {
         utils.setQueryData(
-          ["post.get-by-id", { slug, id: Number(postId) }],
+          ["post.get-by-id", { slug, id: postId }],
           context?.previousData,
         );
       }
@@ -150,14 +147,14 @@ const Post: NextPage<{
 
   const saveMutation = trpc.useMutation(["post.save"], {
     onMutate: async (savedPost) => {
-      await utils.cancelQuery(["post.get-by-id", { slug, id: Number(postId) }]);
+      await utils.cancelQuery(["post.get-by-id", { slug, id: postId }]);
       const previousData = utils.getQueryData([
         "post.get-by-id",
-        { slug, id: Number(postId) },
+        { slug, id: postId },
       ]);
 
       if (previousData) {
-        utils.setQueryData(["post.get-by-id", { slug, id: Number(postId) }], {
+        utils.setQueryData(["post.get-by-id", { slug, id: postId }], {
           ...previousData,
           post: {
             ...previousData.post,
@@ -177,7 +174,7 @@ const Post: NextPage<{
     onError: (err, data, context) => {
       if (context?.previousData) {
         utils.setQueryData(
-          ["post.get-by-id", { slug, id: Number(postId) }],
+          ["post.get-by-id", { slug, id: postId }],
           context?.previousData,
         );
       }
@@ -185,14 +182,14 @@ const Post: NextPage<{
   });
   const unSaveMutation = trpc.useMutation(["post.unsave"], {
     onMutate: async (unSavedPost) => {
-      await utils.cancelQuery(["post.get-by-id", { slug, id: Number(postId) }]);
+      await utils.cancelQuery(["post.get-by-id", { slug, id: postId }]);
       const previousData = utils.getQueryData([
         "post.get-by-id",
-        { slug, id: Number(postId) },
+        { slug, id: postId },
       ]);
 
       if (previousData) {
-        utils.setQueryData(["post.get-by-id", { slug, id: Number(postId) }], {
+        utils.setQueryData(["post.get-by-id", { slug, id: postId }], {
           ...previousData,
           post: {
             ...previousData.post,
@@ -208,7 +205,7 @@ const Post: NextPage<{
     onError: (err, data, context) => {
       if (context?.previousData) {
         utils.setQueryData(
-          ["post.get-by-id", { slug, id: Number(postId) }],
+          ["post.get-by-id", { slug, id: postId }],
           context?.previousData,
         );
       }
@@ -234,16 +231,16 @@ const Post: NextPage<{
     });
   };
 
-  const onLike = (postId: number) => {
+  const onLike = (postId: string) => {
     likeMutation.mutate({ postId });
   };
-  const onUnlike = (postId: number) => {
+  const onUnlike = (postId: string) => {
     unlikeMutation.mutate({ postId });
   };
-  const onSave = (postId: number) => {
+  const onSave = (postId: string) => {
     saveMutation.mutate({ postId });
   };
-  const onUnsave = (postId: number) => {
+  const onUnsave = (postId: string) => {
     unSaveMutation.mutate({ postId });
   };
 
@@ -464,7 +461,7 @@ export const getServerSideProps = async (
     transformer: superjson,
   });
 
-  const postId = Number(context.params?.postId);
+  const postId = context.params?.postId as string;
   const slug = context.params?.slug as string;
 
   await ssg.fetchQuery("post.get-by-id", { slug, id: postId });

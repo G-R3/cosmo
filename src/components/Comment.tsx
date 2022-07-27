@@ -13,12 +13,12 @@ import CommentDeleteModal from "./CommentDeleteModal";
 import TextareaAutosize from "./TextareaAutosize";
 
 type Inputs = {
-  commentId: number;
+  commentId: string;
   commentContent: string;
 };
 
 const schema = z.object({
-  commentId: z.number(),
+  commentId: z.string(),
   commentContent: z
     .string()
     .trim()
@@ -26,7 +26,7 @@ const schema = z.object({
     .max(500, { message: "Comment must be less than 500 characters" }),
 });
 interface Props {
-  id: number;
+  id: string;
   content: string;
   createdAt: Date;
   updatedAt: Date;

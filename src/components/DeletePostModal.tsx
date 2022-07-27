@@ -5,28 +5,24 @@ import { Dialog } from "@headlessui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
 
-const DeletePostModal: FC<{ postId: number }> = ({ postId }) => {
+const DeletePostModal: FC<{ postId: string }> = ({ postId }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const utils = trpc.useContext();
   const deleteMutation = trpc.useMutation("post.delete", {
     onSuccess(data, variables, context) {
       setIsOpen(false);
-      // change this?
-      // utils.invalidateQueries("post.feed");
-      // utils.invalidateQueries("post.get-by-community");
-
       router.push(`/c/${data.post.community.name}`);
     },
   });
 
-  const onDelete = (postId: number) => {
+  const onDelete = (postId: string) => {
     deleteMutation.mutate({ postId });
   };
 
   return (
     <>
       <button
+        type="button"
         data-cy="post-delete"
         disabled={deleteMutation.isLoading}
         onClick={() => setIsOpen(true)}

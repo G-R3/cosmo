@@ -8,7 +8,7 @@ import { UseFormSetValue, UseFormReset } from "react-hook-form";
 import { trpc } from "../utils/trpc";
 
 type Inputs = {
-  postCommunityId: number;
+  postCommunityId: string;
   postTitle: string;
   postContent?: string;
 };
