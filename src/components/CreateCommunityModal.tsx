@@ -113,9 +113,7 @@ const CreateCommunityModal: React.FC = () => {
                     onSubmit={handleSubmit(createCommunity)}
                   >
                     <div className="flex flex-col gap-2">
-                      <label htmlFor="community-name" className="text-md">
-                        Name
-                      </label>
+                      <label htmlFor="community-name">Name</label>
                       <div className="flex flex-col gap-2">
                         <input
                           id="community-name"
@@ -135,10 +133,7 @@ const CreateCommunityModal: React.FC = () => {
                     </div>
 
                     <div className="flex flex-col gap-2">
-                      <label
-                        htmlFor="community-description"
-                        className="text-md"
-                      >
+                      <label htmlFor="community-description">
                         Description
                         <span className="ml-2 inline-block text-sm text-grayAlt">
                           (Optional)
