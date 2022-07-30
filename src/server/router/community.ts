@@ -39,6 +39,12 @@ export const communityRouter = createRouter()
               name: true,
             },
           },
+          tags: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
         },
       });
 
@@ -177,6 +183,73 @@ export const communityRouter = createRouter()
         success: true,
         message: "Community updated",
         community,
+      };
+    },
+  })
+  .mutation("add-tag", {
+    input: z.object({
+      communityId: z.string(),
+      tag: z
+        .string()
+        .trim()
+        .min(1, { message: "Tag name can't be empty" })
+        .max(64, { message: "Tag must be less than 64 characters long" }),
+    }),
+    async resolve({ input }) {
+      const community = await prisma.community.findUnique({
+        where: {
+          id: input.communityId,
+        },
+        select: {
+          tags: true,
+        },
+      });
+
+      if (community?.tags.some((tag) => tag.name === input.tag)) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Tag already exists for this community",
+        });
+      }
+
+      const tag = await prisma.tags.create({
+        data: {
+          name: input.tag,
+          community: {
+            connect: {
+              id: input.communityId,
+            },
+          },
+        },
+        select: {
+          id: true,
+          communityId: true,
+          name: true,
+        },
+      });
+
+      return {
+        success: true,
+        message: "Tag was added to this community",
+        tag,
+      };
+    },
+  })
+  .mutation("remove-tag", {
+    input: z.object({
+      tagId: z.string(),
+    }),
+    async resolve({ input }) {
+      const tag = await prisma.tags.delete({
+        where: {
+          id: input.tagId,
+        },
+      });
+
+      return {
+        success: true,
+        message: "Tag was removed from this community",
+        tag,
       };
     },
   })

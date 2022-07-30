@@ -1,10 +1,11 @@
-import { useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { FiX } from "react-icons/fi";
 import { trpc } from "@/utils/trpc";
 import { NextPageWithAuth } from "@/components/Auth";
 import TextareaAutosize from "@/components/TextareaAutosize";
@@ -74,7 +75,6 @@ const EditCommunity: NextPageWithAuth = () => {
   }
 
   const editCommunity: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
     editMutation.mutate({
       communityId: data.communityId,
       communityTitle: data.communityTitle,
@@ -104,7 +104,7 @@ const EditCommunity: NextPageWithAuth = () => {
           content="A place to create communities and discuss"
         />
       </Head>
-      <div>
+      <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl sm:text-5xl font-bold">
           Editing {data.community.name}
         </h1>
@@ -112,16 +112,25 @@ const EditCommunity: NextPageWithAuth = () => {
         <form
           id="editCommunity"
           onSubmit={handleSubmit(editCommunity)}
-          className="mt-4 flex flex-col gap-6"
+          className="mt-4 flex flex-col gap-8"
         >
           <div className="flex flex-col gap-1">
-            <label htmlFor="title">Display Title</label>
+            <div className="flex flex-col mb-2">
+              <label htmlFor="title">
+                Display Title <span>(optional)</span>
+              </label>
+              <span className="text-sm text-grayAlt">
+                Set a display title for this community
+              </span>
+            </div>
             <input
               type="text"
               id="communityTitle"
+              autoComplete="false"
+              placeholder="Display title (optional)"
               defaultValue={data.community.title ? data.community.title : ""}
               {...register("communityTitle")}
-              className="w-full border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-slate-400 dark:bg-darkOne dark:text-foreground"
+              className="w-full border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-grayAlt dark:bg-darkOne dark:text-foreground"
             />
             {errors.communityTitle?.message && (
               <span
@@ -134,9 +143,17 @@ const EditCommunity: NextPageWithAuth = () => {
           </div>
 
           <div className="flex flex-col gap-1">
-            <label htmlFor="community-description">Description</label>
+            <div className="flex flex-col mb-2">
+              <label htmlFor="community-description">
+                Description <span>(optional)</span>
+              </label>
+              <span className="text-sm text-grayAlt">
+                Set a description for this community
+              </span>
+            </div>
             <div className="flex flex-col">
               <TextareaAutosize
+                placeholder="Description (optional)"
                 defaultValue={
                   data.community.description ? data.community.description : ""
                 }
@@ -172,7 +189,132 @@ const EditCommunity: NextPageWithAuth = () => {
             </button>
           </div>
         </form>
+        <div>
+          <div className="flex flex-col mb-2">
+            <label htmlFor="community-description">
+              Tags <span>(optional)</span>
+            </label>
+            <span className="text-sm text-grayAlt">
+              Set up tags that acts as labels for posts made to this community
+            </span>
+          </div>
+          <TagInput
+            tags={data.community.tags}
+            communityId={data.community.id}
+          />
+        </div>
       </div>
+    </>
+  );
+};
+
+type TagInput = {
+  communityId: string;
+  tag: string;
+};
+const tagSchema = z.object({
+  communityId: z.string(),
+  tag: z
+    .string()
+    .trim()
+    .min(1, { message: "Tag name can't be empty" })
+    .max(64, { message: "Tag must be less than 64 characters long" }),
+});
+
+const TagInput: FC<{
+  tags: {
+    id: string;
+    name: string;
+  }[];
+  communityId: string;
+}> = ({ tags, communityId }) => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    formState: { errors, isValid, isDirty },
+  } = useForm<TagInput>({
+    defaultValues: { communityId },
+    resolver: zodResolver(tagSchema),
+    mode: "onChange",
+  });
+  const utils = trpc.useContext();
+  const addMutation = trpc.useMutation("community.add-tag", {
+    onSuccess: (data) => {
+      utils.invalidateQueries(["community.get"]);
+      reset({
+        communityId: data.tag.communityId,
+        tag: "",
+      });
+    },
+  });
+  const removeMutation = trpc.useMutation("community.remove-tag", {
+    onSuccess: (data) => {
+      console.log(data);
+      utils.invalidateQueries(["community.get"]);
+      reset({
+        communityId: data.tag.communityId,
+        tag: "",
+      });
+    },
+  });
+
+  const addTag: SubmitHandler<TagInput> = (data) => {
+    const { tag: newTag, communityId } = data;
+
+    const tagExists = tags.some((tag) => tag.name === newTag.trim());
+
+    if (tagExists) {
+      setError("tag", {
+        type: "custom",
+        message: "Tag already exists for this community",
+      });
+      return;
+    }
+
+    addMutation.mutate({ communityId, tag: newTag });
+  };
+
+  const removeTag = (tagId: string) => {
+    removeMutation.mutate({ tagId });
+  };
+
+  return (
+    <>
+      {tags.length > 0 && (
+        <div className="flex flex-wrap gap-2 my-3">
+          {tags.map((tag) => (
+            <button
+              type="button"
+              onClick={() => removeTag(tag.id)}
+              key={tag.id}
+              className="flex items-center gap-x-2 px-2 bg-darkTwo border border-grayAlt rounded-full"
+            >
+              {tag.name}
+              <FiX />
+            </button>
+          ))}
+        </div>
+      )}
+      <form onSubmit={handleSubmit(addTag)} className="flex gap-x-6">
+        <input
+          {...register("tag")}
+          autoComplete="false"
+          placeholder="Tag (optional)"
+          className="w-full border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-grayAlt dark:bg-darkOne dark:text-foreground"
+        />
+
+        <button
+          disabled={!isDirty || !isValid}
+          className="bg-whiteAlt border-2 text-darkTwo px-4 py-2 rounded-md disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:outline-[3px] focus-visible:focus:outline-highlight"
+        >
+          Add
+        </button>
+      </form>
+      {errors.tag?.message && (
+        <span className="text-alert">{errors.tag?.message}</span>
+      )}
     </>
   );
 };
