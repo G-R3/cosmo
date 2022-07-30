@@ -15,6 +15,31 @@ export const communityRouter = createRouter()
         where: {
           name: input.query,
         },
+        select: {
+          id: true,
+          name: true,
+          title: true,
+          description: true,
+          createdAt: true,
+          moderators: {
+            select: {
+              user: {
+                select: {
+                  id: true,
+                  image: true,
+                  name: true,
+                },
+              },
+            },
+          },
+          creator: {
+            select: {
+              id: true,
+              image: true,
+              name: true,
+            },
+          },
+        },
       });
 
       if (!community) {
@@ -24,7 +49,12 @@ export const communityRouter = createRouter()
         });
       }
 
-      return community;
+      return {
+        community,
+        isModerator: community.moderators.find(
+          (moderator) => moderator.user.id === ctx.session?.user.id,
+        ),
+      };
     },
   })
   .query("search", {
@@ -94,11 +124,94 @@ export const communityRouter = createRouter()
       const community = await prisma.community.create({
         data: {
           name: input.communityName,
+          title: input.communityName,
           description: input.communityDescription,
-          creatorId: ctx.user.id,
+          creator: {
+            connect: {
+              id: ctx.user.id,
+            },
+          },
+          moderators: {
+            connectOrCreate: {
+              create: {
+                userId: ctx.user.id,
+                assignedBy: ctx.user.id,
+              },
+              where: {
+                id: ctx.user.id,
+              },
+            },
+          },
         },
       });
 
       return community;
+    },
+  })
+  .mutation("edit", {
+    input: z.object({
+      communityId: z.string(),
+      communityTitle: z
+        .string()
+        .trim()
+        .max(50, { message: "Title must be less than 50 characters" })
+        .optional(),
+      communityDescription: z
+        .string()
+        .trim()
+        .max(200, { message: "Description must be less than 200 characters" })
+        .optional(),
+    }),
+    async resolve({ input }) {
+      const community = await prisma.community.update({
+        where: {
+          id: input.communityId,
+        },
+        data: {
+          title: input.communityTitle,
+          description: input.communityDescription,
+        },
+      });
+
+      return {
+        success: true,
+        message: "Community updated",
+        community,
+      };
+    },
+  })
+  .mutation("add-moderator", {
+    input: z.object({
+      communityId: z.string(),
+      userId: z.string(),
+    }),
+    async resolve({ input, ctx }) {
+      const moderator = await prisma.moderator.create({
+        data: {
+          user: {
+            connect: {
+              id: input.userId,
+            },
+          },
+          community: {
+            connect: {
+              id: input.communityId,
+            },
+          },
+          assignedBy: ctx.user.id,
+        },
+        select: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+
+      return {
+        success: true,
+        message: `Successfully added ${moderator.user.name} as moderator`,
+      };
     },
   });

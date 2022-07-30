@@ -20,7 +20,7 @@ const schema = z.object({
   communityTitle: z
     .string()
     .trim()
-    .max(25, { message: "Title must be less than 25 characters" })
+    .max(50, { message: "Title must be less than 50 characters" })
     .optional(),
   communityDescription: z
     .string()
@@ -37,6 +37,7 @@ const EditCommunity: NextPageWithAuth = () => {
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors, isDirty },
   } = useForm<Inputs>({
     resolver: zodResolver(schema),
@@ -52,7 +53,13 @@ const EditCommunity: NextPageWithAuth = () => {
   );
   const editMutation = trpc.useMutation("community.edit", {
     onSuccess(data, variables, context) {
-      console.log(data.message);
+      reset({
+        communityId: data.community.id,
+        communityTitle: data.community.title,
+        communityDescription: data.community.description
+          ? data.community.description
+          : "",
+      });
     },
   });
 
