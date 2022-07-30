@@ -9,6 +9,7 @@ import { FiX } from "react-icons/fi";
 import { trpc } from "@/utils/trpc";
 import { NextPageWithAuth } from "@/components/Auth";
 import TextareaAutosize from "@/components/TextareaAutosize";
+import Tag from "@/components/Tag";
 
 type Inputs = {
   communityId: string;
@@ -283,19 +284,17 @@ const TagInput: FC<{
   return (
     <>
       {tags.length > 0 && (
-        <div className="flex flex-wrap gap-2 my-3">
+        <ul className="flex flex-wrap gap-2 my-3">
           {tags.map((tag) => (
-            <button
-              type="button"
-              onClick={() => removeTag(tag.id)}
-              key={tag.id}
-              className="flex items-center gap-x-2 px-2 bg-darkTwo border border-grayAlt rounded-full"
-            >
-              {tag.name}
-              <FiX />
-            </button>
+            <li key={tag.id}>
+              <Tag
+                label={tag.name}
+                onClick={() => removeTag(tag.id)}
+                icon={<FiX size={12} />}
+              />
+            </li>
           ))}
-        </div>
+        </ul>
       )}
       <form onSubmit={handleSubmit(addTag)} className="flex gap-x-6">
         <input

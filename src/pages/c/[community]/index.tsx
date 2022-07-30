@@ -8,6 +8,7 @@ import Post from "@/components/Post";
 import PostSkeleton from "@/components/PostSkeleton";
 import useLikePost from "@/hooks/useLikePost";
 import useSavePost from "@/hooks/useSavePost";
+import Tag from "@/components/Tag";
 
 const Index: NextPage = () => {
   const query = useRouter().query.community as string;
@@ -18,7 +19,11 @@ const Index: NextPage = () => {
   const { onLike, onUnlike } = useLikePost("post.get-by-community", { query });
   const { onSave, onUnsave } = useSavePost("post.get-by-community", { query });
 
-  if (communityQuery.error) {
+  if (communityQuery.isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (communityQuery.error || !communityQuery.data) {
     return (
       <div className="flex items-center flex-col gap-5">
         <h1 className="text-2xl font-bold">
@@ -29,10 +34,6 @@ const Index: NextPage = () => {
         </Link>
       </div>
     );
-  }
-
-  if (communityQuery.isLoading) {
-    return <div>Loading...</div>;
   }
 
   return (
@@ -65,7 +66,7 @@ const Index: NextPage = () => {
             )}
           </div>
           <p className="text-grayAlt font-semibold ">
-            {communityQuery.data?.community.name}
+            {communityQuery.data.community.name}
           </p>
         </div>
 
@@ -89,11 +90,15 @@ const Index: NextPage = () => {
                 ))}
             </div>
             <div className="col-span-3 flex flex-col gap-y-3">
-              <div className="bg-darkOne p-4 rounded-md flex flex-col gap-2">
+              <div className="bg-whiteAlt dark:bg-darkOne p-4 rounded-md flex flex-col gap-2">
                 <h2 className="text-grayAlt font-semibold mb-3">
                   About Community
                 </h2>
-                <p>{communityQuery.data?.community.description}</p>
+                <p>
+                  {communityQuery.data?.community.description
+                    ? communityQuery.data?.community.description
+                    : `The ${communityQuery.data?.community.name} community`}
+                </p>
                 <p>
                   <span>Created on </span>
                   {communityQuery.data?.community.createdAt.toLocaleString()}
@@ -105,7 +110,7 @@ const Index: NextPage = () => {
                   </a>
                 </Link>
               </div>
-              <div className="bg-darkOne p-4 rounded-md flex flex-col gap-2">
+              <div className="bg-whiteAlt dark:bg-darkOne p-4 rounded-md flex flex-col gap-2">
                 <div className="flex items-center justify-between mb-3">
                   <h2 className="text-grayAlt font-semibold">
                     Community Moderators
@@ -118,26 +123,43 @@ const Index: NextPage = () => {
                 <div>
                   {communityQuery.data?.community.moderators.map(
                     (moderator) => (
-                      <div
+                      <Link
+                        href={`/user/${moderator.user.id}`}
                         key={moderator.user.id}
-                        className="flex items-center gap-x-2"
                       >
-                        <div className="w-fit flex rounded-full outline outline-offset-2 outline-1 outline-highlight">
-                          <span
-                            style={{
-                              backgroundImage: `url(${moderator.user.image})`,
-                            }}
-                            className="w-6 h-6 bg-cover bg-no-repeat bg-center rounded-full outline-none cursor-pointer"
-                          ></span>
-                        </div>
-                        <Link href={`/user/${moderator.user.id}`}>
-                          <a>{moderator.user.name}</a>
-                        </Link>
-                      </div>
+                        <a className="flex items-center gap-x-2 w-fit hover:underline hover:underline-offset-1">
+                          <div className="w-fit flex rounded-full outline outline-offset-2 outline-1 outline-highlight">
+                            <span
+                              style={{
+                                backgroundImage: `url(${moderator.user.image})`,
+                              }}
+                              className="w-6 h-6 bg-cover bg-no-repeat bg-center rounded-full outline-none"
+                            ></span>
+                          </div>
+                          {moderator.user.name}
+                        </a>
+                      </Link>
                     ),
                   )}
                 </div>
               </div>
+              {communityQuery.data.community.tags.length > 0 && (
+                <div className="bg-whiteAlt dark:bg-darkOne p-4 rounded-md flex flex-col gap-2">
+                  <h2 className="text-grayAlt font-semibold mb-3">
+                    Community Tags
+                  </h2>
+                  <ul className="flex flex-wrap items-center gap-2 max-w-full">
+                    {communityQuery.data.community.tags.map((tag) => (
+                      <li
+                        key={tag.id}
+                        className="max-w-[97%] overflow-hidden text-ellipsis"
+                      >
+                        <Tag label={tag.name} />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
           {postQuery.data?.posts.length === 0 && (
