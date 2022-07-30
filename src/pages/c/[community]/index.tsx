@@ -38,7 +38,11 @@ const Index: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{communityQuery.data?.community.name} | Cosmo</title>
+        <title>
+          {!!communityQuery.data?.community.title
+            ? communityQuery.data?.community.title
+            : communityQuery.data?.community.name}
+        </title>
         <meta
           name="description"
           content="A place to create communities and discuss"
