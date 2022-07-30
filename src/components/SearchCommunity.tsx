@@ -107,7 +107,7 @@ const SearchCommunity: React.FC<Props> = ({ setValue, reset }) => {
             <button
               onClick={() => {
                 reset({
-                  postCommunityId: 0,
+                  postCommunityId: "",
                 });
                 setQuery("");
                 setSelectedCommunity(null);
