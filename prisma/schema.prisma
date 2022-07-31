@@ -29,13 +29,13 @@ model Community {
 model Tags {
   id          String    @id @default(cuid())
   name        String
-  community   Community @relation(fields: [communityId], references: [id])
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
   communityId String
 }
 
 model Moderator {
   id          String    @id @default(cuid())
-  user        User      @relation(fields: [userId], references: [id])
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
   community   Community @relation(fields: [communityId], references: [id])
   communityId String
