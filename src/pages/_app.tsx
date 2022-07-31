@@ -4,6 +4,7 @@ import { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
 import { NextComponentType, NextPageContext } from "next";
 import { ThemeProvider } from "next-themes";
+import superjson from "superjson";
 import { AppRouter } from "../server/router/_app";
 import Layout from "../components/Layout";
 import Auth, { PageAuth } from "../components/Auth";
@@ -41,11 +42,19 @@ const App = ({
 
 export default withTRPC<AppRouter>({
   config({ ctx }) {
+    if (typeof window !== "undefined") {
+      return {
+        transformer: superjson,
+        url: "/api/trpc",
+      };
+    }
+
     const url = process.env.VERCEL_URL
       ? `https://${process.env.VERCEL_URL}/api/trpc`
       : "http://localhost:3000/api/trpc";
 
     return {
+      transformer: superjson,
       url,
     };
   },
