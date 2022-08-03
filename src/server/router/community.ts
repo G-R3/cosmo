@@ -260,6 +260,22 @@ export const communityRouter = createRouter()
       userId: z.string(),
     }),
     async resolve({ input, ctx }) {
+      const isExistingMod = await prisma.moderator.findFirst({
+        where: {
+          AND: {
+            userId: input.userId,
+            communityId: input.communityId,
+          },
+        },
+      });
+
+      if (isExistingMod) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "User is already a moderator for this community",
+        });
+      }
+
       const moderator = await prisma.moderator.create({
         data: {
           user: {

@@ -10,6 +10,7 @@ import { trpc } from "@/utils/trpc";
 import { NextPageWithAuth } from "@/components/Auth";
 import TextareaAutosize from "@/components/TextareaAutosize";
 import Tag from "@/components/Tag";
+import SearchUser from "@/components/SearchUser";
 
 type Inputs = {
   communityId: string;
@@ -99,21 +100,21 @@ const EditCommunity: NextPageWithAuth = () => {
   return (
     <>
       <Head>
-        <title>{data.community.name} | Edit</title>
+        <title>{data.community.name} | Settings</title>
         <meta
           name="description"
           content="A place to create communities and discuss"
         />
       </Head>
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl sm:text-5xl font-bold">
-          Editing {data.community.name}
+        <h1 className="text-3xl sm:text-5xl font-bold mb-8">
+          Community Settings
         </h1>
 
         <form
           id="editCommunity"
           onSubmit={handleSubmit(editCommunity)}
-          className="mt-4 flex flex-col gap-8"
+          className="flex flex-col gap-8"
         >
           <div className="flex flex-col gap-1">
             <div className="flex flex-col mb-2">
@@ -190,7 +191,8 @@ const EditCommunity: NextPageWithAuth = () => {
             </button>
           </div>
         </form>
-        <div>
+
+        <div className="mb-8">
           <div className="flex flex-col mb-2">
             <label htmlFor="community-description">
               Tags <span>(optional)</span>
@@ -201,6 +203,19 @@ const EditCommunity: NextPageWithAuth = () => {
           </div>
           <TagInput
             tags={data.community.tags}
+            communityId={data.community.id}
+          />
+        </div>
+
+        <div className="mb-8">
+          <div className="flex flex-col mb-2">
+            <label htmlFor="community-description">Moderators</label>
+            <span className="text-sm text-grayAlt">
+              Add or remove moderators for this community
+            </span>
+          </div>
+          <ModeratorList
+            moderators={data.community.moderators}
             communityId={data.community.id}
           />
         </div>
@@ -252,7 +267,6 @@ const TagInput: FC<{
   });
   const removeMutation = trpc.useMutation("community.remove-tag", {
     onSuccess: (data) => {
-      console.log(data);
       utils.invalidateQueries(["community.get"]);
       reset({
         communityId: data.tag.communityId,
@@ -314,6 +328,120 @@ const TagInput: FC<{
       {errors.tag?.message && (
         <span className="text-alert">{errors.tag?.message}</span>
       )}
+    </>
+  );
+};
+
+type SearchInput = {
+  userId: string;
+  communityId: string;
+};
+
+type Props = {
+  communityId: string;
+  moderators: {
+    user: {
+      id: string;
+      name: string | null;
+      image: string | null;
+    };
+    createdAt: Date;
+  }[];
+};
+
+const searchSchema = z.object({
+  communityId: z.string().trim(),
+  userId: z
+    .string({
+      required_error: "User is required",
+      invalid_type_error: "User is required",
+    })
+    .trim()
+    .min(1, { message: "User is required" }),
+});
+
+const ModeratorList: FC<Props> = ({ moderators, communityId }) => {
+  const {
+    handleSubmit,
+    setValue,
+    reset,
+    setError,
+    formState: { errors, isDirty },
+  } = useForm<SearchInput>({
+    defaultValues: { communityId },
+    resolver: zodResolver(searchSchema),
+  });
+  const utils = trpc.useContext();
+  const addMutation = trpc.useMutation("community.add-moderator", {
+    onSuccess(data, variables, context) {
+      utils.invalidateQueries(["community.get"]);
+    },
+  });
+
+  const addModerator: SubmitHandler<SearchInput> = (data) => {
+    const { userId, communityId } = data;
+    const isExistingMod = moderators.some((mod) => mod.user.id === userId);
+    if (isExistingMod) {
+      setError("userId", {
+        type: "custom",
+        message: "User is already a moderator for this community.",
+      });
+
+      return;
+    }
+    addMutation.mutate({ communityId, userId });
+  };
+
+  return (
+    <>
+      <form
+        onSubmit={handleSubmit(addModerator)}
+        className="flex flex-col gap-4"
+      >
+        <SearchUser
+          reset={() => reset({ userId: "", communityId })}
+          setValue={setValue}
+        />
+        {errors.userId?.message && (
+          <span className="text-alert">{errors.userId.message}</span>
+        )}
+        <button
+          disabled={addMutation.isLoading}
+          className="self-end bg-whiteAlt border-2 text-darkTwo px-4 py-2 rounded-md disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:outline-[3px] focus-visible:focus:outline-highlight"
+        >
+          Add
+        </button>
+      </form>
+      <ul className="mt-5 flex flex-col border border-grayAlt rounded-md overflow-hidden">
+        {moderators.map((mod, idx) => (
+          <li
+            key={mod.user.id}
+            className={`grid grid-cols-3 p-4 ${
+              idx % 2 ? "bg-whiteAlt dark:bg-darkOne" : ""
+            }`}
+          >
+            <Link href={`/user/${mod.user.id}`} key={mod.user.id}>
+              <a className="flex items-center gap-x-2 w-fit hover:underline hover:underline-offset-1">
+                <div className="w-fit flex rounded-full outline outline-offset-2 outline-1 outline-highlight">
+                  <span
+                    style={{
+                      backgroundImage: `url(${mod.user.image})`,
+                    }}
+                    className="w-6 h-6 bg-cover bg-no-repeat bg-center rounded-full outline-none"
+                  ></span>
+                </div>
+                {mod.user.name}
+              </a>
+            </Link>
+            <span className="text-center">
+              {mod.createdAt.toLocaleDateString()}
+            </span>
+            <div className="justify-self-end">
+              <button className="px-4">edit</button>
+            </div>
+          </li>
+        ))}
+      </ul>
     </>
   );
 };
