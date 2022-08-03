@@ -9,6 +9,7 @@ import { trpc } from "../utils/trpc";
 
 type Inputs = {
   userId: string;
+  communityId: string;
 };
 interface Props {
   setValue: UseFormSetValue<Inputs>;
@@ -101,12 +102,10 @@ const SearchUser: React.FC<Props> = ({ setValue, reset }) => {
       {selectedUser && (
         <div className="flex flex-col">
           <div className="flex items-center justify-between">
-            <small>Posting to </small>
+            <small>Adding moderator</small>
             <button
               onClick={() => {
-                reset({
-                  userId: "",
-                });
+                reset();
                 setQuery("");
                 setSelectedUser(null);
               }}
