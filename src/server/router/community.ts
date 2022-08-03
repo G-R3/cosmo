@@ -23,6 +23,7 @@ export const communityRouter = createRouter()
           createdAt: true,
           moderators: {
             select: {
+              createdAt: true,
               user: {
                 select: {
                   id: true,

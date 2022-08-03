@@ -120,7 +120,7 @@ const Index: NextPage = () => {
                   </button>
                 </div>
 
-                <div>
+                <div className="flex flex-col gap-4">
                   {communityQuery.data?.community.moderators.map(
                     (moderator) => (
                       <Link
