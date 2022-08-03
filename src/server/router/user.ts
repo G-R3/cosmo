@@ -166,4 +166,22 @@ export const userRouter = createRouter()
         comments,
       };
     },
+  })
+  .query("search", {
+    input: z.object({
+      query: z.string().trim(),
+    }),
+    async resolve({ input }) {
+      const users = await prisma.user.findMany({
+        where: {
+          name: {
+            contains: input.query,
+          },
+        },
+      });
+
+      return {
+        users,
+      };
+    },
   });
