@@ -58,7 +58,7 @@ const Index: NextPage = () => {
                 : communityQuery.data?.community.name}
             </h1>
             {communityQuery.data?.isModerator && (
-              <Link href={`/c/${communityQuery.data?.community.name}/edit`}>
+              <Link href={`/c/${communityQuery.data?.community.name}/settings`}>
                 <a className="self-start px-3 py-[6px] border rounded-md border-grayAlt">
                   Community settings
                 </a>
