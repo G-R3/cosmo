@@ -3,14 +3,12 @@ import { FC, useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
 import { Dialog } from "@headlessui/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useRouter } from "next/router";
 
 const RemoveModModal: FC<{
   userId: string;
   userName: string;
   communityId: string;
 }> = ({ userId, userName, communityId }) => {
-  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const utils = trpc.useContext();
   const removeMutation = trpc.useMutation("community.remove-moderator", {
