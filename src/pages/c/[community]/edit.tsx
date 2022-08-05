@@ -5,12 +5,13 @@ import Head from "next/head";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FiX } from "react-icons/fi";
+import { FiX, FiTrash2 } from "react-icons/fi";
 import { trpc } from "@/utils/trpc";
 import { NextPageWithAuth } from "@/components/Auth";
 import TextareaAutosize from "@/components/TextareaAutosize";
 import Tag from "@/components/Tag";
 import SearchUser from "@/components/SearchUser";
+import RemoveModModal from "@/components/RemoveModModal";
 
 type Inputs = {
   communityId: string;
@@ -136,7 +137,7 @@ const EditCommunity: NextPageWithAuth = () => {
             />
             {errors.communityTitle?.message && (
               <span
-                data-cy="community-description-error"
+                data-cy="community-title-error"
                 className="text-sm text-alert"
               >
                 {errors.communityTitle?.message}
@@ -178,7 +179,7 @@ const EditCommunity: NextPageWithAuth = () => {
           <div className="flex gap-2 self-end">
             <button
               form="editCommunity"
-              data-cy="confirm-create"
+              data-cy="confirm-edit"
               disabled={
                 (watch("communityDescription") === data.community.description &&
                   watch("communityTitle") === data.community.title) ||
@@ -216,6 +217,7 @@ const EditCommunity: NextPageWithAuth = () => {
           </div>
           <ModeratorList
             moderators={data.community.moderators}
+            creatorId={data.community.creator.id}
             communityId={data.community.id}
           />
         </div>
@@ -339,6 +341,7 @@ type SearchInput = {
 
 type Props = {
   communityId: string;
+  creatorId: string;
   moderators: {
     user: {
       id: string;
@@ -360,7 +363,7 @@ const searchSchema = z.object({
     .min(1, { message: "User is required" }),
 });
 
-const ModeratorList: FC<Props> = ({ moderators, communityId }) => {
+const ModeratorList: FC<Props> = ({ moderators, creatorId, communityId }) => {
   const {
     handleSubmit,
     setValue,
@@ -436,9 +439,18 @@ const ModeratorList: FC<Props> = ({ moderators, communityId }) => {
             <span className="text-center">
               {mod.createdAt.toLocaleDateString()}
             </span>
-            <div className="justify-self-end">
-              <button className="px-4">edit</button>
-            </div>
+
+            {creatorId === mod.user.id ? (
+              <span className="justify-self-end text-grayAlt">Creator</span>
+            ) : (
+              <div className="justify-self-end">
+                <RemoveModModal
+                  userId={mod.user.id}
+                  userName={mod.user.name!}
+                  communityId={communityId}
+                />
+              </div>
+            )}
           </li>
         ))}
       </ul>

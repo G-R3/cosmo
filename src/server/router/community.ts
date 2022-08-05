@@ -61,6 +61,7 @@ export const communityRouter = createRouter()
         isModerator: community.moderators.find(
           (moderator) => moderator.user.id === ctx.session?.user.id,
         ),
+        isCreator: community.creator.id === ctx.session?.user.id,
       };
     },
   })
@@ -302,6 +303,36 @@ export const communityRouter = createRouter()
       return {
         success: true,
         message: `Successfully added ${moderator.user.name} as moderator`,
+      };
+    },
+  })
+  .mutation("remove-moderator", {
+    input: z.object({
+      userId: z.string(),
+      communityId: z.string(),
+    }),
+    async resolve({ input }) {
+      const removedUser = await prisma.moderator.delete({
+        where: {
+          moderatorId: {
+            userId: input.userId,
+            communityId: input.communityId,
+          },
+        },
+        select: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      });
+
+      return {
+        success: true,
+        message: `${removedUser.user.name} was removed as a moderator`,
+        user: removedUser.user,
       };
     },
   });
