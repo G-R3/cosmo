@@ -34,7 +34,7 @@ model Tags {
 }
 
 model Moderator {
-  id          String    @id @default(cuid())
+  id          String    @unique @default(cuid())
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
   community   Community @relation(fields: [communityId], references: [id])
@@ -42,6 +42,8 @@ model Moderator {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   assignedBy  String
+
+  @@id([userId, communityId], name: "moderatorId")
 }
 
 model Post {
