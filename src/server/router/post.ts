@@ -33,6 +33,11 @@ export const basePost = {
     select: {
       id: true,
       name: true,
+      moderators: {
+        select: {
+          userId: true,
+        },
+      },
     },
   },
   likes: {

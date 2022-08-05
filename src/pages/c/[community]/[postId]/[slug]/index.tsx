@@ -250,7 +250,10 @@ const Post: NextPage<{
   const isSavedByUser = postQuery.data.post.savedBy.find(
     (save) => save.userId === session?.user.id,
   );
-
+  const isAuthor = postQuery.data.post.author.id === session?.user.id;
+  const isModerator = postQuery.data.post.community.moderators.some(
+    (mod) => mod.userId === session?.user.id,
+  );
   return (
     <>
       <Head>
@@ -344,7 +347,7 @@ const Post: NextPage<{
                 {isSavedByUser ? <BsBookmarkFill /> : <BsBookmark />}
                 {isSavedByUser ? "Unsave" : "Save"}
               </button>
-              {postQuery.data.post.author.id === session?.user.id && (
+              {(isAuthor || isModerator) && (
                 <Link
                   href={`/c/${postQuery.data.post.community.name}/${postQuery.data.post.id}/${postQuery.data.post.slug}/edit`}
                 >
@@ -436,7 +439,7 @@ const Post: NextPage<{
               .fill(0)
               .map((skeleton, idx) => <CommentSkeleton key={idx} />)}
           {commentQuery.data?.comments.map((comment) => (
-            <Comment key={comment.id} {...comment} />
+            <Comment key={comment.id} {...comment} isModerator={isModerator} />
           ))}
           {commentQuery.data?.comments.length === 0 && (
             <div className="flex flex-col justify-center items-center">

@@ -13,7 +13,7 @@ interface Props {
   slug: string;
   author: { id: string; name: string | null; image: string | null };
   likes: { postId: string; userId: string }[];
-  community: { id: string; name: string };
+  community: { id: string; name: string; moderators: { userId: string }[] };
   savedBy: { postId: string; userId: string }[];
   _count: { comments: number };
   onLike: (postId: string) => void;
@@ -38,10 +38,13 @@ const Post: React.FC<Props> = ({
   onUnsave,
 }) => {
   const { data: session } = useSession();
-
+  const isAuthor = author.id === session?.user.id;
   const isLikedByUser = likes.find((like) => like.userId === session?.user.id);
   const isSavedByUser = savedBy.find(
     (save) => save.userId === session?.user.id,
+  );
+  const isModerator = community.moderators.some(
+    (mod) => mod.userId === session?.user.id,
   );
 
   return (
@@ -115,7 +118,7 @@ const Post: React.FC<Props> = ({
             {isSavedByUser ? <BsBookmarkFill /> : <BsBookmark />}
             {isSavedByUser ? "Unsave" : "Save"}
           </button>
-          {author.id === session?.user.id && (
+          {(isAuthor || isModerator) && (
             <Link href={`/c/${community.name}/${id}/${slug}/edit`}>
               <a
                 data-cy="post-edit-link"

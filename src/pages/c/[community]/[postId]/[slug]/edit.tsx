@@ -34,6 +34,7 @@ const schema = z.object({
 });
 
 const Edit: NextPage = ({
+  isAuthor,
   post,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
@@ -76,7 +77,7 @@ const Edit: NextPage = ({
         <div className="flex flex-col">
           <h1 className="text-2xl font-semibold">Edit Post</h1>
         </div>
-        <div className="flex flex-col gap-5 rounded-md">
+        <div className="flex flex-col rounded-md">
           {editMutation.error && (
             <div className="bg-alert p-3 rounded-md text-foreground flex items-center gap-2">
               <BiErrorCircle size={22} />
@@ -85,7 +86,7 @@ const Edit: NextPage = ({
           )}
 
           <div className="flex justify-between items-center flex-wrap">
-            <p className="mr-5 mb-2">
+            <p className="mr-5 mb-2 md:mb-0">
               Posted to{" "}
               <Link href={`/c/${post.community.name}`}>
                 <a
@@ -111,43 +112,63 @@ const Edit: NextPage = ({
             </div>
           </div>
 
+          {!isAuthor && (
+            <span className="text-alert">
+              Only the author can edit this post
+            </span>
+          )}
+
           <form
             id="edit-form"
             onSubmit={handleSubmit((data) => updatePost(data, post.id))}
-            className="flex flex-col gap-5 rounded-md"
+            className="flex flex-col gap-5 rounded-md mt-5"
           >
             <div>
               <p className="opacity-70 border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt text-darkTwo dark:border-darkTwo  dark:bg-darkOne dark:text-foreground cursor-not-allowed">
                 {post.title}
               </p>
-              <span className="text-grayAlt text-sm">
-                Changing post title is not supported at the moment
-              </span>
+              {isAuthor && (
+                <span className="text-grayAlt text-sm">
+                  Changing post title is not supported at the moment
+                </span>
+              )}
             </div>
 
             <div className="flex flex-col gap-2">
               <MarkdownTipsModal />
-              <TextareaAutosize
-                data-cy="edit-post-body"
-                placeholder={`# Your Post \nLet the world know what you're thinking. Start with a title and then add some content to spice up your post! 😀`}
-                register={register("postContent")}
-                minHeight={250}
-              />
-              {errors.postContent?.message && (
-                <span className="text-alert">{errors.postContent.message}</span>
+              {isAuthor ? (
+                <>
+                  <TextareaAutosize
+                    data-cy="edit-post-body"
+                    placeholder={`# Your Post \nLet the world know what you're thinking. Start with a title and then add some content to spice up your post! 😀`}
+                    register={register("postContent")}
+                    minHeight={250}
+                  />
+                  {errors.postContent?.message && (
+                    <span className="text-alert">
+                      {errors.postContent.message}
+                    </span>
+                  )}
+                </>
+              ) : (
+                <div className="opacity-70 border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt text-darkTwo dark:border-darkTwo  dark:bg-darkOne dark:text-foreground cursor-not-allowed min-h-[250px]">
+                  {post.content}
+                </div>
               )}
             </div>
 
             <div className="flex justify-end gap-5">
               <DeletePostModal postId={post.id} />
-              <button
-                data-cy="submit"
-                form="edit-form"
-                disabled={watch("postContent") === post.content}
-                className="bg-success text-whiteAlt self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
-              >
-                Save
-              </button>
+              {isAuthor && (
+                <button
+                  data-cy="submit"
+                  form="edit-form"
+                  disabled={watch("postContent") === post.content}
+                  className="bg-success text-whiteAlt self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
+                >
+                  Save
+                </button>
+              )}
             </div>
           </form>
         </div>
@@ -185,6 +206,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         select: {
           id: true,
           name: true,
+          moderators: {
+            select: {
+              userId: true,
+            },
+          },
         },
       },
       author: {
@@ -207,7 +233,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  if (post?.author.id !== session.user.id) {
+  const isAuthor = post.author.id === session.user.id;
+  const isModerator = post.community.moderators.some(
+    (mod) => mod.userId === session.user.id,
+  );
+
+  if (!isAuthor && !isModerator) {
     return {
       redirect: {
         destination: "/",
@@ -218,6 +249,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: {
+      isAuthor,
       post,
     },
   };

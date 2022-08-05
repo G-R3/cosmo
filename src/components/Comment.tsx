@@ -35,6 +35,7 @@ interface Props {
     name: string | null;
     image: string | null;
   };
+  isModerator: boolean;
 }
 const Comment: React.FC<Props> = ({
   id,
@@ -42,6 +43,7 @@ const Comment: React.FC<Props> = ({
   createdAt,
   updatedAt,
   author,
+  isModerator,
 }) => {
   const { data: session } = useSession();
   const {
@@ -73,6 +75,8 @@ const Comment: React.FC<Props> = ({
       content: data.commentContent,
     });
   };
+
+  const isAuthor = author.id === session?.user.id;
 
   return (
     <div className="bg-whiteAlt flex gap-5 dark:bg-darkOne py-3 px-5 rounded-md">
@@ -122,20 +126,22 @@ const Comment: React.FC<Props> = ({
           )}
         </div>
 
-        {author.id === session?.user.id && (
+        {(isAuthor || isModerator) && (
           <div className="flex justify-end gap-5 items-center">
             <CommentDeleteModal commentId={id} />
-            <button
-              data-cy="comment-edit"
-              onClick={() => {
-                setIsEditing((prev) => !prev);
-              }}
-              className="py-1 px-2 flex items-center gap-[6px] text-grayAlt hover:text-blue-400 focus:text-blue-400"
-            >
-              <FiEdit2 />
-              {isEditing ? "Cancel Edit" : "Edit"}
-            </button>
-            {isEditing && (
+            {isAuthor && (
+              <button
+                data-cy="comment-edit"
+                onClick={() => {
+                  setIsEditing((prev) => !prev);
+                }}
+                className="py-1 px-2 flex items-center gap-[6px] text-grayAlt hover:text-blue-400 focus:text-blue-400"
+              >
+                <FiEdit2 />
+                {isEditing ? "Cancel Edit" : "Edit"}
+              </button>
+            )}
+            {isAuthor && isEditing && (
               <button
                 disabled={
                   commentEditMutation.isLoading ||
