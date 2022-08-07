@@ -11,18 +11,16 @@ import TextareaAutosize from "@/components/TextareaAutosize";
 import { NextPageWithAuth } from "@/components/Auth";
 
 type Inputs = {
-  postCommunityId: number;
+  postCommunityId: string;
   postTitle: string;
   postContent?: string;
 };
 
 const schema = z.object({
-  postCommunityId: z
-    .number({
-      required_error: "Community is required",
-      invalid_type_error: "Community is required",
-    })
-    .positive({ message: "Community is required" }),
+  postCommunityId: z.string({
+    required_error: "Community is required",
+    invalid_type_error: "Community is required",
+  }),
   postTitle: z.string().trim().min(1, { message: "Post title is required" }),
   postContent: z
     .string()
@@ -82,7 +80,7 @@ const Submit: NextPageWithAuth = () => {
           {createPostMutation.error && (
             <div className="bg-alert p-3 rounded-md text-foreground flex items-center gap-2">
               <BiErrorCircle size={22} />
-              <span>Something has gone terrible wrong!</span>
+              <span>Something went wrong while creating your post!</span>
             </div>
           )}
           <div className="flex flex-col gap-2">

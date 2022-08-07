@@ -83,10 +83,10 @@ const useSavePost = (path: Paths, query?: any) => {
     },
   });
 
-  const onSave = (postId: number) => {
+  const onSave = (postId: string) => {
     saveMutation.mutate({ postId });
   };
-  const onUnsave = (postId: number) => {
+  const onUnsave = (postId: string) => {
     unSaveMutation.mutate({ postId });
   };
 

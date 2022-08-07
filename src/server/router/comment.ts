@@ -6,7 +6,7 @@ import { TRPCError } from "@trpc/server";
 export const commentRouter = createRouter()
   .query("get-by-postId", {
     input: z.object({
-      postId: z.number(),
+      postId: z.string(),
     }),
     async resolve({ input }) {
       const postComments = await prisma.comment.findMany({
@@ -50,7 +50,7 @@ export const commentRouter = createRouter()
   })
   .mutation("create", {
     input: z.object({
-      postId: z.number(),
+      postId: z.string(),
       content: z
         .string()
         .trim()
@@ -83,7 +83,7 @@ export const commentRouter = createRouter()
   })
   .mutation("edit", {
     input: z.object({
-      commentId: z.number(),
+      commentId: z.string(),
       content: z
         .string()
         .trim()
@@ -116,7 +116,7 @@ export const commentRouter = createRouter()
   })
   .mutation("delete", {
     input: z.object({
-      commentId: z.number(),
+      commentId: z.string(),
     }),
     async resolve({ input, ctx }) {
       const deletedComment = await prisma.comment.delete({

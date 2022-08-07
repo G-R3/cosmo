@@ -13,12 +13,12 @@ import CommentDeleteModal from "./CommentDeleteModal";
 import TextareaAutosize from "./TextareaAutosize";
 
 type Inputs = {
-  commentId: number;
+  commentId: string;
   commentContent: string;
 };
 
 const schema = z.object({
-  commentId: z.number(),
+  commentId: z.string(),
   commentContent: z
     .string()
     .trim()
@@ -26,7 +26,7 @@ const schema = z.object({
     .max(500, { message: "Comment must be less than 500 characters" }),
 });
 interface Props {
-  id: number;
+  id: string;
   content: string;
   createdAt: Date;
   updatedAt: Date;
@@ -35,6 +35,8 @@ interface Props {
     name: string | null;
     image: string | null;
   };
+  isCommentAuthor: boolean;
+  isModerator: boolean;
 }
 const Comment: React.FC<Props> = ({
   id,
@@ -42,8 +44,9 @@ const Comment: React.FC<Props> = ({
   createdAt,
   updatedAt,
   author,
+  isCommentAuthor,
+  isModerator,
 }) => {
-  const { data: session } = useSession();
   const {
     register,
     handleSubmit,
@@ -122,20 +125,22 @@ const Comment: React.FC<Props> = ({
           )}
         </div>
 
-        {author.id === session?.user.id && (
+        {(isCommentAuthor || isModerator) && (
           <div className="flex justify-end gap-5 items-center">
             <CommentDeleteModal commentId={id} />
-            <button
-              data-cy="comment-edit"
-              onClick={() => {
-                setIsEditing((prev) => !prev);
-              }}
-              className="py-1 px-2 flex items-center gap-[6px] text-grayAlt hover:text-blue-400 focus:text-blue-400"
-            >
-              <FiEdit2 />
-              {isEditing ? "Cancel Edit" : "Edit"}
-            </button>
-            {isEditing && (
+            {isCommentAuthor && (
+              <button
+                data-cy="comment-edit"
+                onClick={() => {
+                  setIsEditing((prev) => !prev);
+                }}
+                className="py-1 px-2 flex items-center gap-[6px] text-grayAlt hover:text-blue-400 focus:text-blue-400"
+              >
+                <FiEdit2 />
+                {isEditing ? "Cancel Edit" : "Edit"}
+              </button>
+            )}
+            {isCommentAuthor && isEditing && (
               <button
                 disabled={
                   commentEditMutation.isLoading ||
