@@ -35,6 +35,7 @@ interface Props {
     name: string | null;
     image: string | null;
   };
+  isCommentAuthor: boolean;
   isModerator: boolean;
 }
 const Comment: React.FC<Props> = ({
@@ -43,9 +44,9 @@ const Comment: React.FC<Props> = ({
   createdAt,
   updatedAt,
   author,
+  isCommentAuthor,
   isModerator,
 }) => {
-  const { data: session } = useSession();
   const {
     register,
     handleSubmit,
@@ -75,8 +76,6 @@ const Comment: React.FC<Props> = ({
       content: data.commentContent,
     });
   };
-
-  const isAuthor = author.id === session?.user.id;
 
   return (
     <div className="bg-whiteAlt flex gap-5 dark:bg-darkOne py-3 px-5 rounded-md">
@@ -126,10 +125,10 @@ const Comment: React.FC<Props> = ({
           )}
         </div>
 
-        {(isAuthor || isModerator) && (
+        {(isCommentAuthor || isModerator) && (
           <div className="flex justify-end gap-5 items-center">
             <CommentDeleteModal commentId={id} />
-            {isAuthor && (
+            {isCommentAuthor && (
               <button
                 data-cy="comment-edit"
                 onClick={() => {
@@ -141,7 +140,7 @@ const Comment: React.FC<Props> = ({
                 {isEditing ? "Cancel Edit" : "Edit"}
               </button>
             )}
-            {isAuthor && isEditing && (
+            {isCommentAuthor && isEditing && (
               <button
                 disabled={
                   commentEditMutation.isLoading ||
