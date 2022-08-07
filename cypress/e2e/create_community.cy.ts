@@ -1,17 +1,9 @@
 import { generateCommunity } from "../support/generate";
 
-// TODO
-// instead test to see if we get errors (?)
-// also Im manually removing spaces by using str.replace(/ /g, '');
-// faker has no way to provide text without any spaces
-
 describe("Create a community", () => {
   it("will not allow if not authenticated", () => {
     cy.clearCookies();
-    const { name, description } = generateCommunity();
     cy.visit("/");
-    cy.intercept("POST", "/api/trpc/community.create?*").as("createCommunity");
-
     cy.get("[data-cy='create-community-modal']").should("not.exist");
   });
 
