@@ -254,6 +254,8 @@ const Post: NextPage<{
   const isModerator = postQuery.data.post.community.moderators.some(
     (mod) => mod.userId === session?.user.id,
   );
+  const isAdmin = session?.user.role === "ADMIN";
+
   return (
     <>
       <Head>
@@ -266,16 +268,15 @@ const Post: NextPage<{
         />
       </Head>
       <div className="max-w-3xl mx-auto">
-        {!!likeMutation.error ||
-          (!!unlikeMutation.error && (
-            <div
-              data-cy="alert-alert"
-              className="bg-alert p-3 rounded-md text-foreground flex items-center gap-2"
-            >
-              <BiErrorCircle size={22} />
-              <span>Failed to like the post</span>
-            </div>
-          ))}
+        {(!!likeMutation.error || !!unlikeMutation.error) && (
+          <div
+            data-cy="alert-alert"
+            className="bg-alert p-3 rounded-md text-foreground flex items-center gap-2"
+          >
+            <BiErrorCircle size={22} />
+            <span>Failed to like the post</span>
+          </div>
+        )}
         <section className="p-5 bg-whiteAlt dark:bg-darkOne rounded-md">
           <h1 className="text-2xl">{postQuery.data.post.title}</h1>
           <small>
@@ -347,7 +348,7 @@ const Post: NextPage<{
                 {isSavedByUser ? <BsBookmarkFill /> : <BsBookmark />}
                 {isSavedByUser ? "Unsave" : "Save"}
               </button>
-              {(isPostAuthor || isModerator) && (
+              {(isPostAuthor || isModerator || isAdmin) && (
                 <Link
                   href={`/c/${postQuery.data.post.community.name}/${postQuery.data.post.id}/${postQuery.data.post.slug}/edit`}
                 >
@@ -439,11 +440,14 @@ const Post: NextPage<{
               .fill(0)
               .map((skeleton, idx) => <CommentSkeleton key={idx} />)}
           {commentQuery.data?.comments.map((comment) => (
+            // TODO: move isMod, isAdmin check to api layer maybe? if not maybe move them to the
+            // comment component similarly to how we're doing it on the Post component
             <Comment
               key={comment.id}
               {...comment}
               isCommentAuthor={comment.author.id === session?.user.id}
               isModerator={isModerator}
+              isAdmin={isAdmin}
             />
           ))}
           {commentQuery.data?.comments.length === 0 && (

@@ -37,6 +37,7 @@ interface Props {
   };
   isCommentAuthor: boolean;
   isModerator: boolean;
+  isAdmin: boolean;
 }
 const Comment: React.FC<Props> = ({
   id,
@@ -46,6 +47,7 @@ const Comment: React.FC<Props> = ({
   author,
   isCommentAuthor,
   isModerator,
+  isAdmin,
 }) => {
   const {
     register,
@@ -125,7 +127,7 @@ const Comment: React.FC<Props> = ({
           )}
         </div>
 
-        {(isCommentAuthor || isModerator) && (
+        {(isCommentAuthor || isModerator || isAdmin) && (
           <div className="flex justify-end gap-5 items-center">
             <CommentDeleteModal commentId={id} />
             {isCommentAuthor && (

@@ -46,6 +46,7 @@ const Post: React.FC<Props> = ({
   const isModerator = community.moderators.some(
     (mod) => mod.userId === session?.user.id,
   );
+  const isAdmin = session?.user.role === "ADMIN";
 
   return (
     <div className="bg-whiteAlt dark:bg-darkOne border-2 border-transparent hover:border-highlight w-full rounded-md p-5 transition-all">
@@ -118,7 +119,7 @@ const Post: React.FC<Props> = ({
             {isSavedByUser ? <BsBookmarkFill /> : <BsBookmark />}
             {isSavedByUser ? "Unsave" : "Save"}
           </button>
-          {(isAuthor || isModerator) && (
+          {(isAuthor || isModerator || isAdmin) && (
             <Link href={`/c/${community.name}/${id}/${slug}/edit`}>
               <a
                 data-cy="post-edit-link"

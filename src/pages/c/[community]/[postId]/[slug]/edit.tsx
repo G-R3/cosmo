@@ -114,7 +114,7 @@ const Edit: NextPage = ({
 
           {!isAuthor && (
             <span className="text-alert">
-              Only the author can edit this post
+              Only the auther of this post can edit
             </span>
           )}
 
@@ -237,20 +237,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const isModerator = post.community.moderators.some(
     (mod) => mod.userId === session.user.id,
   );
+  const isAdmin = session.user.role === "ADMIN";
 
-  if (!isAuthor && !isModerator) {
+  if (isAuthor || isModerator || isAdmin) {
     return {
-      redirect: {
-        destination: "/",
-        permanent: false,
+      props: {
+        isAuthor,
+        post,
       },
     };
   }
 
   return {
-    props: {
-      isAuthor,
-      post,
+    redirect: {
+      destination: "/",
+      permanent: false,
     },
   };
 };

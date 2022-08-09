@@ -3,6 +3,7 @@ import Link from "next/link";
 import { NextPage } from "next";
 import Head from "next/head";
 import { MdOutlineAddModerator } from "react-icons/md";
+import { useSession } from "next-auth/react";
 import { trpc } from "@/utils/trpc";
 import Post from "@/components/Post";
 import PostSkeleton from "@/components/PostSkeleton";
@@ -11,6 +12,7 @@ import useSavePost from "@/hooks/useSavePost";
 import Tag from "@/components/Tag";
 
 const Index: NextPage = () => {
+  const { data: session } = useSession();
   const query = useRouter().query.community as string;
   const communityQuery = trpc.useQuery(["community.get", { query }], {
     refetchOnWindowFocus: false,
@@ -36,6 +38,9 @@ const Index: NextPage = () => {
     );
   }
 
+  const { isModerator } = communityQuery.data;
+  const isAdmin = session?.user.role === "ADMIN";
+
   return (
     <>
       <Head>
@@ -57,7 +62,7 @@ const Index: NextPage = () => {
                 ? communityQuery.data?.community.title
                 : communityQuery.data?.community.name}
             </h1>
-            {communityQuery.data?.isModerator && (
+            {(isModerator || isAdmin) && (
               <Link href={`/c/${communityQuery.data?.community.name}/settings`}>
                 <a className="self-start px-3 py-[6px] border rounded-md border-grayAlt">
                   Community settings
