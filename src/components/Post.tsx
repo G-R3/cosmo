@@ -11,7 +11,12 @@ interface Props {
   title: string;
   content?: string | null;
   slug: string;
-  author: { id: string; name: string | null; image: string | null };
+  author: {
+    id: string;
+    name: string | null;
+    image: string | null;
+    role: string;
+  };
   likes: { postId: string; userId: string }[];
   community: { id: string; name: string; moderators: { userId: string }[] };
   savedBy: { postId: string; userId: string }[];
@@ -38,11 +43,15 @@ const Post: React.FC<Props> = ({
   onUnsave,
 }) => {
   const { data: session } = useSession();
-  const isAuthor = author.id === session?.user.id;
   const isLikedByUser = likes.find((like) => like.userId === session?.user.id);
   const isSavedByUser = savedBy.find(
     (save) => save.userId === session?.user.id,
   );
+  const isAuthor = author.id === session?.user.id;
+  const isAuthorMod = community.moderators.some(
+    (mod) => mod.userId === author.id,
+  );
+  const isAuthorAdmin = author.role === "ADMIN";
   const isModerator = community.moderators.some(
     (mod) => mod.userId === session?.user.id,
   );
@@ -57,25 +66,32 @@ const Post: React.FC<Props> = ({
       >
         {title}
       </motion.h2>
-      <motion.span
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="flex gap-2 mb-3 text-grayAlt"
+        className="mb-3 text-grayAlt"
       >
-        <small>
+        <span>
           Posted to{" "}
           <Link href={`/c/${community.name}`}>
             <a className="text-highlight font-semibold">{community.name}</a>
           </Link>{" "}
           by{" "}
+        </span>
+        <span>
           <Link href={`/user/${author.id}`}>
             <a className="text-darkOne dark:text-foreground hover:underline hover:underline-offset-1">
               {author.name}
             </a>
-          </Link>{" "}
-          10 hrs ago
-        </small>
-      </motion.span>
+          </Link>
+          {isAuthorAdmin ? (
+            <span className="text-xs text-highlight font-bold"> ADMIN </span>
+          ) : isAuthorMod ? (
+            <span className="text-xs text-green-500 font-bold"> MOD </span>
+          ) : null}
+        </span>
+        10 hrs ago
+      </motion.div>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

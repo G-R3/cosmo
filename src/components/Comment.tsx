@@ -34,8 +34,10 @@ interface Props {
     id: string;
     name: string | null;
     image: string | null;
+    role: string;
   };
   isCommentAuthor: boolean;
+  isCommentAuthorMod: boolean;
   isModerator: boolean;
   isAdmin: boolean;
 }
@@ -46,6 +48,7 @@ const Comment: React.FC<Props> = ({
   updatedAt,
   author,
   isCommentAuthor,
+  isCommentAuthorMod,
   isModerator,
   isAdmin,
 }) => {
@@ -79,6 +82,8 @@ const Comment: React.FC<Props> = ({
     });
   };
 
+  const isAuthorAdmin = author.role === "ADMIN";
+
   return (
     <div className="bg-whiteAlt flex gap-5 dark:bg-darkOne py-3 px-5 rounded-md">
       <div className="bg-foreground dark:bg-darkTwo min-h-full min-w-[4px] rounded-full"></div>
@@ -94,9 +99,21 @@ const Comment: React.FC<Props> = ({
                 className="rounded-full"
                 priority
               />
-              <span className="text-grayAlt group-hover:underline group-hover:underline-offset-1">
-                {author.name}
-              </span>
+              <div>
+                <Link href={`/user/${author.id}`}>
+                  <a className="text-darkOne dark:text-grayAlt hover:underline hover:underline-offset-1">
+                    {author.name}
+                  </a>
+                </Link>
+                {isAuthorAdmin ? (
+                  <span className="text-xs text-highlight font-bold">
+                    {" "}
+                    ADMIN
+                  </span>
+                ) : isCommentAuthorMod ? (
+                  <span className="text-xs text-green-500 font-bold"> MOD</span>
+                ) : null}
+              </div>
             </div>
           </a>
         </Link>

@@ -250,6 +250,10 @@ const Post: NextPage<{
   const isSavedByUser = postQuery.data.post.savedBy.find(
     (save) => save.userId === session?.user.id,
   );
+  const isAuthorMod = postQuery.data.post.community.moderators.some(
+    (mod) => mod.userId === postQuery.data.post.author.id,
+  );
+  const isAuthorAdmin = postQuery.data.post.author.role === "ADMIN";
   const isPostAuthor = postQuery.data.post.author.id === session?.user.id;
   const isModerator = postQuery.data.post.community.moderators.some(
     (mod) => mod.userId === session?.user.id,
@@ -279,24 +283,34 @@ const Post: NextPage<{
         )}
         <section className="p-5 bg-whiteAlt dark:bg-darkOne rounded-md">
           <h1 className="text-2xl">{postQuery.data.post.title}</h1>
-          <small>
-            Posted to{" "}
-            <Link href={`/c/${postQuery.data.post.community.name}`}>
-              <a
-                data-cy="post-community"
-                className="text-highlight font-semibold"
-              >
-                {postQuery.data.post.community.name}
-              </a>
-            </Link>{" "}
-            by{" "}
-            <Link href={`/user/${postQuery.data.post.author.id}`}>
-              <a className="text-darkOne dark:text-foreground hover:underline hover:underline-offset-1">
-                {postQuery.data.post.author.name}
-              </a>
-            </Link>{" "}
+
+          <div className="mb-3 text-grayAlt">
+            <span>
+              Posted to{" "}
+              <Link href={`/c/${postQuery.data.post.community.name}`}>
+                <a className="text-highlight font-semibold">
+                  {postQuery.data.post.community.name}
+                </a>
+              </Link>{" "}
+              by{" "}
+            </span>
+            <span>
+              <Link href={`/user/${postQuery.data.post.author.id}`}>
+                <a className="text-darkOne dark:text-foreground hover:underline hover:underline-offset-1">
+                  {postQuery.data.post.author.name}
+                </a>
+              </Link>
+              {isAuthorAdmin ? (
+                <span className="text-xs text-highlight font-bold">
+                  {" "}
+                  ADMIN{" "}
+                </span>
+              ) : isAuthorMod ? (
+                <span className="text-xs text-green-500 font-bold"> MOD </span>
+              ) : null}
+            </span>
             10 hrs ago
-          </small>
+          </div>
 
           <div className="mt-6 mb-10">
             <Markdown
@@ -446,6 +460,9 @@ const Post: NextPage<{
               key={comment.id}
               {...comment}
               isCommentAuthor={comment.author.id === session?.user.id}
+              isCommentAuthorMod={postQuery.data.post.community.moderators.some(
+                (mod) => mod.userId === comment.author.id,
+              )}
               isModerator={isModerator}
               isAdmin={isAdmin}
             />
