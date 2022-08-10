@@ -17,7 +17,7 @@ import MarkdownTipsModal from "@/components/MarkdownTipsModal";
 import { trpc } from "@/utils/trpc";
 import DeletePostModal from "@/components/DeletePostModal";
 import TextareaAutosize from "@/components/TextareaAutosize";
-import { prisma } from "../../../../../db/client";
+import { prisma } from "../../../../../backend/client";
 
 type Inputs = {
   postId: string;

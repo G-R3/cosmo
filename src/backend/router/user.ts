@@ -1,7 +1,7 @@
 import { createRouter } from "../createRouter";
 import { tuple, z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { prisma } from "../../db/client";
+import { prisma } from "../client";
 import { basePost } from "./post";
 
 export const userRouter = createRouter()

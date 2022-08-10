@@ -5,7 +5,7 @@ import { SessionProvider } from "next-auth/react";
 import { NextComponentType, NextPageContext } from "next";
 import { ThemeProvider } from "next-themes";
 import superjson from "superjson";
-import { AppRouter } from "../server/router/_app";
+import { AppRouter } from "../backend/router/_app";
 import Layout from "../components/Layout";
 import Auth, { PageAuth } from "../components/Auth";
 

@@ -1,6 +1,6 @@
 import { createRouter } from "../createRouter";
 import { z } from "zod";
-import { prisma } from "../../db/client";
+import { prisma } from "../client";
 import { TRPCError } from "@trpc/server";
 
 const slugify = (...args: (string | number)[]): string => {

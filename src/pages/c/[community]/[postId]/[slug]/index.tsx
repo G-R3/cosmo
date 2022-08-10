@@ -16,8 +16,8 @@ import {
 import { useRouter } from "next/router";
 import superjson from "superjson";
 import { DehydratedState } from "react-query";
-import { appRouter } from "src/server/router/_app";
-import { createContext } from "src/server/context";
+import { appRouter } from "src/backend/router/_app";
+import { createContext } from "src/backend/context";
 import { createSSGHelpers } from "@trpc/react/ssg";
 import { trpc } from "@/utils/trpc";
 import Markdown from "@/components/Markdown";
