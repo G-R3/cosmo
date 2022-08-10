@@ -9,8 +9,8 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_ID!,
-      clientSecret: process.env.GOOGLE_SECRET!,
+      clientId: process.env.GOOGLE_ID,
+      clientSecret: process.env.GOOGLE_SECRET,
     }),
     GithubProvider({
       clientId: process.env.GITHUB_ID,
@@ -22,10 +22,9 @@ export const authOptions: NextAuthOptions = {
     error: "/",
   },
   callbacks: {
-    session({ session, token, user }) {
-      if (session?.user) {
-        session.user.id = user.id;
-      }
+    async session({ session, token, user }) {
+      session.user.id = user.id;
+      session.user.role = user.role;
 
       return session;
     },

@@ -28,9 +28,10 @@ const Profile: NextPage = () => {
       <div className="grid grid-cols-12 gap-2">
         <div className="col-span-full md:col-start-1 md:col-end-10">
           <UserBanner
-            id={userQuery.data.user?.id!}
-            imageSrc={userQuery.data.user?.image!}
-            displayName={userQuery.data.user?.name!}
+            id={userQuery.data.user.id}
+            name={userQuery.data.user.name!}
+            image={userQuery.data.user.image!}
+            role={userQuery.data.user.role}
           />
           <div className="mt-48">
             <UserTabs user={userQuery.data.user?.id!} />

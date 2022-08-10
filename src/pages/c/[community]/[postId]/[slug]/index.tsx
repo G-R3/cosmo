@@ -250,10 +250,16 @@ const Post: NextPage<{
   const isSavedByUser = postQuery.data.post.savedBy.find(
     (save) => save.userId === session?.user.id,
   );
+  const isAuthorMod = postQuery.data.post.community.moderators.some(
+    (mod) => mod.userId === postQuery.data.post.author.id,
+  );
+  const isAuthorAdmin = postQuery.data.post.author.role === "ADMIN";
   const isPostAuthor = postQuery.data.post.author.id === session?.user.id;
   const isModerator = postQuery.data.post.community.moderators.some(
     (mod) => mod.userId === session?.user.id,
   );
+  const isAdmin = session?.user.role === "ADMIN";
+
   return (
     <>
       <Head>
@@ -266,36 +272,45 @@ const Post: NextPage<{
         />
       </Head>
       <div className="max-w-3xl mx-auto">
-        {!!likeMutation.error ||
-          (!!unlikeMutation.error && (
-            <div
-              data-cy="alert-alert"
-              className="bg-alert p-3 rounded-md text-foreground flex items-center gap-2"
-            >
-              <BiErrorCircle size={22} />
-              <span>Failed to like the post</span>
-            </div>
-          ))}
+        {(!!likeMutation.error || !!unlikeMutation.error) && (
+          <div
+            data-cy="alert-alert"
+            className="bg-alert p-3 rounded-md text-foreground flex items-center gap-2"
+          >
+            <BiErrorCircle size={22} />
+            <span>Failed to like the post</span>
+          </div>
+        )}
         <section className="p-5 bg-whiteAlt dark:bg-darkOne rounded-md">
           <h1 className="text-2xl">{postQuery.data.post.title}</h1>
-          <small>
-            Posted to{" "}
-            <Link href={`/c/${postQuery.data.post.community.name}`}>
-              <a
-                data-cy="post-community"
-                className="text-highlight font-semibold"
-              >
-                {postQuery.data.post.community.name}
-              </a>
-            </Link>{" "}
-            by{" "}
-            <Link href={`/user/${postQuery.data.post.author.id}`}>
-              <a className="text-darkOne dark:text-foreground hover:underline hover:underline-offset-1">
-                {postQuery.data.post.author.name}
-              </a>
-            </Link>{" "}
+
+          <div className="mb-3 text-grayAlt">
+            <span>
+              Posted to{" "}
+              <Link href={`/c/${postQuery.data.post.community.name}`}>
+                <a className="text-highlight font-semibold">
+                  {postQuery.data.post.community.name}
+                </a>
+              </Link>{" "}
+              by{" "}
+            </span>
+            <span>
+              <Link href={`/user/${postQuery.data.post.author.id}`}>
+                <a className="text-darkOne dark:text-foreground hover:underline hover:underline-offset-1">
+                  {postQuery.data.post.author.name}
+                </a>
+              </Link>
+              {isAuthorAdmin ? (
+                <span className="text-xs text-highlight font-bold">
+                  {" "}
+                  ADMIN{" "}
+                </span>
+              ) : isAuthorMod ? (
+                <span className="text-xs text-green-500 font-bold"> MOD </span>
+              ) : null}
+            </span>
             10 hrs ago
-          </small>
+          </div>
 
           <div className="mt-6 mb-10">
             <Markdown
@@ -347,7 +362,7 @@ const Post: NextPage<{
                 {isSavedByUser ? <BsBookmarkFill /> : <BsBookmark />}
                 {isSavedByUser ? "Unsave" : "Save"}
               </button>
-              {(isPostAuthor || isModerator) && (
+              {(isPostAuthor || isModerator || isAdmin) && (
                 <Link
                   href={`/c/${postQuery.data.post.community.name}/${postQuery.data.post.id}/${postQuery.data.post.slug}/edit`}
                 >
@@ -439,11 +454,17 @@ const Post: NextPage<{
               .fill(0)
               .map((skeleton, idx) => <CommentSkeleton key={idx} />)}
           {commentQuery.data?.comments.map((comment) => (
+            // TODO: move isMod, isAdmin check to api layer maybe? if not maybe move them to the
+            // comment component similarly to how we're doing it on the Post component
             <Comment
               key={comment.id}
               {...comment}
               isCommentAuthor={comment.author.id === session?.user.id}
+              isCommentAuthorMod={postQuery.data.post.community.moderators.some(
+                (mod) => mod.userId === comment.author.id,
+              )}
               isModerator={isModerator}
+              isAdmin={isAdmin}
             />
           ))}
           {commentQuery.data?.comments.length === 0 && (

@@ -7,8 +7,9 @@ import { useSession } from "next-auth/react";
 
 type Props = {
   id: string;
-  imageSrc: string;
-  displayName: string;
+  name: string;
+  image: string;
+  role: string;
 };
 
 // red, orange, yellow, green, teal, cyan, blue, violet, purple, pink
@@ -139,20 +140,25 @@ const BannerBackground: FC<{ userId: string }> = ({ userId }) => {
   );
 };
 
-const UserBanner: FC<Props> = ({ id, imageSrc, displayName }) => {
+const UserBanner: FC<Props> = ({ id, image, name, role }) => {
   return (
     <div className="relative py-5">
       <BannerBackground userId={id} />
       <div className="relative top-24 flex items-center gap-4 px-5">
         <Image
-          src={imageSrc}
-          alt={`${displayName}'s Avatar`}
+          src={image}
+          alt={`${name}'s Avatar`}
           width={150}
           height={150}
           className="rounded-full"
           priority
         />
-        <h1 className="text-2xl font-semibold mt-6">{displayName}</h1>
+        <div className="flex flex-col mt-7">
+          <h1 className="text-2xl font-semibold">{name}</h1>
+          {role === "ADMIN" && (
+            <span className="text-sm text-highlight font-bold">ADMIN</span>
+          )}
+        </div>
       </div>
     </div>
   );

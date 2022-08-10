@@ -6,6 +6,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FiX, FiTrash2 } from "react-icons/fi";
+import { useSession } from "next-auth/react";
 import { trpc } from "@/utils/trpc";
 import { NextPageWithAuth } from "@/components/Auth";
 import TextareaAutosize from "@/components/TextareaAutosize";
@@ -35,6 +36,7 @@ const schema = z.object({
 
 const EditCommunity: NextPageWithAuth = () => {
   const router = useRouter();
+  const { data: session } = useSession();
   const query = router.query.community as string;
   const {
     register,
@@ -67,13 +69,15 @@ const EditCommunity: NextPageWithAuth = () => {
     },
   });
 
+  const isAdmin = session?.user.role === "ADMIN";
+
   useEffect(() => {
-    if (data && !data?.isModerator) {
+    if (data && !data.isModerator && !isAdmin) {
       router.push(`/c/${data.community.name}`);
     }
-  }, [data, router]);
+  }, [data, router, isAdmin]);
 
-  if (isLoading || !data?.isModerator) {
+  if (isLoading || (!data?.isModerator && !isAdmin)) {
     return <div>Loading...</div>;
   }
 
@@ -85,7 +89,8 @@ const EditCommunity: NextPageWithAuth = () => {
     });
   };
 
-  if (error || !data.community) {
+  if (error || !data) {
+    console.log(error);
     return (
       <div className="flex items-center flex-col gap-5">
         <h1 className="text-2xl font-bold">

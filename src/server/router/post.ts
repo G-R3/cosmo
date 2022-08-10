@@ -27,6 +27,7 @@ export const basePost = {
       id: true,
       name: true,
       image: true,
+      role: true,
     },
   },
   community: {

@@ -23,6 +23,7 @@ export const commentRouter = createRouter()
               id: true,
               name: true,
               image: true,
+              role: true,
             },
           },
         },

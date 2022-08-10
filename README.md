@@ -16,8 +16,10 @@ This is the repo for cosmo. A sort of social media like thing I'm making. It's a
 - [x] Save posts
 - [ ] Image upload support
 - [ ] Types of posts (text, image, video) (optional)
-- [ ] community moderations
-- [ ] admin stuff?
+- [x] community moderations
+- [x] admin stuff?
+  - [x] Admins can delete posts/comments
+  - [x] Admins can access community settings
 - [ ] save a post as unpublish (optional)
 - [x] user profile page
 
