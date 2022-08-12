@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import Feed from "@/components/Post/Feed";
+import Feed from "@/components/Feed/Feed";
 
 const Home: NextPage = () => {
   return <Feed />;

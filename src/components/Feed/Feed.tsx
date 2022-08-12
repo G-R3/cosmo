@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { trpc } from "@/utils/trpc";
 import PostSkeleton from "@/components/Post/PostSkeleton";
 import Post from "@/components/Post/Post";
-import UserCard from "@/components/User/UserCard";
+import UserCard from "@/components/Feed/UserCard";
 import useLikePost from "@/hooks/useLikePost";
 import useSavePost from "@/hooks/useSavePost";
 import CustomHead from "../common/CustomHead";
