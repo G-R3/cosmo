@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { trpc } from "@/utils/trpc";
-import CommentSkeleton from "./CommentSkeleton";
-import Comment from "./Comment";
+import CommentSkeleton from "./Comments/CommentSkeleton";
+import Comment from "./Comments/Comment";
 
 const UserComments: FC<{ user: string; isSelected: boolean }> = ({
   user,
@@ -18,7 +18,15 @@ const UserComments: FC<{ user: string; isSelected: boolean }> = ({
           .fill(0)
           .map((skeleton, idx) => <CommentSkeleton key={idx} />)}
       {commentQuery.data?.comments.map((comment) => (
-        <Comment key={comment.id} {...comment} />
+        // TODO: Fix this
+        <Comment
+          isCommentAuthor={false}
+          isCommentAuthorMod={false}
+          isModerator={false}
+          isAdmin={false}
+          key={comment.id}
+          {...comment}
+        />
       ))}
       {commentQuery.data?.comments.length === 0 && (
         <div className="flex flex-col items-center text-grayAlt">

@@ -21,8 +21,8 @@ import { createContext } from "src/backend/context";
 import { createSSGHelpers } from "@trpc/react/ssg";
 import { trpc } from "@/utils/trpc";
 import Markdown from "@/components/common/Markdown";
-import Comment from "@/components/Comment";
-import CommentSkeleton from "@/components/CommentSkeleton";
+import Comment from "@/components/Comments/Comment";
+import CommentSkeleton from "@/components/Comments/CommentSkeleton";
 import MarkdownTipsModal from "@/components/MarkdownTipsModal";
 import TextareaAutosize from "@/components/common/TextareaAutosize";
 
