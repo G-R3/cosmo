@@ -4,7 +4,6 @@ import {
   InferGetServerSidePropsType,
   NextPage,
 } from "next";
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { AiFillGithub, AiFillGoogleCircle } from "react-icons/ai";
 import { unstable_getServerSession } from "next-auth";
