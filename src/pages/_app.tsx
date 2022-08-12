@@ -7,7 +7,7 @@ import { ThemeProvider } from "next-themes";
 import superjson from "superjson";
 import { AppRouter } from "../backend/router/_app";
 import Layout from "../components/Layout";
-import Auth, { PageAuth } from "../components/Auth";
+import Auth, { PageAuth } from "@/components/auth/Auth";
 
 type AppAuthProps = AppProps & {
   Component: NextComponentType<NextPageContext, any, {}> & Partial<PageAuth>;

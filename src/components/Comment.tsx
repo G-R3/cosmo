@@ -7,10 +7,10 @@ import { FiEdit2 } from "react-icons/fi";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import Markdown from "./Markdown";
+import Markdown from "./common/Markdown";
 import MarkdownTipsModal from "./MarkdownTipsModal";
 import CommentDeleteModal from "./CommentDeleteModal";
-import TextareaAutosize from "./TextareaAutosize";
+import TextareaAutosize from "./common/TextareaAutosize";
 
 type Inputs = {
   commentId: string;

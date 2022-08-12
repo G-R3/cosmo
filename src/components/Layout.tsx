@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import Header from "./Header";
+import Header from "./common/Header";
 
 const Layout: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (

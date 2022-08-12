@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import MarkdownTipsModal from "@/components/MarkdownTipsModal";
 import { trpc } from "@/utils/trpc";
 import DeletePostModal from "@/components/DeletePostModal";
-import TextareaAutosize from "@/components/TextareaAutosize";
+import TextareaAutosize from "@/components/common/TextareaAutosize";
 import { prisma } from "../../../../../backend/client";
 
 type Inputs = {

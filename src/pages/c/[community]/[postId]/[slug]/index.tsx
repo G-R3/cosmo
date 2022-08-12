@@ -20,11 +20,11 @@ import { appRouter } from "src/backend/router/_app";
 import { createContext } from "src/backend/context";
 import { createSSGHelpers } from "@trpc/react/ssg";
 import { trpc } from "@/utils/trpc";
-import Markdown from "@/components/Markdown";
+import Markdown from "@/components/common/Markdown";
 import Comment from "@/components/Comment";
 import CommentSkeleton from "@/components/CommentSkeleton";
 import MarkdownTipsModal from "@/components/MarkdownTipsModal";
-import TextareaAutosize from "@/components/TextareaAutosize";
+import TextareaAutosize from "@/components/common/TextareaAutosize";
 
 type Inputs = {
   postId: string;

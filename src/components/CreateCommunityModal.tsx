@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { trpc } from "../utils/trpc";
 import { BiErrorCircle } from "react-icons/bi";
-import TextareaAutosize from "./TextareaAutosize";
+import TextareaAutosize from "./common/TextareaAutosize";
 
 type Inputs = {
   communityName: string;
