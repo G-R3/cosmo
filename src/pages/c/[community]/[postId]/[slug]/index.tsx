@@ -25,6 +25,7 @@ import Comment from "@/components/common/Comment";
 import CommentSkeleton from "@/components/common/CommentSkeleton";
 import MarkdownTipsModal from "@/components/common/MarkdownTipsModal";
 import TextareaAutosize from "@/components/common/TextareaAutosize";
+import CustomHead from "@/components/common/CustomHead";
 
 type Inputs = {
   postId: string;
@@ -262,15 +263,10 @@ const Post: NextPage<{
 
   return (
     <>
-      <Head>
-        <title>
-          {postQuery.data.post.title} | {postQuery.data.post.community.name}
-        </title>
-        <meta
-          name="description"
-          content="A place to create communities and discuss"
-        />
-      </Head>
+      <CustomHead
+        title={`${postQuery.data.post.title} | ${postQuery.data.post.community.name}`}
+      />
+
       <div className="max-w-3xl mx-auto">
         {(!!likeMutation.error || !!unlikeMutation.error) && (
           <div

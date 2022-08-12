@@ -1,7 +1,6 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import Head from "next/head";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,6 +12,7 @@ import TextareaAutosize from "@/components/common/TextareaAutosize";
 import Tag from "@/components/Communities/settings/Tag";
 import SearchUser from "@/components/Communities/settings/SearchUser";
 import RemoveModModal from "@/components/Communities/settings/RemoveModModal";
+import CustomHead from "@/components/common/CustomHead";
 
 type Inputs = {
   communityId: string;
@@ -90,7 +90,6 @@ const EditCommunity: NextPageWithAuth = () => {
   };
 
   if (error || !data) {
-    console.log(error);
     return (
       <div className="flex items-center flex-col gap-5">
         <h1 className="text-2xl font-bold">
@@ -105,13 +104,7 @@ const EditCommunity: NextPageWithAuth = () => {
 
   return (
     <>
-      <Head>
-        <title>{data.community.name} | Settings</title>
-        <meta
-          name="description"
-          content="A place to create communities and discuss"
-        />
-      </Head>
+      <CustomHead title={`${data.community.name} | Settings`} />
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl sm:text-5xl font-bold mb-8">
           Community Settings
