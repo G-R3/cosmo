@@ -14,7 +14,7 @@ const UserCard: React.FC<Props> = ({ name, email, image }) => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="sticky top-20 py-5 bg-whiteAlt dark:bg-darkOne rounded-md flex items-center justify-center"
+      className="sticky top-20 px-10 py-5 bg-whiteAlt dark:bg-darkOne rounded-md flex items-center justify-center"
     >
       <div className="flex flex-col items-center justify-center rounded-full">
         <motion.div
