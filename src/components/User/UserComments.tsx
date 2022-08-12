@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { trpc } from "@/utils/trpc";
-import CommentSkeleton from "../Comments/CommentSkeleton";
-import Comment from "../Comments/Comment";
+import CommentSkeleton from "../common/CommentSkeleton";
+import Comment from "../common/Comment";
 
 const UserComments: FC<{ user: string; isSelected: boolean }> = ({
   user,
