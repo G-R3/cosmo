@@ -6,7 +6,7 @@ import { NextComponentType, NextPageContext } from "next";
 import { ThemeProvider } from "next-themes";
 import superjson from "superjson";
 import { AppRouter } from "../backend/router/_app";
-import Layout from "../components/Layout";
+import Layout from "@/components/common/Layout";
 import Auth, { PageAuth } from "@/components/auth/Auth";
 
 type AppAuthProps = AppProps & {

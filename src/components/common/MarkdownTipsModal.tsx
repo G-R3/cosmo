@@ -2,7 +2,7 @@ import { useState, FC, Dispatch, SetStateAction } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Dialog } from "@headlessui/react";
 import { AiOutlineQuestion } from "react-icons/ai";
-import Markdown from "./common/Markdown";
+import Markdown from "./Markdown";
 
 const MarkdownTipsModal: FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
