@@ -5,7 +5,7 @@ import { Menu } from "@headlessui/react";
 import { FiPlus } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
-import { ThemeToggler } from "../ThemeToggler";
+import { ThemeToggler } from "./ThemeToggler";
 import CreateCommunityModal from "../CreateCommunityModal";
 
 interface Props {

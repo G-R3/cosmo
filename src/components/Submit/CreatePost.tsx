@@ -7,7 +7,7 @@ import { trpc } from "@/utils/trpc";
 import { BiErrorCircle } from "react-icons/bi";
 import SearchCommunity from "../SearchCommunity";
 import MarkdownTipsModal from "../MarkdownTipsModal";
-import TextareaAutosize from "../TextareaAutosize";
+import TextareaAutosize from "../common/TextareaAutosize";
 import CustomHead from "../common/CustomHead";
 
 type Inputs = {
