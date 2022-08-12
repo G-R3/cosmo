@@ -17,7 +17,7 @@ import MarkdownTipsModal from "@/components/common/MarkdownTipsModal";
 import { trpc } from "@/utils/trpc";
 import DeletePostModal from "@/components/common/DeletePostModal";
 import TextareaAutosize from "@/components/common/TextareaAutosize";
-import { prisma } from "../../../../../backend/client";
+import { prisma } from "../../../../../backend/clients/client";
 import CustomHead from "@/components/common/CustomHead";
 
 type Inputs = {
