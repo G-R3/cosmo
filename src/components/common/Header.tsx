@@ -6,7 +6,7 @@ import { FiPlus } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
 import { ThemeToggler } from "./ThemeToggler";
-import CreateCommunityModal from "../Communities/CreateCommunityModal";
+import CreateCommunityModal from "../communities/CreateCommunityModal";
 
 interface Props {
   href: string;

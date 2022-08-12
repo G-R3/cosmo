@@ -7,7 +7,7 @@ import useLikePost from "@/hooks/useLikePost";
 import useSavePost from "@/hooks/useSavePost";
 import Post from "@/components/common/Post";
 import PostSkeleton from "@/components/common/PostSkeleton";
-import Tag from "@/components/Communities/settings/Tag";
+import Tag from "@/components/communities/settings/Tag";
 import CustomHead from "@/components/common/CustomHead";
 
 const Community: NextPage = () => {

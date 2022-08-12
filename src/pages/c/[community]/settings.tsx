@@ -9,9 +9,9 @@ import { useSession } from "next-auth/react";
 import { trpc } from "@/utils/trpc";
 import { NextPageWithAuth } from "@/components/auth/Auth";
 import TextareaAutosize from "@/components/common/TextareaAutosize";
-import Tag from "@/components/Communities/settings/Tag";
-import SearchUser from "@/components/Communities/settings/SearchUser";
-import RemoveModModal from "@/components/Communities/settings/RemoveModModal";
+import Tag from "@/components/communities/settings/Tag";
+import SearchUser from "@/components/communities/settings/SearchUser";
+import RemoveModModal from "@/components/communities/settings/RemoveModModal";
 import CustomHead from "@/components/common/CustomHead";
 
 type Inputs = {

@@ -6,7 +6,7 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { trpc } from "@/utils/trpc";
 import { BiErrorCircle } from "react-icons/bi";
-import SearchCommunity from "@/components/Submit/SearchCommunity";
+import SearchCommunity from "@/components/submit/SearchCommunity";
 import MarkdownTipsModal from "@/components/common/MarkdownTipsModal";
 import TextareaAutosize from "@/components/common/TextareaAutosize";
 import CustomHead from "@/components/common/CustomHead";
