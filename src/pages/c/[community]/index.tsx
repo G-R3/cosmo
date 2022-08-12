@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import CommunityPosts from "@/components/Post/CommunityPosts";
+import CommunityPosts from "@/components/Communities/CommunityPosts";
 
 const Community: NextPage = () => {
   return <CommunityPosts />;

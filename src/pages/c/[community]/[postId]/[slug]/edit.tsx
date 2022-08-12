@@ -13,9 +13,9 @@ import { AiFillHeart } from "react-icons/ai";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import MarkdownTipsModal from "@/components/MarkdownTipsModal";
+import MarkdownTipsModal from "@/components/common/MarkdownTipsModal";
 import { trpc } from "@/utils/trpc";
-import DeletePostModal from "@/components/Post/DeletePostModal";
+import DeletePostModal from "@/components/common/DeletePostModal";
 import TextareaAutosize from "@/components/common/TextareaAutosize";
 import { prisma } from "../../../../../backend/client";
 

@@ -4,9 +4,9 @@ import { useSession } from "next-auth/react";
 import { trpc } from "@/utils/trpc";
 import useLikePost from "@/hooks/useLikePost";
 import useSavePost from "@/hooks/useSavePost";
-import Post from "./Post";
-import PostSkeleton from "./PostSkeleton";
-import Tag from "../Communities/Tag";
+import Post from "../common/Post";
+import PostSkeleton from "../common/PostSkeleton";
+import Tag from "./Tag";
 import CustomHead from "../common/CustomHead";
 
 const CommunityPosts = () => {
