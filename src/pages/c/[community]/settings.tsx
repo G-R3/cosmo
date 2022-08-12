@@ -10,9 +10,9 @@ import { useSession } from "next-auth/react";
 import { trpc } from "@/utils/trpc";
 import { NextPageWithAuth } from "@/components/auth/Auth";
 import TextareaAutosize from "@/components/common/TextareaAutosize";
-import Tag from "@/components/Communities/Tag";
+import Tag from "@/components/Communities/settings/Tag";
 import SearchUser from "@/components/User/SearchUser";
-import RemoveModModal from "@/components/Communities/RemoveModModal";
+import RemoveModModal from "@/components/Communities/settings/RemoveModModal";
 
 type Inputs = {
   communityId: string;

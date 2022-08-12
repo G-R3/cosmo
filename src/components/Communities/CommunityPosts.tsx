@@ -6,7 +6,7 @@ import useLikePost from "@/hooks/useLikePost";
 import useSavePost from "@/hooks/useSavePost";
 import Post from "../common/Post";
 import PostSkeleton from "../common/PostSkeleton";
-import Tag from "./Tag";
+import Tag from "./settings/Tag";
 import CustomHead from "../common/CustomHead";
 
 const CommunityPosts = () => {

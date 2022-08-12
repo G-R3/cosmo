@@ -5,7 +5,7 @@ import { useDebounce } from "use-debounce";
 import { FiSearch, FiX } from "react-icons/fi";
 import { AnimatePresence, motion } from "framer-motion";
 import { UseFormSetValue, UseFormReset } from "react-hook-form";
-import { trpc } from "../../utils/trpc";
+import { trpc } from "../../../utils/trpc";
 
 type Inputs = {
   postCommunityId: string;
