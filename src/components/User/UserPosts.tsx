@@ -2,8 +2,8 @@ import { FC } from "react";
 import { trpc } from "@/utils/trpc";
 import useLikePost from "@/hooks/useLikePost";
 import useSavePost from "@/hooks/useSavePost";
-import PostSkeleton from "../Post/PostSkeleton";
-import Post from "../Post/Post";
+import Post from "../common/Post";
+import PostSkeleton from "../common/PostSkeleton";
 
 const UserPosts: FC<{ user: string; isSelected: boolean }> = ({
   user,
