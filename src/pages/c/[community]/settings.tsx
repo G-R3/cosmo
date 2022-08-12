@@ -11,7 +11,7 @@ import { trpc } from "@/utils/trpc";
 import { NextPageWithAuth } from "@/components/auth/Auth";
 import TextareaAutosize from "@/components/common/TextareaAutosize";
 import Tag from "@/components/Communities/Tag";
-import SearchUser from "@/components/SearchUser";
+import SearchUser from "@/components/User/SearchUser";
 import RemoveModModal from "@/components/Communities/RemoveModModal";
 
 type Inputs = {

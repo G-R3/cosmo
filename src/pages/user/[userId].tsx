@@ -1,8 +1,8 @@
 import { trpc } from "@/utils/trpc";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import UserTabs from "@/components/UserTabs";
-import UserBanner from "@/components/UserBanner";
+import UserTabs from "@/components/User/UserTabs";
+import UserBanner from "@/components/User/UserBanner";
 import { NextPage } from "next";
 
 const Profile: NextPage = () => {
