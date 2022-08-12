@@ -9,7 +9,7 @@ import Post from "@/components/Post/Post";
 import PostSkeleton from "@/components/Post/PostSkeleton";
 import useLikePost from "@/hooks/useLikePost";
 import useSavePost from "@/hooks/useSavePost";
-import Tag from "@/components/Tag";
+import Tag from "@/components/Communities/Tag";
 
 const Index: NextPage = () => {
   const { data: session } = useSession();
