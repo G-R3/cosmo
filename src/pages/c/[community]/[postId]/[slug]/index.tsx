@@ -23,7 +23,7 @@ import { trpc } from "@/utils/trpc";
 import Markdown from "@/components/common/Markdown";
 import Comment from "@/components/Comments/Comment";
 import CommentSkeleton from "@/components/Comments/CommentSkeleton";
-import MarkdownTipsModal from "@/components/MarkdownTipsModal";
+import MarkdownTipsModal from "@/components/common/MarkdownTipsModal";
 import TextareaAutosize from "@/components/common/TextareaAutosize";
 
 type Inputs = {

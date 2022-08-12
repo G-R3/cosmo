@@ -1,4 +1,4 @@
-import { useState, FC, Dispatch, SetStateAction } from "react";
+import { useState, FC } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Dialog } from "@headlessui/react";
 import { AiOutlineQuestion } from "react-icons/ai";
