@@ -1,5 +1,4 @@
 import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import React, { ReactNode, useEffect } from "react";
 
 // Most of this stuff (including the custome _app was taken from here)
@@ -28,7 +27,6 @@ const Auth: React.FC<Props> = ({ children }) => {
   const { data: session, status } = useSession();
   const isUser = !!session?.user;
   const isLoading = status === "loading";
-  const router = useRouter();
 
   useEffect(() => {
     if (isLoading) return;

@@ -5,27 +5,28 @@ import { useDebounce } from "use-debounce";
 import { FiSearch, FiX } from "react-icons/fi";
 import { AnimatePresence, motion } from "framer-motion";
 import { UseFormSetValue, UseFormReset } from "react-hook-form";
-import { trpc } from "../utils/trpc";
+import { trpc } from "../../utils/trpc";
 
 type Inputs = {
-  userId: string;
-  communityId: string;
+  postCommunityId: string;
+  postTitle: string;
+  postContent?: string;
 };
 interface Props {
   setValue: UseFormSetValue<Inputs>;
   reset: UseFormReset<Inputs>;
 }
 
-const SearchUser: React.FC<Props> = ({ setValue, reset }) => {
+const SearchCommunity: React.FC<Props> = ({ setValue, reset }) => {
   const [query, setQuery] = useState("");
   const [debouncedValue] = useDebounce(query, 1000);
-  const [selectedUser, setSelectedUser] = useState<any>();
-  const searchQuery = trpc.useQuery(["user.search", { query }], {
+  const [selectedCommunity, setSelectedCommunity] = useState<any>();
+  const communityQuery = trpc.useQuery(["community.search", { query }], {
     enabled: debouncedValue.trim().length > 0,
   });
 
   return (
-    <div className={`${selectedUser ? "grid grid-cols-3 gap-2" : ""}`}>
+    <div className={`${selectedCommunity ? "grid grid-cols-3 gap-2" : ""}`}>
       <Combobox value={query} onChange={setQuery} name="search">
         {({ open }) => (
           <div className="w-full relative col-span-full md:col-span-2">
@@ -33,14 +34,14 @@ const SearchUser: React.FC<Props> = ({ setValue, reset }) => {
               <FiSearch />
             </Combobox.Button>
             <Combobox.Input
-              name="searchUser"
-              data-cy="search-user"
+              name="searchCommunity"
+              data-cy="search-communities"
               onChange={(e) => setQuery(e.target.value)}
-              displayValue={(user: string) => user}
+              displayValue={(community: string) => community}
               autoCapitalize="false"
               autoComplete="false"
               autoCorrect="false"
-              placeholder="Search for a user"
+              placeholder="Search for a community"
               className="w-full p-4 pl-10 bg-whiteAlt text-darkTwo placeholder:text-grayAlt dark:bg-darkOne dark:text-foreground border-2 dark:border-darkTwo focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md"
             />
 
@@ -54,11 +55,11 @@ const SearchUser: React.FC<Props> = ({ setValue, reset }) => {
                   exit={{ opacity: 0, transition: { duration: 0.2 } }}
                   className="max-h-80 overflow-hidden overflow-y-auto border-2 dark:border-darkTwo bg-whiteAlt dark:bg-darkOne p-2 rounded-md absolute z-10 w-full mt-2 shadow-xl"
                 >
-                  {searchQuery.data && searchQuery.data.users.length > 0 ? (
-                    searchQuery.data.users.map((user) => (
+                  {communityQuery.data && communityQuery.data.length > 0 ? (
+                    communityQuery.data.map((community) => (
                       <Combobox.Option
-                        key={user.id}
-                        value={user.name}
+                        key={community.id}
+                        value={community.name}
                         as={Fragment}
                       >
                         {({ active }) => (
@@ -69,14 +70,14 @@ const SearchUser: React.FC<Props> = ({ setValue, reset }) => {
                                 : ""
                             }`}
                             onClick={() => {
-                              setValue("userId", user.id, {
+                              setValue("postCommunityId", community.id, {
                                 shouldValidate: true,
                                 shouldDirty: true,
                               });
-                              setSelectedUser(user);
+                              setSelectedCommunity(community);
                             }}
                           >
-                            {user.name}
+                            {community.name}
                           </li>
                         )}
                       </Combobox.Option>
@@ -87,9 +88,9 @@ const SearchUser: React.FC<Props> = ({ setValue, reset }) => {
                     </p>
                   )}
 
-                  {searchQuery.isError && (
+                  {communityQuery.isError && (
                     <p className="text-sm text-center font-semibold py-2">
-                      Error {searchQuery.error.message}
+                      Error {communityQuery.error.message}
                     </p>
                   )}
                 </Combobox.Options>
@@ -99,23 +100,27 @@ const SearchUser: React.FC<Props> = ({ setValue, reset }) => {
         )}
       </Combobox>
 
-      {selectedUser && (
+      {selectedCommunity && (
         <div className="flex flex-col">
           <div className="flex items-center justify-between">
-            <small>Adding moderator</small>
+            <small>Posting to </small>
             <button
               onClick={() => {
-                reset();
+                reset({
+                  postCommunityId: "",
+                });
                 setQuery("");
-                setSelectedUser(null);
+                setSelectedCommunity(null);
               }}
               className="cursor-pointer hover:bg-whiteAlt dark:hover:bg-darkTwo p-1 rounded-md"
             >
               <FiX />
             </button>
           </div>
-          <Link href={`/user/${selectedUser.id}`}>
-            <a className="text-highlight font-semibold">{selectedUser.name}</a>
+          <Link href={`/c/${selectedCommunity.name}`}>
+            <a className="text-highlight font-semibold">
+              {selectedCommunity.name}
+            </a>
           </Link>
         </div>
       )}
@@ -123,4 +128,4 @@ const SearchUser: React.FC<Props> = ({ setValue, reset }) => {
   );
 };
 
-export default SearchUser;
+export default SearchCommunity;

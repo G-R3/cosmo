@@ -16,15 +16,16 @@ import {
 import { useRouter } from "next/router";
 import superjson from "superjson";
 import { DehydratedState } from "react-query";
-import { appRouter } from "src/server/router/_app";
-import { createContext } from "src/server/context";
+import { appRouter } from "src/backend/router/_app";
+import { createContext } from "src/backend/context";
 import { createSSGHelpers } from "@trpc/react/ssg";
 import { trpc } from "@/utils/trpc";
-import Markdown from "@/components/Markdown";
-import Comment from "@/components/Comment";
-import CommentSkeleton from "@/components/CommentSkeleton";
-import MarkdownTipsModal from "@/components/MarkdownTipsModal";
-import TextareaAutosize from "@/components/TextareaAutosize";
+import Markdown from "@/components/common/Markdown";
+import Comment from "@/components/common/Comment";
+import CommentSkeleton from "@/components/common/CommentSkeleton";
+import MarkdownTipsModal from "@/components/common/MarkdownTipsModal";
+import TextareaAutosize from "@/components/common/TextareaAutosize";
+import CustomHead from "@/components/common/CustomHead";
 
 type Inputs = {
   postId: string;
@@ -262,15 +263,10 @@ const Post: NextPage<{
 
   return (
     <>
-      <Head>
-        <title>
-          {postQuery.data.post.title} | {postQuery.data.post.community.name}
-        </title>
-        <meta
-          name="description"
-          content="A place to create communities and discuss"
-        />
-      </Head>
+      <CustomHead
+        title={`${postQuery.data.post.title} | ${postQuery.data.post.community.name}`}
+      />
+
       <div className="max-w-3xl mx-auto">
         {(!!likeMutation.error || !!unlikeMutation.error) && (
           <div

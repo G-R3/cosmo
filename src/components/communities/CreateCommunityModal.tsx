@@ -5,9 +5,9 @@ import { MdGroups } from "react-icons/md";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { trpc } from "../utils/trpc";
+import { trpc } from "../../utils/trpc";
 import { BiErrorCircle } from "react-icons/bi";
-import TextareaAutosize from "./TextareaAutosize";
+import TextareaAutosize from "../common/TextareaAutosize";
 
 type Inputs = {
   communityName: string;

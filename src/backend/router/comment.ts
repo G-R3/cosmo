@@ -1,6 +1,6 @@
 import { createRouter } from "../createRouter";
 import { z, ZodError } from "zod";
-import { prisma } from "../../db/client";
+import { prisma } from "../clients/client";
 import { TRPCError } from "@trpc/server";
 
 export const commentRouter = createRouter()

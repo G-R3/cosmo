@@ -1,17 +1,16 @@
+import { NextPage } from "next";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { NextPage } from "next";
-import Head from "next/head";
-import { MdOutlineAddModerator } from "react-icons/md";
 import { useSession } from "next-auth/react";
 import { trpc } from "@/utils/trpc";
-import Post from "@/components/Post";
-import PostSkeleton from "@/components/PostSkeleton";
 import useLikePost from "@/hooks/useLikePost";
 import useSavePost from "@/hooks/useSavePost";
-import Tag from "@/components/Tag";
+import Post from "@/components/common/Post";
+import PostSkeleton from "@/components/common/PostSkeleton";
+import Tag from "@/components/communities/settings/Tag";
+import CustomHead from "@/components/common/CustomHead";
 
-const Index: NextPage = () => {
+const Community: NextPage = () => {
   const { data: session } = useSession();
   const query = useRouter().query.community as string;
   const communityQuery = trpc.useQuery(["community.get", { query }], {
@@ -43,18 +42,13 @@ const Index: NextPage = () => {
 
   return (
     <>
-      <Head>
-        <title>
-          {!!communityQuery.data?.community.title
+      <CustomHead
+        title={
+          !!communityQuery.data?.community.title
             ? communityQuery.data?.community.title
-            : communityQuery.data?.community.name}
-        </title>
-        <meta
-          name="description"
-          content="A place to create communities and discuss"
-        />
-      </Head>
-
+            : communityQuery.data?.community.name
+        }
+      />
       <div className="flex flex-col gap-3">
         <div className="flex justify-between">
           <h1 className="text-3xl sm:text-5xl font-bold">
@@ -131,9 +125,6 @@ const Index: NextPage = () => {
                 <h2 className="text-grayAlt font-semibold">
                   Community Moderators
                 </h2>
-                <button title="Add Moderator">
-                  <MdOutlineAddModerator size={20} />
-                </button>
               </div>
 
               <div className="flex flex-col gap-4">
@@ -181,4 +172,4 @@ const Index: NextPage = () => {
   );
 };
 
-export default Index;
+export default Community;

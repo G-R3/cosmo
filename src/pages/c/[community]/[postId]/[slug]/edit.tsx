@@ -13,11 +13,12 @@ import { AiFillHeart } from "react-icons/ai";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import MarkdownTipsModal from "@/components/MarkdownTipsModal";
+import MarkdownTipsModal from "@/components/common/MarkdownTipsModal";
 import { trpc } from "@/utils/trpc";
-import DeletePostModal from "@/components/DeletePostModal";
-import TextareaAutosize from "@/components/TextareaAutosize";
-import { prisma } from "../../../../../db/client";
+import DeletePostModal from "@/components/common/DeletePostModal";
+import TextareaAutosize from "@/components/common/TextareaAutosize";
+import { prisma } from "../../../../../backend/clients/client";
+import CustomHead from "@/components/common/CustomHead";
 
 type Inputs = {
   postId: string;
@@ -66,13 +67,7 @@ const Edit: NextPage = ({
 
   return (
     <>
-      <Head>
-        <title>{post.title} | Edit</title>
-        <meta
-          name="description"
-          content="A place to create communities and discuss"
-        />
-      </Head>
+      <CustomHead title={`${post.title} | Edit`} />
       <section className="w-full max-w-xl mx-auto flex flex-col gap-10">
         <div className="flex flex-col">
           <h1 className="text-2xl font-semibold">Edit Post</h1>

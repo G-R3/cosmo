@@ -4,7 +4,7 @@ import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { FiEdit2 } from "react-icons/fi";
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 import { useSession } from "next-auth/react";
-import Markdown from "../components/Markdown";
+import Markdown from "./Markdown";
 
 interface Props {
   id: string;

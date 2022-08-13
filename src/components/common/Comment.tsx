@@ -90,7 +90,7 @@ const Comment: React.FC<Props> = ({
       <div className="flex flex-col flex-grow">
         <Link href={`/user/${author.id}`}>
           <a className="w-fit group">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 group">
               <Image
                 src={author?.image ?? ""}
                 alt={author.name ? author.name : `${author.name} Avatar`}
@@ -100,11 +100,10 @@ const Comment: React.FC<Props> = ({
                 priority
               />
               <div>
-                <Link href={`/user/${author.id}`}>
-                  <a className="text-darkOne dark:text-grayAlt hover:underline hover:underline-offset-1">
-                    {author.name}
-                  </a>
-                </Link>
+                <span className="text-darkOne dark:text-grayAlt group-hover:underline group-hover:underline-offset-1">
+                  {author.name}
+                </span>
+
                 {isAuthorAdmin ? (
                   <span className="text-xs text-highlight font-bold">
                     {" "}

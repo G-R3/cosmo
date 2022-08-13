@@ -1,9 +1,9 @@
+import { NextPage } from "next";
 import { trpc } from "@/utils/trpc";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import UserTabs from "@/components/UserTabs";
-import UserBanner from "@/components/UserBanner";
-import { NextPage } from "next";
+import UserTabs from "@/components/user/UserTabs";
+import UserBanner from "@/components/user/UserBanner";
 
 const Profile: NextPage = () => {
   const router = useRouter();

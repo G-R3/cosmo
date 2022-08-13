@@ -1,14 +1,15 @@
+import { NextPageWithAuth } from "@/components/auth/Auth";
+import { FC } from "react";
 import { useRouter } from "next/router";
-import { BiErrorCircle } from "react-icons/bi";
-import Head from "next/head";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { z } from "zod";
+import { SubmitHandler, useForm } from "react-hook-form";
+import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { trpc } from "@/utils/trpc";
-import SearchCommunity from "@/components/SearchCommunity";
-import MarkdownTipsModal from "@/components/MarkdownTipsModal";
-import TextareaAutosize from "@/components/TextareaAutosize";
-import { NextPageWithAuth } from "@/components/Auth";
+import { BiErrorCircle } from "react-icons/bi";
+import SearchCommunity from "@/components/submit/SearchCommunity";
+import MarkdownTipsModal from "@/components/common/MarkdownTipsModal";
+import TextareaAutosize from "@/components/common/TextareaAutosize";
+import CustomHead from "@/components/common/CustomHead";
 
 type Inputs = {
   postCommunityId: string;
@@ -56,16 +57,9 @@ const Submit: NextPageWithAuth = () => {
       communityId: data.postCommunityId,
     });
   };
-
   return (
     <>
-      <Head>
-        <title>Create Post | Cosmo</title>
-        <meta
-          name="description"
-          content="A place to create communities and discuss"
-        />
-      </Head>
+      <CustomHead title="Create Post | Cosmo" />
       <section className="w-full max-w-xl mx-auto flex flex-col gap-10">
         <div className="flex flex-col">
           <h1 className="text-2xl font-semibold">Create Post</h1>

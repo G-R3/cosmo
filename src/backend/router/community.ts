@@ -1,6 +1,6 @@
 import { createRouter } from "../createRouter";
 import { z } from "zod";
-import { prisma } from "../../db/client";
+import { prisma } from "../clients/client";
 import { TRPCError } from "@trpc/server";
 
 const regex = new RegExp("^\\w+$");

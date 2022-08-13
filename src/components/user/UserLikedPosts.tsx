@@ -2,29 +2,29 @@ import { FC } from "react";
 import { trpc } from "@/utils/trpc";
 import useLikePost from "@/hooks/useLikePost";
 import useSavePost from "@/hooks/useSavePost";
-import PostSkeleton from "./PostSkeleton";
-import Post from "./Post";
+import Post from "../common/Post";
+import PostSkeleton from "../common/PostSkeleton";
 
-const UserPosts: FC<{ user: string; isSelected: boolean }> = ({
+const UserLikedPosts: FC<{ user: string; isSelected: boolean }> = ({
   user,
   isSelected,
 }) => {
-  const postQuery = trpc.useQuery(["user.get-posts", { user }], {
+  const likedPostQuery = trpc.useQuery(["user.get-liked-posts", { user }], {
     enabled: isSelected,
   });
 
-  const { onLike, onUnlike } = useLikePost("user.get-posts", { user });
-  const { onSave, onUnsave } = useSavePost("user.get-posts", { user });
+  const { onLike, onUnlike } = useLikePost("user.get-liked-posts", { user });
+  const { onSave, onUnsave } = useSavePost("user.get-liked-posts", { user });
 
   return (
     <>
-      {postQuery.isLoading &&
+      {likedPostQuery.isLoading &&
         Array(13)
           .fill(0)
           .map((skeleton, idx) => <PostSkeleton key={idx} />)}
 
-      {postQuery?.data?.posts &&
-        postQuery.data.posts?.map((post) => (
+      {likedPostQuery?.data?.posts &&
+        likedPostQuery.data.posts?.map((post) => (
           <Post
             key={post.id}
             {...post}
@@ -34,7 +34,7 @@ const UserPosts: FC<{ user: string; isSelected: boolean }> = ({
             onUnsave={onUnsave}
           />
         ))}
-      {postQuery.data?.posts.length === 0 && (
+      {likedPostQuery.data?.posts.length === 0 && (
         <div className="flex flex-col items-center text-grayAlt">
           <p className="font-bold text-lg mt-6">Its empty here</p>
           <p className="text-xl">😢</p>
@@ -44,4 +44,4 @@ const UserPosts: FC<{ user: string; isSelected: boolean }> = ({
   );
 };
 
-export default UserPosts;
+export default UserLikedPosts;

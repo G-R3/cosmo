@@ -4,11 +4,11 @@ import {
   InferGetServerSidePropsType,
   NextPage,
 } from "next";
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { AiFillGithub, AiFillGoogleCircle } from "react-icons/ai";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
+import CustomHead from "@/components/common/CustomHead";
 
 interface ProviderProps {
   styles: string;
@@ -33,10 +33,10 @@ const SignIn: NextPage = ({
 
   return (
     <>
-      <Head>
-        <title>Sign in | Cosmo</title>
-        <meta name="description" content="Sign in to your Cosmo account" />
-      </Head>
+      <CustomHead
+        title="Sign in | Cosmo"
+        description="Sign in to your Cosmo account"
+      />
 
       <div className="flex flex-col items-center justify-center max-w-xl mx-auto">
         <h1 className="text-3xl font-bold text-center mb-10">

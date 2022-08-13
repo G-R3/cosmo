@@ -1,12 +1,12 @@
-import { useSession } from "next-auth/react";
 import { NextPage } from "next";
 import Link from "next/link";
-import Head from "next/head";
+import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import { trpc } from "@/utils/trpc";
-import PostSkeleton from "@/components/PostSkeleton";
-import Post from "@/components/Post";
-import UserCard from "@/components/UserCard";
+import Post from "@/components/common/Post";
+import PostSkeleton from "@/components/common/PostSkeleton";
+import UserCard from "@/components/feed/UserCard";
+import CustomHead from "@/components/common/CustomHead";
 import useLikePost from "@/hooks/useLikePost";
 import useSavePost from "@/hooks/useSavePost";
 
@@ -15,30 +15,20 @@ const Home: NextPage = () => {
   const postQuery = trpc.useQuery(["post.feed"]);
   const { onLike, onUnlike } = useLikePost("post.feed");
   const { onSave, onUnsave } = useSavePost("post.feed");
+
   if (postQuery.isError) {
     return (
       <h1 className="text-grayAlt font-bold text-2xl text-center">
-        Something happened and posts could not be fetched
+        Something went wrong and no post could be found. Try again later.
       </h1>
     );
   }
 
   return (
     <>
-      <Head>
-        <title>Cosmo</title>
-        <meta
-          name="description"
-          content="A place to create communities and discuss"
-        />
-      </Head>
-      <section className="lg:grid lg:grid-cols-5 gap-x-5 min-h-full">
-        <div className="hidden lg:block">
-          <div className="bg-neutral rounded-md sticky top-20">
-            <h1 className="text-center">Todo Add something here</h1>
-          </div>
-        </div>
-        <motion.div className="col-span-3 pb-5 flex flex-col items-center gap-10">
+      <CustomHead />
+      <section className="flex gap-5">
+        <motion.div className="flex-1 pb-5 flex flex-col items-center gap-3">
           {postQuery.isLoading &&
             Array(13)
               .fill(0)
