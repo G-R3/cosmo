@@ -1,17 +1,14 @@
 import { NextPage } from "next";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import { trpc } from "@/utils/trpc";
 import Post from "@/components/common/Post";
 import PostSkeleton from "@/components/common/PostSkeleton";
-import UserCard from "@/components/feed/UserCard";
 import CustomHead from "@/components/common/CustomHead";
 import useLikePost from "@/hooks/useLikePost";
 import useSavePost from "@/hooks/useSavePost";
 
 const Home: NextPage = () => {
-  const { data: session } = useSession();
   const postQuery = trpc.useQuery(["post.feed"]);
   const { onLike, onUnlike } = useLikePost("post.feed");
   const { onSave, onUnsave } = useSavePost("post.feed");
@@ -24,6 +21,7 @@ const Home: NextPage = () => {
     );
   }
 
+  // TODO: Add something else to this page
   return (
     <>
       <CustomHead />
@@ -61,11 +59,6 @@ const Home: NextPage = () => {
             </div>
           )}
         </motion.div>
-        {!!session?.user && (
-          <div className="hidden lg:block">
-            <UserCard {...session?.user} />
-          </div>
-        )}
       </section>
     </>
   );
