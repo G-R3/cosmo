@@ -5,15 +5,16 @@ interface ButtonProps extends ComponentPropsWithRef<"button"> {
   size?: "sm" | "md" | "lg";
   icon?: React.ReactNode;
   loading?: boolean;
+  fullWidth?: boolean;
 }
 
 const classes = {
   base: "relative rounded-md flex justify-center items-center gap-2 text-sm font-medium transition-colors duration-200",
   disabled: "opacity-50 cursor-not-allowed",
   size: {
-    sm: "h-8 min-h-[32px] min-w-[60px] py-1 px-4 w-auto",
-    md: "h-10 min-h-[32px] min-w-[60px] py-1 px-4 w-auto",
-    lg: "h-12 min-h-[32px] min-w-[60px] py-1 px-4 w-auto",
+    sm: "h-8 min-h-[32px] min-w-[60px] py-1 px-4",
+    md: "h-10 min-h-[32px] min-w-[60px] py-1 px-4",
+    lg: "h-12 min-h-[32px] min-w-[60px] py-1 px-4",
   },
   variants: {
     primary:
@@ -34,15 +35,16 @@ const Button: FC<ButtonProps> = ({
   children,
   icon,
   loading,
+  fullWidth,
   className,
   disabled,
   ...prop
 }) => {
   return (
     <button
-      className={`${classes.base} ${classes.size[size]} 
-      ${classes.variants[variant]} 
-      ${disabled && classes.disabled}`}
+      className={`${classes.base} ${classes.size[size]} ${
+        classes.variants[variant]
+      } ${disabled ? classes.disabled : ""} ${fullWidth ? "w-full" : "w-auto"}`}
       disabled={disabled || loading}
       {...prop}
     >
