@@ -27,7 +27,7 @@ const classes = {
 
 const getAltButtonColors = (variant: ButtonProps["variant"]) => {
   const altColors = {
-    default: "border border-darkTwo",
+    default: "border",
     primary:
       "text-highlight border border-highlight hover:text-white hover:bg-highlight active:bg-highlightActive",
     secondary:
