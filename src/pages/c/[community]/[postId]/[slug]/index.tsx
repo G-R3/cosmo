@@ -26,6 +26,7 @@ import CommentSkeleton from "@/components/common/CommentSkeleton";
 import MarkdownTipsModal from "@/components/common/MarkdownTipsModal";
 import TextareaAutosize from "@/components/common/TextareaAutosize";
 import CustomHead from "@/components/common/CustomHead";
+import Button from "@/components/common/Button";
 
 type Inputs = {
   postId: string;
@@ -381,8 +382,8 @@ const Post: NextPage<{
           </div>
         </section>
 
-        <section className="mt-5 bg-whiteAlt dark:bg-darkOne p-5 flex flex-col gap-2 rounded-md">
-          <div className="flex flex-col md:flex-row md:items-center gap-2 justify-between">
+        <section className="mt-5 bg-whiteAlt dark:bg-darkOne p-5 rounded-md">
+          <div className="flex flex-col md:flex-row md:items-center justify-between">
             <h2 className="text-lg">Post a comment</h2>
             {commentMutation.error?.data && (
               <div
@@ -420,28 +421,31 @@ const Post: NextPage<{
               register={register("commentContent")}
             />
           </form>
-          {session?.user ? (
-            <button
-              form="createComment"
-              data-cy="create-comment"
-              disabled={
-                commentMutation.isLoading || !isDirty || !!errors.commentContent
-              }
-              className="bg-whiteAlt border-2 text-darkTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:outline-[3px] focus-visible:focus:outline-highlight"
-            >
-              Post
-            </button>
-          ) : (
-            <button
-              onClick={() => router.push("/signin")}
-              disabled={
-                commentMutation.isLoading || !isDirty || !!errors.commentContent
-              }
-              className="bg-whiteAlt border-2 text-darkTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:outline-[3px] focus-visible:focus:outline-highlight"
-            >
-              Post
-            </button>
-          )}
+          <div className="flex justify-end">
+            {session?.user ? (
+              <Button
+                form="createComment"
+                data-cy="create-comment"
+                variant="primary"
+                size="md"
+                loading={commentMutation.isLoading}
+                disabled={!isDirty || !!errors.commentContent}
+              >
+                Post
+              </Button>
+            ) : (
+              // TODO: Add login modal. it sucks having to redirect to login page.
+              <Button
+                onClick={() => router.push("/signin")}
+                loading={commentMutation.isLoading}
+                disabled={!isDirty || !!errors.commentContent}
+                variant="primary"
+                size="md"
+              >
+                Post
+              </Button>
+            )}
+          </div>
         </section>
 
         <section className="mt-5 rounded-md py-5 flex flex-col gap-5">

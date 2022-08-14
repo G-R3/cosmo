@@ -10,6 +10,7 @@ import SearchCommunity from "@/components/submit/SearchCommunity";
 import MarkdownTipsModal from "@/components/common/MarkdownTipsModal";
 import TextareaAutosize from "@/components/common/TextareaAutosize";
 import CustomHead from "@/components/common/CustomHead";
+import Button from "@/components/common/Button";
 
 type Inputs = {
   postCommunityId: string;
@@ -44,6 +45,7 @@ const Submit: NextPageWithAuth = () => {
 
   const createPostMutation = trpc.useMutation("post.create", {
     onSuccess(data) {
+      reset();
       router.push(
         `/c/${data.post.community.name}/${data.post.id}/${data.post.slug}`,
       );
@@ -60,7 +62,7 @@ const Submit: NextPageWithAuth = () => {
   return (
     <>
       <CustomHead title="Create Post | Cosmo" />
-      <section className="w-full max-w-xl mx-auto flex flex-col gap-10">
+      <section className="w-full max-w-xl mx-auto flex flex-col gap-6">
         <div className="flex flex-col">
           <h1 className="text-2xl font-semibold">Create Post</h1>
           <span className="mt-2 text-grayAlt">
@@ -110,13 +112,14 @@ const Submit: NextPageWithAuth = () => {
               <span className="text-alert">{errors.postContent.message}</span>
             )}
           </div>
-          <input
+          <Button
+            variant="primary"
+            size="lg"
             data-cy="submit"
-            type="submit"
-            value="Post"
-            disabled={createPostMutation.isLoading}
-            className="bg-whiteAlt text-darkOne self-end py-3 px-4 cursor-pointer rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
-          />
+            loading={createPostMutation.isLoading}
+          >
+            Create Post
+          </Button>
         </form>
       </section>
     </>

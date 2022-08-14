@@ -19,6 +19,7 @@ import DeletePostModal from "@/components/common/DeletePostModal";
 import TextareaAutosize from "@/components/common/TextareaAutosize";
 import { prisma } from "../../../../../backend/clients/client";
 import CustomHead from "@/components/common/CustomHead";
+import Button from "@/components/common/Button";
 
 type Inputs = {
   postId: string;
@@ -154,15 +155,17 @@ const Edit: NextPage = ({
 
             <div className="flex justify-end gap-5">
               <DeletePostModal postId={post.id} />
+
               {isAuthor && (
-                <button
+                <Button
                   data-cy="submit"
                   form="edit-form"
                   disabled={watch("postContent") === post.content}
-                  className="bg-success text-whiteAlt self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
+                  variant="primary"
+                  size="lg"
                 >
-                  Save
-                </button>
+                  Save Post
+                </Button>
               )}
             </div>
           </form>

@@ -171,7 +171,7 @@ const CreateCommunityModal: React.FC = () => {
                     form="createCommunity"
                     data-cy="confirm-create"
                     variant="primary"
-                    disabled={communityMutation.isLoading}
+                    loading={communityMutation.isLoading}
                     size="md"
                   >
                     Create

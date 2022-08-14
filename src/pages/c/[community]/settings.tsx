@@ -13,6 +13,7 @@ import Tag from "@/components/communities/settings/Tag";
 import SearchUser from "@/components/communities/settings/SearchUser";
 import RemoveModModal from "@/components/communities/settings/RemoveModModal";
 import CustomHead from "@/components/common/CustomHead";
+import Button from "@/components/common/Button";
 
 type Inputs = {
   communityId: string;
@@ -38,6 +39,7 @@ const EditCommunity: NextPageWithAuth = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const query = router.query.community as string;
+  const utils = trpc.useContext();
   const {
     register,
     handleSubmit,
@@ -52,6 +54,7 @@ const EditCommunity: NextPageWithAuth = () => {
   const { data, isLoading, error } = trpc.useQuery(
     ["community.get", { query }],
     {
+      refetchOnWindowFocus: false,
       onSuccess(data) {
         setValue("communityId", data.community.id);
       },
@@ -59,6 +62,7 @@ const EditCommunity: NextPageWithAuth = () => {
   );
   const editMutation = trpc.useMutation("community.edit", {
     onSuccess(data, variables, context) {
+      utils.invalidateQueries(["community.get", { query }]);
       reset({
         communityId: data.community.id,
         communityTitle: data.community.title,
@@ -174,8 +178,8 @@ const EditCommunity: NextPageWithAuth = () => {
             </div>
           </div>
 
-          <div className="flex gap-2 self-end">
-            <button
+          <div className="flex self-end">
+            <Button
               form="editCommunity"
               data-cy="confirm-edit"
               disabled={
@@ -184,10 +188,11 @@ const EditCommunity: NextPageWithAuth = () => {
                 Object.keys(errors).length > 0 ||
                 !isDirty
               }
-              className="bg-whiteAlt border-2 text-darkTwo px-4 py-2 rounded-md disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:outline-[3px] focus-visible:focus:outline-highlight"
+              variant="primary"
+              size="md"
             >
               Save
-            </button>
+            </Button>
           </div>
         </form>
 
@@ -310,7 +315,10 @@ const TagInput: FC<{
           ))}
         </ul>
       )}
-      <form onSubmit={handleSubmit(addTag)} className="flex gap-x-6">
+      <form onSubmit={handleSubmit(addTag)} className="flex flex-col gap-y-3">
+        {errors.tag?.message && (
+          <span className="text-alert">{errors.tag?.message}</span>
+        )}
         <input
           {...register("tag")}
           autoComplete="false"
@@ -318,16 +326,12 @@ const TagInput: FC<{
           className="w-full border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-grayAlt dark:bg-darkOne dark:text-foreground"
         />
 
-        <button
-          disabled={!isDirty || !isValid}
-          className="bg-whiteAlt border-2 text-darkTwo px-4 py-2 rounded-md disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:outline-[3px] focus-visible:focus:outline-highlight"
-        >
-          Add
-        </button>
+        <div className="flex justify-end">
+          <Button disabled={!isDirty || !isValid} variant="primary" size="md">
+            Add community tag
+          </Button>
+        </div>
       </form>
-      {errors.tag?.message && (
-        <span className="text-alert">{errors.tag?.message}</span>
-      )}
     </>
   );
 };
@@ -397,21 +401,21 @@ const ModeratorList: FC<Props> = ({ moderators, creatorId, communityId }) => {
     <>
       <form
         onSubmit={handleSubmit(addModerator)}
-        className="flex flex-col gap-4"
+        className="flex flex-col gap-2"
       >
+        {errors.userId?.message && (
+          <span className="text-alert">{errors.userId.message}</span>
+        )}
         <SearchUser
           reset={() => reset({ userId: "", communityId })}
           setValue={setValue}
         />
-        {errors.userId?.message && (
-          <span className="text-alert">{errors.userId.message}</span>
-        )}
-        <button
-          disabled={addMutation.isLoading}
-          className="self-end bg-whiteAlt border-2 text-darkTwo px-4 py-2 rounded-md disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:outline-[3px] focus-visible:focus:outline-highlight"
-        >
-          Add
-        </button>
+
+        <div className="flex justify-end">
+          <Button loading={addMutation.isLoading} variant="primary" size="md">
+            Add moderator
+          </Button>
+        </div>
       </form>
       <ul className="mt-5 flex flex-col border border-grayAlt rounded-md overflow-hidden">
         {moderators.map((mod, idx) => (

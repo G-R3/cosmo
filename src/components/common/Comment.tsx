@@ -11,6 +11,7 @@ import Markdown from "./Markdown";
 import MarkdownTipsModal from "./MarkdownTipsModal";
 import CommentDeleteModal from "./CommentDeleteModal";
 import TextareaAutosize from "./TextareaAutosize";
+import Button from "./Button";
 
 type Inputs = {
   commentId: string;
@@ -56,6 +57,7 @@ const Comment: React.FC<Props> = ({
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors, isDirty, isValid },
   } = useForm<Inputs>({
     defaultValues: { commentContent: content, commentId: id },
@@ -72,6 +74,10 @@ const Comment: React.FC<Props> = ({
       ]);
       utils.invalidateQueries(["user.get-comments"]);
       setIsEditing(false);
+      reset({
+        commentContent: data.comment.content,
+        commentId: data.comment.id,
+      });
     },
   });
 
@@ -159,18 +165,18 @@ const Comment: React.FC<Props> = ({
               </button>
             )}
             {isCommentAuthor && isEditing && (
-              <button
+              <Button
+                loading={commentEditMutation.isLoading}
                 disabled={
-                  commentEditMutation.isLoading ||
-                  watch("commentContent") === content ||
-                  !(isDirty && isValid)
+                  watch("commentContent") === content || !isValid || !isDirty
                 }
                 form="commentEditForm"
                 data-cy="save-comment-edit"
-                className="bg-success text-whiteAlt self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
+                variant="success"
+                size="md"
               >
                 Save
-              </button>
+              </Button>
             )}
           </div>
         )}
