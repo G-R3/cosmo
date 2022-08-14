@@ -50,14 +50,14 @@ const getButtonColors = (
   const colors = {
     default: "",
     primary:
-      "bg-highlight text-white hover:bg-highlightHover active:bg-highlightActive",
+      "border border-transparent bg-highlight text-white hover:bg-highlightHover active:bg-highlightActive",
     secondary:
-      "bg-secondary text-white hover:bg-secondaryHover active:bg-secondaryActive",
+      "border border-transparent bg-secondary text-white hover:bg-secondaryHover active:bg-secondaryActive",
     success:
-      "bg-success text-white hover:bg-successHover active:bg-successActive",
+      "border border-transparent bg-success text-white hover:bg-successHover active:bg-successActive",
     danger: "bg-alert text-white hover:bg-alertHover active:bg-alertActive",
     warning:
-      "bg-warning text-white hover:bg-warningHover active:bg-warningActive",
+      "border border-transparent bg-warning text-white hover:bg-warningHover active:bg-warningActive",
   };
 
   if (disabled) {
