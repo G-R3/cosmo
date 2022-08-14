@@ -12,6 +12,8 @@ import MarkdownTipsModal from "./MarkdownTipsModal";
 import CommentDeleteModal from "./CommentDeleteModal";
 import TextareaAutosize from "./TextareaAutosize";
 import Button from "./Button";
+import Alert from "./Alert";
+import { BiErrorCircle } from "react-icons/bi";
 
 type Inputs = {
   commentId: string;
@@ -94,35 +96,46 @@ const Comment: React.FC<Props> = ({
     <div className="bg-whiteAlt flex gap-5 dark:bg-darkOne py-3 px-5 rounded-md">
       <div className="bg-foreground dark:bg-darkTwo min-h-full min-w-[4px] rounded-full"></div>
       <div className="flex flex-col flex-grow">
-        <Link href={`/user/${author.id}`}>
-          <a className="w-fit group">
-            <div className="flex items-center gap-3 group">
-              <Image
-                src={author?.image ?? ""}
-                alt={author.name ? author.name : `${author.name} Avatar`}
-                width={28}
-                height={28}
-                className="rounded-full"
-                priority
-              />
-              <div>
-                <span className="text-darkOne dark:text-grayAlt group-hover:underline group-hover:underline-offset-1">
-                  {author.name}
-                </span>
-
-                {isAuthorAdmin ? (
-                  <span className="text-xs text-highlight font-bold">
-                    {" "}
-                    ADMIN
+        <div className="flex flex-col justify-between md:flex-row">
+          <Link href={`/user/${author.id}`}>
+            <a className="w-fit group">
+              <div className="flex items-center gap-3 group">
+                <Image
+                  src={author?.image ?? ""}
+                  alt={author.name ? author.name : `${author.name} Avatar`}
+                  width={28}
+                  height={28}
+                  className="rounded-full"
+                  priority
+                />
+                <div>
+                  <span className="text-darkOne dark:text-grayAlt group-hover:underline group-hover:underline-offset-1">
+                    {author.name}
                   </span>
-                ) : isCommentAuthorMod ? (
-                  <span className="text-xs text-green-500 font-bold"> MOD</span>
-                ) : null}
+
+                  {isAuthorAdmin ? (
+                    <span className="text-xs text-highlight font-bold">
+                      {" "}
+                      ADMIN
+                    </span>
+                  ) : isCommentAuthorMod ? (
+                    <span className="text-xs text-green-500 font-bold">
+                      {" "}
+                      MOD
+                    </span>
+                  ) : null}
+                </div>
               </div>
-            </div>
-          </a>
-        </Link>
-        <div className="mt-5 mb-3 ">
+            </a>
+          </Link>
+          {commentEditMutation.error && (
+            <Alert type="error">
+              <BiErrorCircle size={22} />
+              <span>Oh no! change a few things up and try again</span>
+            </Alert>
+          )}
+        </div>
+        <div className="mt-4 mb-3 ">
           {isEditing ? (
             <form
               id="commentEditForm"
@@ -140,7 +153,7 @@ const Comment: React.FC<Props> = ({
               <TextareaAutosize
                 data-cy="comment-edit-textarea"
                 placeholder="What are your thoughts?"
-                minHeight={220}
+                minHeight={100}
                 register={register("commentContent")}
               />
             </form>

@@ -27,6 +27,7 @@ import MarkdownTipsModal from "@/components/common/MarkdownTipsModal";
 import TextareaAutosize from "@/components/common/TextareaAutosize";
 import CustomHead from "@/components/common/CustomHead";
 import Button from "@/components/common/Button";
+import Alert from "@/components/common/Alert";
 
 type Inputs = {
   postId: string;
@@ -269,14 +270,12 @@ const Post: NextPage<{
       />
 
       <div className="max-w-3xl mx-auto">
+        {/* TODO: use toasts for like/unlike and save/unsave errors */}
         {(!!likeMutation.error || !!unlikeMutation.error) && (
-          <div
-            data-cy="alert-alert"
-            className="bg-alert p-3 rounded-md text-foreground flex items-center gap-2"
-          >
+          <Alert type="error">
             <BiErrorCircle size={22} />
-            <span>Failed to like the post</span>
-          </div>
+            <span>Oh snap! something went wrong</span>
+          </Alert>
         )}
         <section className="p-5 bg-whiteAlt dark:bg-darkOne rounded-md">
           <h1 className="text-2xl">{postQuery.data.post.title}</h1>
@@ -385,19 +384,11 @@ const Post: NextPage<{
         <section className="mt-5 bg-whiteAlt dark:bg-darkOne p-5 rounded-md">
           <div className="flex flex-col md:flex-row md:items-center justify-between">
             <h2 className="text-lg">Post a comment</h2>
-            {commentMutation.error?.data && (
-              <div
-                data-cy="alert-error"
-                className="bg-alert p-3 rounded-md text-foreground flex items-center gap-2"
-              >
+            {commentMutation.error && (
+              <Alert type="error">
                 <BiErrorCircle size={22} />
-                <span>
-                  {
-                    commentMutation.error.data.zodError?.fieldErrors
-                      .content?.[0]
-                  }
-                </span>
-              </div>
+                <span>Oh no! change a few things up and try again</span>
+              </Alert>
             )}
           </div>
           <form
@@ -417,7 +408,7 @@ const Post: NextPage<{
               data-cy="comment-textarea"
               id="comment"
               placeholder="What are you thoughts?"
-              minHeight={200}
+              minHeight={150}
               register={register("commentContent")}
             />
           </form>

@@ -9,6 +9,7 @@ import { BiErrorCircle } from "react-icons/bi";
 import { trpc } from "../../utils/trpc";
 import TextareaAutosize from "../common/TextareaAutosize";
 import Button from "../common/Button";
+import Alert from "../common/Alert";
 
 type Inputs = {
   communityName: string;
@@ -89,8 +90,8 @@ const CreateCommunityModal: React.FC = () => {
                 exit={{ opacity: 0, y: -100, transition: { duration: 0.2 } }}
                 className="w-full max-w-xl mx-auto rounded bg-whiteAlt dark:bg-darkOne px-10 py-8 relative flex flex-col gap-10 overflow-hidden overflow-y-auto "
               >
-                <div>
-                  <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col">
                     <Dialog.Title className="text-xl">
                       Create a community
                     </Dialog.Title>
@@ -99,16 +100,14 @@ const CreateCommunityModal: React.FC = () => {
                     </Dialog.Description>
                   </div>
                   {communityMutation.error?.message && (
-                    <div className="mt-2 bg-alert p-3 rounded-md text-foreground flex items-center gap-2">
+                    <Alert type="error">
                       <BiErrorCircle size={22} />
-                      <p className="text-sm md:text-sm">
-                        {communityMutation.error?.message}
-                      </p>
-                    </div>
+                      {communityMutation.error?.message}
+                    </Alert>
                   )}
                   <form
                     id="createCommunity"
-                    className="mt-4 flex flex-col gap-10"
+                    className="flex flex-col gap-10"
                     onSubmit={handleSubmit(createCommunity)}
                   >
                     <div className="flex flex-col gap-2">

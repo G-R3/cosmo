@@ -1,5 +1,4 @@
 import { NextPageWithAuth } from "@/components/auth/Auth";
-import { FC } from "react";
 import { useRouter } from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import z from "zod";
@@ -11,6 +10,7 @@ import MarkdownTipsModal from "@/components/common/MarkdownTipsModal";
 import TextareaAutosize from "@/components/common/TextareaAutosize";
 import CustomHead from "@/components/common/CustomHead";
 import Button from "@/components/common/Button";
+import Alert from "@/components/common/Alert";
 
 type Inputs = {
   postCommunityId: string;
@@ -74,10 +74,13 @@ const Submit: NextPageWithAuth = () => {
           className="flex flex-col gap-5 rounded-md"
         >
           {createPostMutation.error && (
-            <div className="bg-alert p-3 rounded-md text-foreground flex items-center gap-2">
+            <Alert type="error">
               <BiErrorCircle size={22} />
-              <span>Something went wrong while creating your post!</span>
-            </div>
+              <span>
+                Oh oh! Something went wrong while trying to create post. Try
+                again later.
+              </span>
+            </Alert>
           )}
           <div className="flex flex-col gap-2">
             <SearchCommunity setValue={setValue} reset={reset} />
