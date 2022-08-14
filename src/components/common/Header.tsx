@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
 import { ThemeToggler } from "./ThemeToggler";
 import CreateCommunityModal from "../communities/CreateCommunityModal";
+import Button from "./Button";
 
 interface Props {
   href: string;
@@ -45,20 +46,27 @@ const Header: React.FC = () => {
           <div className="flex">
             <div className="flex-shrink-0">
               <Link href={"/"}>
-                <a className="flex items-center h-14 lg:h-16 w-full text-3xl text-primary dark:text-secondary">
+                <a className="flex items-center h-14 lg:h-16 w-full text-3xl text-primary dark:text-whiteAlt">
                   Cosmo
                 </a>
               </Link>
             </div>
             <div className="flex gap-5 justify-end items-center flex-grow">
               <nav className="flex justify-center items-center gap-3">
-                {!!session?.user && (
+                {!session?.user && (
+                  <Link href="/signin">
+                    <a className="relative rounded-md flex justify-center items-center gap-2 text-sm font-medium transition-colors duration-200 bg-highlight text-white hover:bg-highlightHover active:bg-highlightActive h-8 min-h-[32px] min-w-[60px] py-1 px-4">
+                      Sign in
+                    </a>
+                  </Link>
+                )}
+                {session?.user && (
                   <>
                     <CreateCommunityModal />
                     <Link href="/submit">
                       <a
                         tabIndex={0}
-                        className="flex items-center px-2 h-6 lg:h-8 cursor-pointer"
+                        className="flex items-center px-2 h-6 lg:h-8 cursor-pointer transition-colors duration-200"
                       >
                         <FiPlus size={25} />
                       </a>

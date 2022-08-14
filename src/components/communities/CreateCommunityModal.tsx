@@ -5,9 +5,10 @@ import { MdGroups } from "react-icons/md";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { trpc } from "../../utils/trpc";
 import { BiErrorCircle } from "react-icons/bi";
+import { trpc } from "../../utils/trpc";
 import TextareaAutosize from "../common/TextareaAutosize";
+import Button from "../common/Button";
 
 type Inputs = {
   communityName: string;
@@ -63,13 +64,11 @@ const CreateCommunityModal: React.FC = () => {
 
   return (
     <>
-      <button
+      <Button
         data-cy="create-community-modal"
         onClick={() => setIsOpen(true)}
-        className="flex items-center px-2 h-6 lg:h-8 cursor-pointer"
-      >
-        <MdGroups size={25} />
-      </button>
+        icon={<MdGroups size={25} />}
+      />
       <AnimatePresence>
         {isOpen && (
           <Dialog
@@ -160,21 +159,23 @@ const CreateCommunityModal: React.FC = () => {
                 </div>
 
                 <div className="self-end flex gap-2">
-                  <button
+                  <Button
                     data-cy="close-modal"
+                    size="md"
                     onClick={() => setIsOpen(false)}
-                    className="text-darkOne dark:text-whiteAlt py-4 px-6 h-12 p-4 rounded-md flex items-center border-2 border-transparent disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:border-alert hover:border-alert"
                   >
                     Cancel
-                  </button>
-                  <button
+                  </Button>
+
+                  <Button
                     form="createCommunity"
                     data-cy="confirm-create"
+                    variant="primary"
                     disabled={communityMutation.isLoading}
-                    className="bg-whiteAlt border-2 text-darkTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:outline-[3px] focus-visible:focus:outline-highlight"
+                    size="md"
                   >
                     Create
-                  </button>
+                  </Button>
                 </div>
               </Dialog.Panel>
             </motion.div>
