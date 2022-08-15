@@ -1,4 +1,5 @@
 import { FC, ComponentPropsWithRef } from "react";
+import Loader from "./Loader";
 
 interface ButtonProps extends ComponentPropsWithRef<"button"> {
   variant?:
@@ -93,7 +94,14 @@ const Button: FC<ButtonProps> = ({
       {...props}
     >
       {icon && <span className="flex justify-center items-center">{icon}</span>}
-      {loading ? "Loading..." : children}
+      {loading ? (
+        <div>
+          <Loader />
+          <span className="invisible">{children}</span>
+        </div>
+      ) : (
+        children
+      )}
     </button>
   );
 };
