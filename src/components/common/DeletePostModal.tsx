@@ -69,7 +69,7 @@ const DeletePostModal: FC<{ postId: string }> = ({ postId }) => {
                       variant="danger"
                       size="md"
                     >
-                      {deleteMutation.isLoading ? "Deleting..." : "Delete"}
+                      Delete
                     </Button>
                   </div>
                 </Dialog.Panel>

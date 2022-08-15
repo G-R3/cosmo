@@ -44,7 +44,7 @@ const Edit: NextPage = ({
     register,
     watch,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<Inputs>({
     defaultValues: { postId: post.id, postContent: post.content },
     resolver: zodResolver(schema),
@@ -166,6 +166,7 @@ const Edit: NextPage = ({
                   disabled={watch("postContent") === post.content}
                   variant="primary"
                   size="lg"
+                  loading={editMutation.isLoading || isSubmitting}
                 >
                   Save Post
                 </Button>

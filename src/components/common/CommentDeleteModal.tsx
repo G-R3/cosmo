@@ -64,7 +64,7 @@ const DeleteCommentModal: FC<{ commentId: string }> = ({ commentId }) => {
                       variant="danger"
                       size="md"
                     >
-                      {deleteMutation.isLoading ? "Deleting..." : "Delete"}
+                      Delete
                     </Button>
                   </div>
                 </Dialog.Panel>
