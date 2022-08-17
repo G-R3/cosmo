@@ -130,7 +130,7 @@ const Post: React.FC<Props> = ({
             // disabled={
             //   unSavePostMutation.isLoading || savePostMutation.isLoading
             // }
-            className="flex items-center gap-[6px] hover:text-whiteAlt focus:text-whiteAlt transition-colors"
+            className="flex items-center gap-[6px] dark:hover:text-whiteAlt dark:focus:text-whiteAlt transition-colors"
           >
             {isSavedByUser ? <BsBookmarkFill /> : <BsBookmark />}
             {isSavedByUser ? "Unsave" : "Save"}
