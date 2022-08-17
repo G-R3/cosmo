@@ -23,7 +23,7 @@ const schema = z.object({
     required_error: "Community is required",
     invalid_type_error: "Community is required",
   }),
-  postTitle: z.string().trim().min(1, { message: "Post title is required" }),
+  postTitle: z.string().trim().min(1, { message: "Title is required" }),
   postContent: z
     .string()
     .trim()
@@ -99,8 +99,8 @@ const Submit: NextPageWithAuth = () => {
               {...register("postTitle", { required: true, min: 1 })}
               className="border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-grayAlt dark:bg-darkOne dark:text-foreground"
             />
-            {errors.postTitle && (
-              <span className="text-alert">This field is required!</span>
+            {errors.postTitle?.message && (
+              <span className="text-alert">{errors.postTitle.message}</span>
             )}
           </div>
           <div className="flex flex-col gap-2">
