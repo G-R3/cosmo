@@ -14,6 +14,7 @@ import SearchUser from "@/components/communities/settings/SearchUser";
 import RemoveModModal from "@/components/communities/settings/RemoveModModal";
 import CustomHead from "@/components/common/CustomHead";
 import Button from "@/components/common/Button";
+import Preloader from "@/components/common/Preloader";
 
 type Inputs = {
   communityId: string;
@@ -82,7 +83,7 @@ const EditCommunity: NextPageWithAuth = () => {
   }, [data, router, isAdmin]);
 
   if (isLoading || (!data?.isModerator && !isAdmin)) {
-    return <div>Loading...</div>;
+    return <Preloader />;
   }
 
   const editCommunity: SubmitHandler<Inputs> = (data) => {

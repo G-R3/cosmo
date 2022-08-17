@@ -4,13 +4,16 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import UserTabs from "@/components/user/UserTabs";
 import UserBanner from "@/components/user/UserBanner";
+import Preloader from "@/components/common/Preloader";
 
 const Profile: NextPage = () => {
   const router = useRouter();
   const userId = router.query.userId as string;
   const userQuery = trpc.useQuery(["user.get-by-id", { userId }]);
 
-  if (userQuery.isLoading) return <div>Loading...</div>;
+  if (userQuery.isLoading) {
+    return <Preloader />;
+  }
 
   if (userQuery.error || !userQuery?.data?.user) {
     return <div>No user was found</div>;

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Head from "next/head";
 import { useSession } from "next-auth/react";
 import { BiErrorCircle } from "react-icons/bi";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
@@ -28,6 +27,7 @@ import TextareaAutosize from "@/components/common/TextareaAutosize";
 import CustomHead from "@/components/common/CustomHead";
 import Button from "@/components/common/Button";
 import Alert from "@/components/common/Alert";
+import Preloader from "@/components/common/Preloader";
 
 type Inputs = {
   postId: string;
@@ -55,7 +55,6 @@ const Post: NextPage<{
   const router = useRouter();
   const { postId, slug } = props;
   const { data: session } = useSession();
-  // isValid was always returning false even when mode was set to "onChange"
   const {
     register,
     handleSubmit,
@@ -216,15 +215,12 @@ const Post: NextPage<{
   });
 
   if (postQuery.isLoading) {
-    return <div>Loading...</div>;
+    console.log("hii");
+    return <Preloader />;
   }
 
-  if (postQuery.error) {
+  if (postQuery.isError || !postQuery.data) {
     return <div>No post was found</div>;
-  }
-
-  if (!postQuery.data) {
-    return <div>There doesn&apos;t seem be anything here.</div>;
   }
 
   const createComment: SubmitHandler<Inputs> = (data) => {
