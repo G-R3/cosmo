@@ -46,9 +46,8 @@ describe("Create comment", () => {
 
     cy.get("[data-cy='comment-delete']").eq(0).click();
     cy.get("[data-cy='delete-modal']").should("be.visible");
-    cy.get("[data-cy='confirm-delete-comment']")
-      .click()
-      .should("contain.text", "Deleting...");
+
+    cy.get("[data-cy='confirm-delete-comment']").click().should("be.disabled");
 
     cy.wait("@deleteComment").its("response.statusCode").should("eq", 200);
     cy.get("[data-cy='delete-modal']").should("not.exist");
