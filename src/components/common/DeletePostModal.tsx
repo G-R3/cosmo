@@ -4,6 +4,7 @@ import { FiTrash2 } from "react-icons/fi";
 import { Dialog } from "@headlessui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
+import Button from "./Button";
 
 const DeletePostModal: FC<{ postId: string }> = ({ postId }) => {
   const router = useRouter();
@@ -21,16 +22,18 @@ const DeletePostModal: FC<{ postId: string }> = ({ postId }) => {
 
   return (
     <>
-      <button
+      <Button
+        variant="danger"
+        ghost
+        size="lg"
+        icon={<FiTrash2 />}
         type="button"
         data-cy="post-delete"
-        disabled={deleteMutation.isLoading}
+        loading={deleteMutation.isLoading}
         onClick={() => setIsOpen(true)}
-        className="py-1 px-2 border-2 dark:text-foreground border-alert rounded-md flex items-center gap-[6px] disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
       >
-        <FiTrash2 />
         Delete
-      </button>
+      </Button>
 
       <AnimatePresence>
         {isOpen && (
@@ -56,20 +59,18 @@ const DeletePostModal: FC<{ postId: string }> = ({ postId }) => {
                   </Dialog.Description>
 
                   <div className="mt-5 self-end flex gap-2">
-                    <button
-                      onClick={() => setIsOpen(false)}
-                      className="px-5 py-2 rounded-md"
-                    >
+                    <Button onClick={() => setIsOpen(false)} size="md">
                       Cancel
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       data-cy="confirm-delete-post"
-                      disabled={deleteMutation.isLoading}
+                      loading={deleteMutation.isLoading}
                       onClick={() => onDelete(postId)}
-                      className="px-5 py-2 bg-red-500 rounded-md text-foreground"
+                      variant="danger"
+                      size="md"
                     >
-                      {deleteMutation.isLoading ? "Deleting..." : "Delete"}
-                    </button>
+                      Delete
+                    </Button>
                   </div>
                 </Dialog.Panel>
               </div>

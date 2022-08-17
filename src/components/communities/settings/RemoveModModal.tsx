@@ -1,8 +1,9 @@
 import { trpc } from "@/utils/trpc";
 import { FC, useState } from "react";
-import { FiTrash2 } from "react-icons/fi";
+import { FiUserX } from "react-icons/fi";
 import { Dialog } from "@headlessui/react";
 import { AnimatePresence, motion } from "framer-motion";
+import Button from "@/components/common/Button";
 
 const RemoveModModal: FC<{
   userId: string;
@@ -24,16 +25,17 @@ const RemoveModModal: FC<{
 
   return (
     <>
-      <button
+      <Button
         type="button"
         data-cy="moderator-remove"
-        disabled={removeMutation.isLoading}
+        loading={removeMutation.isLoading}
         onClick={() => setIsOpen(true)}
-        className="py-1 px-2 border-2 dark:text-foreground border-alert rounded-md flex items-center gap-[6px] disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
+        variant="danger"
+        icon={<FiUserX />}
+        ghost
       >
-        <FiTrash2 />
         Remove
-      </button>
+      </Button>
 
       <AnimatePresence>
         {isOpen && (
@@ -60,20 +62,18 @@ const RemoveModModal: FC<{
                   </Dialog.Description>
 
                   <div className="mt-5 self-end flex gap-2">
-                    <button
-                      onClick={() => setIsOpen(false)}
-                      className="px-5 py-2 rounded-md"
-                    >
+                    <Button onClick={() => setIsOpen(false)} size="md" ghost>
                       Cancel
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       data-cy="confirm-remove"
-                      disabled={removeMutation.isLoading}
+                      loading={removeMutation.isLoading}
                       onClick={() => onDelete(userId, communityId)}
-                      className="px-5 py-2 bg-red-500 rounded-md text-foreground"
+                      variant="danger"
+                      size="md"
                     >
                       {removeMutation.isLoading ? "Removing..." : "Remove"}
-                    </button>
+                    </Button>
                   </div>
                 </Dialog.Panel>
               </div>

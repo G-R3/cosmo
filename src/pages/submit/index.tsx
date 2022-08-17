@@ -1,5 +1,4 @@
 import { NextPageWithAuth } from "@/components/auth/Auth";
-import { FC } from "react";
 import { useRouter } from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import z from "zod";
@@ -10,6 +9,8 @@ import SearchCommunity from "@/components/submit/SearchCommunity";
 import MarkdownTipsModal from "@/components/common/MarkdownTipsModal";
 import TextareaAutosize from "@/components/common/TextareaAutosize";
 import CustomHead from "@/components/common/CustomHead";
+import Button from "@/components/common/Button";
+import Alert from "@/components/common/Alert";
 
 type Inputs = {
   postCommunityId: string;
@@ -22,7 +23,7 @@ const schema = z.object({
     required_error: "Community is required",
     invalid_type_error: "Community is required",
   }),
-  postTitle: z.string().trim().min(1, { message: "Post title is required" }),
+  postTitle: z.string().trim().min(1, { message: "Title is required" }),
   postContent: z
     .string()
     .trim()
@@ -44,6 +45,7 @@ const Submit: NextPageWithAuth = () => {
 
   const createPostMutation = trpc.useMutation("post.create", {
     onSuccess(data) {
+      reset();
       router.push(
         `/c/${data.post.community.name}/${data.post.id}/${data.post.slug}`,
       );
@@ -60,7 +62,7 @@ const Submit: NextPageWithAuth = () => {
   return (
     <>
       <CustomHead title="Create Post | Cosmo" />
-      <section className="w-full max-w-xl mx-auto flex flex-col gap-10">
+      <section className="w-full max-w-xl mx-auto flex flex-col gap-6">
         <div className="flex flex-col">
           <h1 className="text-2xl font-semibold">Create Post</h1>
           <span className="mt-2 text-grayAlt">
@@ -72,10 +74,13 @@ const Submit: NextPageWithAuth = () => {
           className="flex flex-col gap-5 rounded-md"
         >
           {createPostMutation.error && (
-            <div className="bg-alert p-3 rounded-md text-foreground flex items-center gap-2">
+            <Alert type="error">
               <BiErrorCircle size={22} />
-              <span>Something went wrong while creating your post!</span>
-            </div>
+              <span>
+                Oh oh! Something went wrong while trying to create post. Try
+                again later.
+              </span>
+            </Alert>
           )}
           <div className="flex flex-col gap-2">
             <SearchCommunity setValue={setValue} reset={reset} />
@@ -94,8 +99,8 @@ const Submit: NextPageWithAuth = () => {
               {...register("postTitle", { required: true, min: 1 })}
               className="border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt dark:border-darkTwo text-darkTwo placeholder:text-grayAlt dark:bg-darkOne dark:text-foreground"
             />
-            {errors.postTitle && (
-              <span className="text-alert">This field is required!</span>
+            {errors.postTitle?.message && (
+              <span className="text-alert">{errors.postTitle.message}</span>
             )}
           </div>
           <div className="flex flex-col gap-2">
@@ -110,13 +115,14 @@ const Submit: NextPageWithAuth = () => {
               <span className="text-alert">{errors.postContent.message}</span>
             )}
           </div>
-          <input
+          <Button
+            variant="primary"
+            size="lg"
             data-cy="submit"
-            type="submit"
-            value="Post"
-            disabled={createPostMutation.isLoading}
-            className="bg-whiteAlt text-darkOne self-end py-3 px-4 cursor-pointer rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
-          />
+            loading={createPostMutation.isLoading}
+          >
+            Create Post
+          </Button>
         </form>
       </section>
     </>

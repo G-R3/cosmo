@@ -3,7 +3,6 @@ import {
   InferGetServerSidePropsType,
   NextPage,
 } from "next";
-import Head from "next/head";
 import { unstable_getServerSession } from "next-auth";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -19,6 +18,8 @@ import DeletePostModal from "@/components/common/DeletePostModal";
 import TextareaAutosize from "@/components/common/TextareaAutosize";
 import { prisma } from "../../../../../backend/clients/client";
 import CustomHead from "@/components/common/CustomHead";
+import Button from "@/components/common/Button";
+import Alert from "@/components/common/Alert";
 
 type Inputs = {
   postId: string;
@@ -43,7 +44,7 @@ const Edit: NextPage = ({
     register,
     watch,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<Inputs>({
     defaultValues: { postId: post.id, postContent: post.content },
     resolver: zodResolver(schema),
@@ -68,18 +69,21 @@ const Edit: NextPage = ({
   return (
     <>
       <CustomHead title={`${post.title} | Edit`} />
-      <section className="w-full max-w-xl mx-auto flex flex-col gap-10">
+      <section className="w-full max-w-xl mx-auto flex flex-col gap-6">
         <div className="flex flex-col">
           <h1 className="text-2xl font-semibold">Edit Post</h1>
+          <span className="text-grayAlt">Change the content of your post</span>
         </div>
-        <div className="flex flex-col rounded-md">
+        <div className="flex flex-col gap-2 rounded-md">
           {editMutation.error && (
-            <div className="bg-alert p-3 rounded-md text-foreground flex items-center gap-2">
+            <Alert type="error">
               <BiErrorCircle size={22} />
-              <span>Something has gone terrible wrong!</span>
-            </div>
+              <span>
+                Oh no! something went wrong while updating post. Try again
+                later.
+              </span>
+            </Alert>
           )}
-
           <div className="flex justify-between items-center flex-wrap">
             <p className="mr-5 mb-2 md:mb-0">
               Posted to{" "}
@@ -109,14 +113,14 @@ const Edit: NextPage = ({
 
           {!isAuthor && (
             <span className="text-alert">
-              Only the auther of this post can edit
+              Only the author of this post can edit
             </span>
           )}
 
           <form
             id="edit-form"
             onSubmit={handleSubmit((data) => updatePost(data, post.id))}
-            className="flex flex-col gap-5 rounded-md mt-5"
+            className="flex flex-col gap-5 rounded-md"
           >
             <div>
               <p className="opacity-70 border-2 focus:outline-none focus:border-grayAlt dark:focus:border-grayAlt rounded-md p-4 bg-whiteAlt text-darkTwo dark:border-darkTwo  dark:bg-darkOne dark:text-foreground cursor-not-allowed">
@@ -154,15 +158,18 @@ const Edit: NextPage = ({
 
             <div className="flex justify-end gap-5">
               <DeletePostModal postId={post.id} />
+
               {isAuthor && (
-                <button
+                <Button
                   data-cy="submit"
                   form="edit-form"
                   disabled={watch("postContent") === post.content}
-                  className="bg-success text-whiteAlt self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all"
+                  variant="primary"
+                  size="lg"
+                  loading={editMutation.isLoading || isSubmitting}
                 >
-                  Save
-                </button>
+                  Save Post
+                </Button>
               )}
             </div>
           </form>

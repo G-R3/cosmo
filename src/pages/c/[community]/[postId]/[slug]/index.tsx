@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Head from "next/head";
 import { useSession } from "next-auth/react";
 import { BiErrorCircle } from "react-icons/bi";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
@@ -26,6 +25,9 @@ import CommentSkeleton from "@/components/common/CommentSkeleton";
 import MarkdownTipsModal from "@/components/common/MarkdownTipsModal";
 import TextareaAutosize from "@/components/common/TextareaAutosize";
 import CustomHead from "@/components/common/CustomHead";
+import Button from "@/components/common/Button";
+import Alert from "@/components/common/Alert";
+import Preloader from "@/components/common/Preloader";
 
 type Inputs = {
   postId: string;
@@ -53,7 +55,6 @@ const Post: NextPage<{
   const router = useRouter();
   const { postId, slug } = props;
   const { data: session } = useSession();
-  // isValid was always returning false even when mode was set to "onChange"
   const {
     register,
     handleSubmit,
@@ -214,15 +215,12 @@ const Post: NextPage<{
   });
 
   if (postQuery.isLoading) {
-    return <div>Loading...</div>;
+    console.log("hii");
+    return <Preloader />;
   }
 
-  if (postQuery.error) {
+  if (postQuery.isError || !postQuery.data) {
     return <div>No post was found</div>;
-  }
-
-  if (!postQuery.data) {
-    return <div>There doesn&apos;t seem be anything here.</div>;
   }
 
   const createComment: SubmitHandler<Inputs> = (data) => {
@@ -268,14 +266,12 @@ const Post: NextPage<{
       />
 
       <div className="max-w-3xl mx-auto">
+        {/* TODO: use toasts for like/unlike and save/unsave errors */}
         {(!!likeMutation.error || !!unlikeMutation.error) && (
-          <div
-            data-cy="alert-alert"
-            className="bg-alert p-3 rounded-md text-foreground flex items-center gap-2"
-          >
+          <Alert type="error">
             <BiErrorCircle size={22} />
-            <span>Failed to like the post</span>
-          </div>
+            <span>Oh snap! something went wrong</span>
+          </Alert>
         )}
         <section className="p-5 bg-whiteAlt dark:bg-darkOne rounded-md">
           <h1 className="text-2xl">{postQuery.data.post.title}</h1>
@@ -381,22 +377,14 @@ const Post: NextPage<{
           </div>
         </section>
 
-        <section className="mt-5 bg-whiteAlt dark:bg-darkOne p-5 flex flex-col gap-2 rounded-md">
-          <div className="flex flex-col md:flex-row md:items-center gap-2 justify-between">
+        <section className="mt-5 bg-whiteAlt dark:bg-darkOne p-5 rounded-md">
+          <div className="flex flex-col md:flex-row md:items-center justify-between">
             <h2 className="text-lg">Post a comment</h2>
-            {commentMutation.error?.data && (
-              <div
-                data-cy="alert-error"
-                className="bg-alert p-3 rounded-md text-foreground flex items-center gap-2"
-              >
+            {commentMutation.error && (
+              <Alert type="error">
                 <BiErrorCircle size={22} />
-                <span>
-                  {
-                    commentMutation.error.data.zodError?.fieldErrors
-                      .content?.[0]
-                  }
-                </span>
-              </div>
+                <span>Oh no! change a few things up and try again</span>
+              </Alert>
             )}
           </div>
           <form
@@ -416,32 +404,35 @@ const Post: NextPage<{
               data-cy="comment-textarea"
               id="comment"
               placeholder="What are you thoughts?"
-              minHeight={200}
+              minHeight={150}
               register={register("commentContent")}
             />
           </form>
-          {session?.user ? (
-            <button
-              form="createComment"
-              data-cy="create-comment"
-              disabled={
-                commentMutation.isLoading || !isDirty || !!errors.commentContent
-              }
-              className="bg-whiteAlt border-2 text-darkTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:outline-[3px] focus-visible:focus:outline-highlight"
-            >
-              Post
-            </button>
-          ) : (
-            <button
-              onClick={() => router.push("/signin")}
-              disabled={
-                commentMutation.isLoading || !isDirty || !!errors.commentContent
-              }
-              className="bg-whiteAlt border-2 text-darkTwo self-end h-12 p-4 rounded-md flex items-center disabled:opacity-50 disabled:scale-95 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all focus-visible:focus:outline focus-visible:focus:outline-[3px] focus-visible:focus:outline-highlight"
-            >
-              Post
-            </button>
-          )}
+          <div className="flex justify-end">
+            {session?.user ? (
+              <Button
+                form="createComment"
+                data-cy="create-comment"
+                variant="primary"
+                size="md"
+                loading={commentMutation.isLoading}
+                disabled={!isDirty || !!errors.commentContent}
+              >
+                Post
+              </Button>
+            ) : (
+              // TODO: Add login modal. it sucks having to redirect to login page.
+              <Button
+                onClick={() => router.push("/signin")}
+                loading={commentMutation.isLoading}
+                disabled={!isDirty || !!errors.commentContent}
+                variant="primary"
+                size="md"
+              >
+                Post
+              </Button>
+            )}
+          </div>
         </section>
 
         <section className="mt-5 rounded-md py-5 flex flex-col gap-5">

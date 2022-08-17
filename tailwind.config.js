@@ -12,10 +12,25 @@ module.exports = {
         grayAlt: "#888",
         whiteAlt: "#fff",
 
-        highlight: "#8b5cf6",
-        alert: "#F33",
-        success: "#0070F3",
-        warning: "#F5A623",
+        highlight: "hsl(258, 80%, 60%)",
+        highlightHover: "hsl(258, 75%, 55%)",
+        highlightActive: "hsl(258, 55%, 47%)",
+
+        secondary: "hsl(0, 0%, 20%)",
+        secondaryHover: "hsl(0, 0%, 25%)",
+        secondaryActive: "hsl(0, 0%, 30%)",
+
+        alert: "hsl(359, 80%, 50%)",
+        alertHover: "hsl(359, 75%, 45%)",
+        alertActive: "hsl(359, 75%, 37%)",
+
+        success: "hsl(146, 80%, 40%)",
+        successHover: "hsl(146, 75%, 35%)",
+        successActive: "hsl(146, 55%, 27%)",
+
+        warning: "hsl(37, 91%, 55%)",
+        warningHover: "hsl(37, 86%, 50%)",
+        warningActive: "hsl(37, 66%, 42%)",
       },
 
       backgroundImage: {

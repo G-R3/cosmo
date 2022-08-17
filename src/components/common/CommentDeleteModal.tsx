@@ -3,6 +3,7 @@ import { FC, useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
 import { Dialog } from "@headlessui/react";
 import { AnimatePresence, motion } from "framer-motion";
+import Button from "../common/Button";
 
 const DeleteCommentModal: FC<{ commentId: string }> = ({ commentId }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,15 +22,14 @@ const DeleteCommentModal: FC<{ commentId: string }> = ({ commentId }) => {
 
   return (
     <>
-      <button
+      <Button
         data-cy="comment-delete"
-        disabled={deleteMutation.isLoading}
         onClick={() => setIsOpen(true)}
         className="flex items-center gap-2 text-grayAlt hover:text-alert"
       >
         <FiTrash2 />
         Delete
-      </button>
+      </Button>
       <AnimatePresence>
         {isOpen && (
           <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
@@ -54,20 +54,18 @@ const DeleteCommentModal: FC<{ commentId: string }> = ({ commentId }) => {
                   </Dialog.Description>
 
                   <div className="mt-5 self-end flex gap-2">
-                    <button
-                      onClick={() => setIsOpen(false)}
-                      className="px-5 py-2 rounded-md"
-                    >
+                    <Button onClick={() => setIsOpen(false)} size="md" ghost>
                       Cancel
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       data-cy="confirm-delete-comment"
-                      disabled={deleteMutation.isLoading}
+                      loading={deleteMutation.isLoading}
                       onClick={() => onDelete(commentId)}
-                      className="px-5 py-2 bg-red-500 rounded-md"
+                      variant="danger"
+                      size="md"
                     >
-                      {deleteMutation.isLoading ? "Deleting..." : "Delete"}
-                    </button>
+                      Delete
+                    </Button>
                   </div>
                 </Dialog.Panel>
               </div>
