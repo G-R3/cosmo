@@ -15,6 +15,7 @@ import RemoveModModal from "@/components/communities/settings/RemoveModModal";
 import CustomHead from "@/components/common/CustomHead";
 import Button from "@/components/common/Button";
 import Preloader from "@/components/common/Preloader";
+import NotFound from "@/components/common/NotFound";
 
 type Inputs = {
   communityId: string;
@@ -52,7 +53,7 @@ const EditCommunity: NextPageWithAuth = () => {
     resolver: zodResolver(schema),
     mode: "onChange",
   });
-  const { data, isLoading, error } = trpc.useQuery(
+  const { data, isLoading, error, isError } = trpc.useQuery(
     ["community.get", { query }],
     {
       refetchOnWindowFocus: false,
@@ -94,15 +95,21 @@ const EditCommunity: NextPageWithAuth = () => {
     });
   };
 
+  // TODO: do I need this??? (im so bad at this man....)
   if (error || !data) {
     return (
-      <div className="flex items-center flex-col gap-5">
-        <h1 className="text-2xl font-bold">
-          No community exists with that name
-        </h1>
-        <Link href="/">
-          <a>Return Home</a>
-        </Link>
+      <div className="flex justify-center">
+        <div className="flex flex-col gap-8 justify-center items-center">
+          <NotFound
+            heading="Woah there!"
+            text="Nothing seems to exists on this side of the universe"
+          />
+          <Link href={"/submit"}>
+            <a className="bg-highlight text-whiteAlt h-10 p-4 w-full rounded-md flex items-center justify-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all">
+              Return Home
+            </a>
+          </Link>
+        </div>
       </div>
     );
   }

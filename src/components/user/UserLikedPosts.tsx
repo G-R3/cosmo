@@ -4,6 +4,7 @@ import useLikePost from "@/hooks/useLikePost";
 import useSavePost from "@/hooks/useSavePost";
 import Post from "../common/Post";
 import PostSkeleton from "../common/PostSkeleton";
+import EmptyMessage from "./EmptyTab";
 
 const UserLikedPosts: FC<{ user: string; isSelected: boolean }> = ({
   user,
@@ -34,12 +35,7 @@ const UserLikedPosts: FC<{ user: string; isSelected: boolean }> = ({
             onUnsave={onUnsave}
           />
         ))}
-      {likedPostQuery.data?.posts.length === 0 && (
-        <div className="flex flex-col items-center text-grayAlt">
-          <p className="font-bold text-lg mt-6">Its empty here</p>
-          <p className="text-xl">😢</p>
-        </div>
-      )}
+      {likedPostQuery.data?.posts.length === 0 && <EmptyMessage />}
     </>
   );
 };

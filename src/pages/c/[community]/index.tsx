@@ -1,5 +1,6 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
+import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { trpc } from "@/utils/trpc";
@@ -10,6 +11,8 @@ import PostSkeleton from "@/components/common/PostSkeleton";
 import Tag from "@/components/communities/settings/Tag";
 import CustomHead from "@/components/common/CustomHead";
 import Preloader from "@/components/common/Preloader";
+import spaceOne from "../../../assets/space-1.svg";
+import NotFound from "@/components/common/NotFound";
 
 const Community: NextPage = () => {
   const { data: session } = useSession();
@@ -27,13 +30,18 @@ const Community: NextPage = () => {
 
   if (communityQuery.error || !communityQuery.data) {
     return (
-      <div className="flex items-center flex-col gap-5">
-        <h1 className="text-2xl font-bold">
-          No community exists with that name
-        </h1>
-        <Link href="/">
-          <a>Return Home</a>
-        </Link>
+      <div className="flex justify-center">
+        <div className="flex flex-col gap-8 justify-center items-center">
+          <NotFound
+            heading="Woah there!"
+            text="Nothing seems to exists on this side of the universe"
+          />
+          <Link href={"/submit"}>
+            <a className="bg-highlight text-whiteAlt h-10 p-4 w-full rounded-md flex items-center justify-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all">
+              Return Home
+            </a>
+          </Link>
+        </div>
       </div>
     );
   }
@@ -88,14 +96,24 @@ const Community: NextPage = () => {
               />
             ))}
           {postQuery.data?.posts.length === 0 && (
-            <div className="flex text-center flex-col gap-5 mt-10">
-              <h1 className="text-grayAlt text-xl font-bold">
-                Looks like nothing has been posted to{" "}
-                {communityQuery.data?.community.name} community yet.
-              </h1>
-              <Link href="/submit">
-                <a className="text-foreground">Create a post</a>
-              </Link>
+            <div className="flex flex-col gap-5 justify-center items-center h-full">
+              <div className="flex flex-col justify-center gap-10">
+                <Image src={spaceOne} alt="Space Illustration" />
+                <div className="flex flex-col justify-center items-center max-w-lg mx-auto">
+                  <h1 className="text-highlight font-bold text-3xl text-center">
+                    Hang on
+                  </h1>
+                  <p className="text-grayAlt">
+                    There doesn&apos;t seem to be anything on this side of the
+                    universe
+                  </p>
+                  <Link href={"/submit"}>
+                    <a className="mt-5 bg-highlight text-whiteAlt self-end h-10 p-4 w-full rounded-md flex items-center justify-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all">
+                      Create Post
+                    </a>
+                  </Link>
+                </div>
+              </div>
             </div>
           )}
         </div>
