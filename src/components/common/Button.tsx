@@ -95,10 +95,10 @@ const Button: FC<ButtonProps> = ({
     >
       {icon && <span className="flex justify-center items-center">{icon}</span>}
       {loading ? (
-        <div>
+        <>
           <Loader />
           <span className="invisible">{children}</span>
-        </div>
+        </>
       ) : (
         children
       )}
