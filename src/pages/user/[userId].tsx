@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
@@ -5,6 +6,7 @@ import UserTabs from "@/components/user/UserTabs";
 import UserBanner from "@/components/user/UserBanner";
 import Preloader from "@/components/common/Preloader";
 import CustomHead from "@/components/common/CustomHead";
+import NotFound from "@/components/common/NotFound";
 
 const Profile: NextPage = () => {
   const router = useRouter();
@@ -16,7 +18,21 @@ const Profile: NextPage = () => {
   }
 
   if (userQuery.error || !userQuery?.data?.user) {
-    return <div>No user was found</div>;
+    return (
+      <div className="flex justify-center">
+        <div className="flex flex-col gap-8 justify-center items-center">
+          <NotFound
+            heading="Woah!"
+            text="No user was found in this current timeline"
+          />
+          <Link href={"/"}>
+            <a className="bg-highlight text-whiteAlt h-10 p-4 w-full rounded-md flex items-center justify-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all">
+              Return Home
+            </a>
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (

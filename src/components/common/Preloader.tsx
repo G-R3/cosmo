@@ -3,7 +3,7 @@ const Preloader = () => {
     // TODO: fix margin top and make look less like a void
     <div className="flex flex-col items-center justify-center mt-20">
       <div>
-        <span className="loader"></span>
+        <span className="loader border-2 border-darkOne dark:border-whiteAlt"></span>
         <span className="sr-only">Loading</span>
       </div>
       <p className="mt-5 text-grayAlt">Hello, HAL. Do you read me, HAL?</p>

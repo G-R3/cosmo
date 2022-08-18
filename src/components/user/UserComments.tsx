@@ -2,6 +2,7 @@ import { FC } from "react";
 import { trpc } from "@/utils/trpc";
 import CommentSkeleton from "../common/CommentSkeleton";
 import Comment from "../common/Comment";
+import EmptyMessage from "./EmptyTab";
 
 const UserComments: FC<{ user: string; isSelected: boolean }> = ({
   user,
@@ -28,12 +29,7 @@ const UserComments: FC<{ user: string; isSelected: boolean }> = ({
           {...comment}
         />
       ))}
-      {commentQuery.data?.comments.length === 0 && (
-        <div className="flex flex-col items-center text-grayAlt">
-          <p className="font-bold text-lg mt-6">Its empty here</p>
-          <p className="text-xl">😢</p>
-        </div>
-      )}
+      {commentQuery.data?.comments.length === 0 && <EmptyMessage />}
     </>
   );
 };
