@@ -143,7 +143,12 @@ export const postRouter = createRouter()
     return next({
       ctx: {
         ...ctx,
-        user: ctx.session.user,
+        session: {
+          ...ctx.session,
+          user: {
+            ...ctx.session.user,
+          },
+        },
       },
     });
   })
@@ -179,7 +184,7 @@ export const postRouter = createRouter()
           title: input.title,
           content: input.content,
           slug: slugify(input.title),
-          authorId: ctx.user.id,
+          authorId: ctx.session.user.id,
           communityId: input.communityId,
         },
         select: {
@@ -210,7 +215,23 @@ export const postRouter = createRouter()
         .max(1000, { message: "Post body must be less than 1000 characters" })
         .optional(),
     }),
-    async resolve({ input }) {
+    async resolve({ input, ctx }) {
+      const postAuthor = await prisma.post.findUnique({
+        where: {
+          id: input.postId,
+        },
+        select: {
+          authorId: true,
+        },
+      });
+
+      if (!postAuthor || postAuthor.authorId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not authorized to perform this action",
+        });
+      }
+
       const post = await prisma.post.update({
         where: {
           id: input.postId,
@@ -233,6 +254,39 @@ export const postRouter = createRouter()
       postId: z.string(),
     }),
     async resolve({ input, ctx }) {
+      const post = await prisma.post.findUnique({
+        where: {
+          id: input.postId,
+        },
+        select: {
+          authorId: true,
+          community: {
+            select: {
+              moderators: true,
+            },
+          },
+        },
+      });
+
+      if (!post) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Post does not exist.",
+        });
+      }
+
+      const isModerator = post.community.moderators.some(
+        (mod) => mod.userId === ctx.session.user.id,
+      );
+      const isAdmin = ctx.session.user.role === "ADMIN";
+
+      if (post.authorId !== ctx.session.user.id && !isModerator && !isAdmin) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not authorized to perform this action",
+        });
+      }
+
       const deletedPost = await prisma.post.delete({
         where: {
           id: input.postId,
@@ -266,7 +320,7 @@ export const postRouter = createRouter()
           },
           user: {
             connect: {
-              id: ctx.user.id,
+              id: ctx.session.user.id,
             },
           },
         },
@@ -283,7 +337,7 @@ export const postRouter = createRouter()
       const deletedLike = await prisma.like.delete({
         where: {
           likeId: {
-            userId: ctx.user.id,
+            userId: ctx.session.user.id,
             postId: input.postId,
           },
         },
@@ -306,7 +360,7 @@ export const postRouter = createRouter()
           },
           user: {
             connect: {
-              id: ctx.user.id,
+              id: ctx.session.user.id,
             },
           },
         },
@@ -324,7 +378,7 @@ export const postRouter = createRouter()
         where: {
           saveId: {
             postId: input.postId,
-            userId: ctx.user.id,
+            userId: ctx.session.user.id,
           },
         },
       });

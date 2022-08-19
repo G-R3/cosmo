@@ -94,7 +94,12 @@ export const communityRouter = createRouter()
     return next({
       ctx: {
         ...ctx,
-        user: ctx.session.user,
+        session: {
+          ...ctx.session,
+          user: {
+            ...ctx.session.user,
+          },
+        },
       },
     });
   })
@@ -136,17 +141,17 @@ export const communityRouter = createRouter()
           description: input.communityDescription,
           creator: {
             connect: {
-              id: ctx.user.id,
+              id: ctx.session.user.id,
             },
           },
           moderators: {
             connectOrCreate: {
               create: {
-                userId: ctx.user.id,
-                assignedBy: ctx.user.id,
+                userId: ctx.session.user.id,
+                assignedBy: ctx.session.user.id,
               },
               where: {
-                id: ctx.user.id,
+                id: ctx.session.user.id,
               },
             },
           },
@@ -155,6 +160,53 @@ export const communityRouter = createRouter()
 
       return community;
     },
+  })
+  .middleware(async ({ ctx, next }) => {
+    const { communityId } = ctx.req.body["0"].json;
+
+    const community = await prisma.community.findUnique({
+      where: {
+        id: communityId,
+      },
+      select: {
+        moderators: {
+          select: {
+            userId: true,
+          },
+        },
+      },
+    });
+
+    if (!community) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Community could not be found",
+      });
+    }
+
+    const isModerator = community.moderators.find(
+      (mod) => mod.userId === ctx.session.user.id,
+    );
+    const isAdmin = ctx.session.user.role === "ADMIN";
+
+    if (!isModerator && !isAdmin) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "You are not authorized",
+      });
+    }
+
+    return next({
+      ctx: {
+        ...ctx,
+        session: {
+          ...ctx.session,
+          user: {
+            ...ctx.session.user,
+          },
+        },
+      },
+    });
   })
   .mutation("edit", {
     input: z.object({
@@ -289,7 +341,7 @@ export const communityRouter = createRouter()
               id: input.communityId,
             },
           },
-          assignedBy: ctx.user.id,
+          assignedBy: ctx.session.user.id,
         },
         select: {
           user: {
