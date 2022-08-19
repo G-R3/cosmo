@@ -38,9 +38,11 @@ const Submit: NextPageWithAuth = () => {
     handleSubmit,
     setValue,
     reset,
-    formState: { errors },
+    watch,
+    formState: { errors, isDirty, isValid },
   } = useForm<Inputs>({
     resolver: zodResolver(schema),
+    mode: "onChange",
   });
 
   const createPostMutation = trpc.useMutation("post.create", {
@@ -120,6 +122,7 @@ const Submit: NextPageWithAuth = () => {
             size="lg"
             data-cy="submit"
             loading={createPostMutation.isLoading}
+            disabled={!isValid || !isDirty || !watch("postTitle")}
           >
             Create Post
           </Button>

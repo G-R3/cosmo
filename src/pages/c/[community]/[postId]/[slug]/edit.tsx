@@ -44,10 +44,11 @@ const Edit: NextPage = ({
     register,
     watch,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isValid, isDirty },
   } = useForm<Inputs>({
     defaultValues: { postId: post.id, postContent: post.content },
     resolver: zodResolver(schema),
+    mode: "onChange",
   });
   const utils = trpc.useContext();
   const editMutation = trpc.useMutation("post.edit", {
@@ -163,10 +164,14 @@ const Edit: NextPage = ({
                 <Button
                   data-cy="submit"
                   form="edit-form"
-                  disabled={watch("postContent") === post.content}
+                  disabled={
+                    watch("postContent") === post.content ||
+                    !isDirty ||
+                    !isValid
+                  }
                   variant="primary"
                   size="lg"
-                  loading={editMutation.isLoading || isSubmitting}
+                  loading={editMutation.isLoading}
                 >
                   Save Post
                 </Button>

@@ -21,10 +21,10 @@ const generatePost = () => {
 };
 
 const generateCommunity = () => {
-  const name = faker.lorem.words(2);
-  const description = faker.lorem.words(20);
+  const communityName = faker.lorem.words(2).replace(/ /g, "");
+  const communityDescription = faker.lorem.words(20);
 
-  return { name, description };
+  return { communityName, communityDescription };
 };
 
 const generateCommentBody = () => {

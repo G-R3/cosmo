@@ -19,5 +19,6 @@ jobs:
         with:
           start: npm run dev
           browser: chrome
+          headed: true
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
