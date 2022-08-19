@@ -39,10 +39,8 @@ interface Props {
     image: string | null;
     role: string;
   };
-  isCommentAuthor: boolean;
-  isCommentAuthorMod: boolean;
+  isAuthorMod: boolean;
   isModerator: boolean;
-  isAdmin: boolean;
 }
 const Comment: React.FC<Props> = ({
   id,
@@ -50,10 +48,8 @@ const Comment: React.FC<Props> = ({
   createdAt,
   updatedAt,
   author,
-  isCommentAuthor,
-  isCommentAuthorMod,
+  isAuthorMod,
   isModerator,
-  isAdmin,
 }) => {
   const {
     register,
@@ -67,6 +63,7 @@ const Comment: React.FC<Props> = ({
     mode: "onChange",
   });
   const [isEditing, setIsEditing] = useState(false);
+  const { data: session } = useSession();
   const utils = trpc.useContext();
   const commentEditMutation = trpc.useMutation("comment.edit", {
     onSuccess(data, variables, context) {
@@ -90,7 +87,9 @@ const Comment: React.FC<Props> = ({
     });
   };
 
+  const isCommentAuthor = author.id === session?.user.id;
   const isAuthorAdmin = author.role === "ADMIN";
+  const isAdmin = session?.user.role === "ADMIN";
 
   return (
     <div className="bg-whiteAlt flex gap-5 dark:bg-darkOne py-3 px-5 rounded-md">
@@ -118,7 +117,7 @@ const Comment: React.FC<Props> = ({
                       {" "}
                       ADMIN
                     </span>
-                  ) : isCommentAuthorMod ? (
+                  ) : isAuthorMod ? (
                     <span className="text-xs text-green-500 font-bold">
                       {" "}
                       MOD

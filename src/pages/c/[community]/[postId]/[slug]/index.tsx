@@ -468,12 +468,12 @@ const Post: NextPage<{
             <Comment
               key={comment.id}
               {...comment}
-              isCommentAuthor={comment.author.id === session?.user.id}
-              isCommentAuthorMod={postQuery.data.post.community.moderators.some(
+              isAuthorMod={postQuery.data.post.community.moderators.some(
                 (mod) => mod.userId === comment.author.id,
               )}
-              isModerator={isModerator}
-              isAdmin={isAdmin}
+              isModerator={postQuery.data.post.community.moderators.some(
+                (mod) => mod.userId === session?.user.id,
+              )}
             />
           ))}
           {commentQuery.data?.comments.length === 0 && (
