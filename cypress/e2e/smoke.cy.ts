@@ -37,7 +37,7 @@ describe("smoke test", () => {
     cy.get("[data-cy='post-community']").should("contain.text", communityName);
 
     // like/unlike post
-    let likes;
+    let likes: string;
     cy.get("[data-cy='likes']").should(($span) => {
       likes = $span.text();
     });
