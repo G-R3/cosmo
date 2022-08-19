@@ -33,7 +33,6 @@ describe("smoke test", () => {
     cy.get("[data-cy='post-title']").type(postTitle);
     cy.get("[data-cy='post-body']").type(postBody);
     cy.get("[data-cy='submit']").click().should("be.disabled");
-    cy.url().should("contain", `/${postSlug}`);
     cy.get("h1").should("have.text", postTitle);
     cy.get("[data-cy='post-community']").should("contain.text", communityName);
 
