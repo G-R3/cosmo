@@ -92,73 +92,77 @@ const Comment: React.FC<Props> = ({
   const isAdmin = session?.user.role === "ADMIN";
 
   return (
-    <div className="bg-whiteAlt flex gap-5 dark:bg-darkOne py-3 px-5 rounded-md">
-      <div className="bg-foreground dark:bg-darkTwo min-h-full min-w-[4px] rounded-full"></div>
-      <div className="flex flex-col flex-grow">
-        <div className="flex flex-col justify-between md:flex-row">
-          <Link href={`/user/${author.id}`}>
-            <a className="w-fit group">
-              <div className="flex items-center gap-3 group">
-                <Image
-                  src={author?.image ?? ""}
-                  alt={author.name ? author.name : `${author.name} Avatar`}
-                  width={28}
-                  height={28}
-                  className="rounded-full"
-                  priority
-                />
-                <div>
-                  <span className="text-darkOne dark:text-grayAlt group-hover:underline group-hover:underline-offset-1">
-                    {author.name}
-                  </span>
+    <div className="py-3 px-5 rounded-md bg-darkOne">
+      <div className="flex flex-col gap-3 w-full">
+        <div className="flex gap-6">
+          <div className="bg-foreground dark:bg-darkTwo min-h-full min-w-[4px] rounded-full"></div>
+          <div className="flex flex-col flex-grow">
+            <div className="flex flex-col justify-between md:flex-row">
+              <Link href={`/user/${author.id}`}>
+                <a className="w-fit group">
+                  <div className="flex items-center gap-3 group">
+                    <Image
+                      src={author?.image ?? ""}
+                      alt={author.name ? author.name : `${author.name} Avatar`}
+                      width={28}
+                      height={28}
+                      className="rounded-full"
+                      priority
+                    />
+                    <div>
+                      <span className="text-darkOne dark:text-grayAlt group-hover:underline group-hover:underline-offset-1">
+                        {author.name}
+                      </span>
 
-                  {isAuthorAdmin ? (
-                    <span className="text-xs text-highlight font-bold">
-                      {" "}
-                      ADMIN
-                    </span>
-                  ) : isAuthorMod ? (
-                    <span className="text-xs text-green-500 font-bold">
-                      {" "}
-                      MOD
-                    </span>
-                  ) : null}
-                </div>
-              </div>
-            </a>
-          </Link>
-          {commentEditMutation.error && (
-            <Alert type="error">
-              <BiErrorCircle size={22} />
-              <span>Oh no! change a few things up and try again</span>
-            </Alert>
-          )}
-        </div>
-        <div className="mt-4 mb-3 ">
-          {isEditing ? (
-            <form
-              id="commentEditForm"
-              className="flex flex-col gap-2 mb-3"
-              onSubmit={handleSubmit(editComment)}
-            >
-              <div className="flex justify-between items-center flex-wrap">
-                <MarkdownTipsModal />
-                {errors.commentContent?.message && (
-                  <span className="text-alert">
-                    {errors.commentContent.message}
-                  </span>
-                )}
-              </div>
-              <TextareaAutosize
-                data-cy="comment-edit-textarea"
-                placeholder="What are your thoughts?"
-                minHeight={100}
-                register={register("commentContent")}
-              />
-            </form>
-          ) : (
-            <Markdown content={content} />
-          )}
+                      {isAuthorAdmin ? (
+                        <span className="text-xs text-highlight font-bold">
+                          {" "}
+                          ADMIN
+                        </span>
+                      ) : isAuthorMod ? (
+                        <span className="text-xs text-green-500 font-bold">
+                          {" "}
+                          MOD
+                        </span>
+                      ) : null}
+                    </div>
+                  </div>
+                </a>
+              </Link>
+              {commentEditMutation.error && (
+                <Alert type="error">
+                  <BiErrorCircle size={22} />
+                  <span>Oh no! change a few things up and try again</span>
+                </Alert>
+              )}
+            </div>
+            <div className="mt-4">
+              {isEditing ? (
+                <form
+                  id="commentEditForm"
+                  className="flex flex-col gap-2 mb-3"
+                  onSubmit={handleSubmit(editComment)}
+                >
+                  <div className="flex justify-between items-center flex-wrap">
+                    <MarkdownTipsModal />
+                    {errors.commentContent?.message && (
+                      <span className="text-alert">
+                        {errors.commentContent.message}
+                      </span>
+                    )}
+                  </div>
+                  <TextareaAutosize
+                    data-cy="comment-edit-textarea"
+                    placeholder="What are your thoughts?"
+                    minHeight={100}
+                    register={register("commentContent")}
+                  />
+                </form>
+              ) : (
+                <Markdown content={content} />
+              )}
+            </div>
+          </div>
         </div>
 
         {(isCommentAuthor || isModerator || isAdmin) && (

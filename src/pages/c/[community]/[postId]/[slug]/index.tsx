@@ -289,11 +289,11 @@ const Post: NextPage<{
             <span>Oh snap! something went wrong</span>
           </Alert>
         )}
-        <section className="p-5 bg-whiteAlt dark:bg-darkOne rounded-md">
-          <h1 className="text-2xl">{postQuery.data.post.title}</h1>
+        <div className="p-5 bg-whiteAlt dark:bg-darkOne rounded-md">
+          <section className="">
+            <h1 className="text-2xl">{postQuery.data.post.title}</h1>
 
-          <div className="mb-3 text-grayAlt">
-            <span>
+            <div className="mb-3 text-grayAlt text-xs">
               Posted to{" "}
               <Link href={`/c/${postQuery.data.post.community.name}`}>
                 <a
@@ -304,167 +304,160 @@ const Post: NextPage<{
                 </a>
               </Link>{" "}
               by{" "}
-            </span>
-            <span>
               <Link href={`/user/${postQuery.data.post.author.id}`}>
                 <a className="text-darkOne dark:text-foreground hover:underline hover:underline-offset-1">
                   {postQuery.data.post.author.name}
                 </a>
               </Link>
               {isAuthorAdmin ? (
-                <span className="text-xs text-highlight font-bold">
-                  {" "}
-                  ADMIN{" "}
-                </span>
+                <span className="text-highlight font-bold"> ADMIN </span>
               ) : isAuthorMod ? (
                 <span className="text-xs text-green-500 font-bold"> MOD </span>
               ) : null}
-            </span>
-            10 hrs ago
-          </div>
+              10 hrs ago
+            </div>
 
-          <div className="mt-6 mb-10">
-            <Markdown
-              content={
-                postQuery.data.post.content ? postQuery.data.post.content : ""
-              }
-            />
-          </div>
-
-          <div className="flex justify-between mt-3">
-            <button
-              data-cy="like-post"
-              onClick={
-                isLikedByUser
-                  ? () => onUnlike(postQuery.data.post.id)
-                  : () => onLike(postQuery.data.post.id)
-              }
-              className="flex justify-center items-center gap-2 text-grayAlt group"
-            >
-              {isLikedByUser ? (
-                <span className="rounded-full p-1 group-hover:bg-red-500/20 group-hover:outline outline-2 outline-red-500/25 transition-all">
-                  <AiFillHeart
-                    size={20}
-                    className={`${isLikedByUser ? "text-red-500" : ""}`}
-                  />
-                </span>
-              ) : (
-                <span className="rounded-full p-1 group-hover:bg-red-500/20 group-hover:outline outline-2 outline-red-500/25 transition-all">
-                  <AiOutlineHeart size={20} />
-                </span>
-              )}
-              <span
-                data-cy="likes"
-                className={`${isLikedByUser ? "text-red-500" : ""}`}
-              >
-                {postQuery.data.post.likes.length}
-              </span>
-            </button>
-
-            <div className="flex items-center gap-3 text-grayAlt">
-              <button
-                onClick={
-                  isSavedByUser
-                    ? () => onUnsave(postQuery.data.post.id)
-                    : () => onSave(postQuery.data.post.id)
+            <div className="mt-6 mb-10">
+              <Markdown
+                content={
+                  postQuery.data.post.content ? postQuery.data.post.content : ""
                 }
-                // disabled={
-                //   unSavePostMutation.isLoading || savePostMutation.isLoading
-                // }
-                className="flex items-center gap-[6px] hover:text-whiteAlt focus:text-whiteAlt transition-colors"
+              />
+            </div>
+
+            <div className="flex justify-between mt-3">
+              <button
+                data-cy="like-post"
+                onClick={
+                  isLikedByUser
+                    ? () => onUnlike(postQuery.data.post.id)
+                    : () => onLike(postQuery.data.post.id)
+                }
+                className="flex justify-center items-center gap-2 text-grayAlt group"
               >
-                {isSavedByUser ? <BsBookmarkFill /> : <BsBookmark />}
-                {isSavedByUser ? "Unsave" : "Save"}
-              </button>
-              {(isPostAuthor || isModerator || isAdmin) && (
-                <Link
-                  href={`/c/${postQuery.data.post.community.name}/${postQuery.data.post.id}/${postQuery.data.post.slug}/edit`}
+                {isLikedByUser ? (
+                  <span className="rounded-full p-1 group-hover:bg-red-500/20 group-hover:outline outline-2 outline-red-500/25 transition-all">
+                    <AiFillHeart
+                      size={20}
+                      className={`${isLikedByUser ? "text-red-500" : ""}`}
+                    />
+                  </span>
+                ) : (
+                  <span className="rounded-full p-1 group-hover:bg-red-500/20 group-hover:outline outline-2 outline-red-500/25 transition-all">
+                    <AiOutlineHeart size={20} />
+                  </span>
+                )}
+                <span
+                  data-cy="likes"
+                  className={`${isLikedByUser ? "text-red-500" : ""}`}
                 >
-                  <a
-                    data-cy="post-edit-link"
-                    className="py-1 px-2 flex items-center gap-[6px] hover:text-blue-400 focus:text-blue-400"
-                  >
-                    <FiEdit2 />
-                    Edit
-                  </a>
-                </Link>
-              )}
-              <span>
-                {postQuery.data.post._count.comments}{" "}
-                {postQuery.data.post._count.comments === 1
-                  ? "comment"
-                  : "comments"}
-              </span>
-            </div>
-          </div>
-        </section>
-
-        <section className="mt-5 bg-whiteAlt dark:bg-darkOne p-5 rounded-md">
-          <div className="flex flex-col md:flex-row md:items-center justify-between">
-            <h2 className="text-lg">Post a comment</h2>
-            {commentMutation.error && (
-              <Alert type="error">
-                <BiErrorCircle size={22} />
-                <span>Oh no! change a few things up and try again</span>
-              </Alert>
-            )}
-          </div>
-          <form
-            id="createComment"
-            className="flex flex-col gap-2 mb-3"
-            onSubmit={handleSubmit(createComment)}
-          >
-            <div className="flex justify-between items-center flex-wrap">
-              <MarkdownTipsModal />
-              {errors.commentContent?.message && (
-                <span data-cy="form-error" className="text-alert">
-                  {errors.commentContent.message}
+                  {postQuery.data.post.likes.length}
                 </span>
+              </button>
+
+              <div className="flex items-center gap-3 text-grayAlt">
+                <button
+                  onClick={
+                    isSavedByUser
+                      ? () => onUnsave(postQuery.data.post.id)
+                      : () => onSave(postQuery.data.post.id)
+                  }
+                  // disabled={
+                  //   unSavePostMutation.isLoading || savePostMutation.isLoading
+                  // }
+                  className="flex items-center gap-[6px] hover:text-whiteAlt focus:text-whiteAlt transition-colors"
+                >
+                  {isSavedByUser ? <BsBookmarkFill /> : <BsBookmark />}
+                  {isSavedByUser ? "Unsave" : "Save"}
+                </button>
+                {(isPostAuthor || isModerator || isAdmin) && (
+                  <Link
+                    href={`/c/${postQuery.data.post.community.name}/${postQuery.data.post.id}/${postQuery.data.post.slug}/edit`}
+                  >
+                    <a
+                      data-cy="post-edit-link"
+                      className="py-1 px-2 flex items-center gap-[6px] hover:text-blue-400 focus:text-blue-400"
+                    >
+                      <FiEdit2 />
+                      Edit
+                    </a>
+                  </Link>
+                )}
+                <span>
+                  {postQuery.data.post._count.comments}{" "}
+                  {postQuery.data.post._count.comments === 1
+                    ? "comment"
+                    : "comments"}
+                </span>
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between">
+              <h2 className="text-md">Post a comment</h2>
+              {commentMutation.error && (
+                <Alert type="error">
+                  <BiErrorCircle size={22} />
+                  <span>Oh no! change a few things up and try again</span>
+                </Alert>
               )}
             </div>
-            <TextareaAutosize
-              data-cy="comment-textarea"
-              id="comment"
-              placeholder="What are you thoughts?"
-              minHeight={150}
-              register={register("commentContent")}
-            />
-          </form>
-          <div className="flex justify-end">
-            {session?.user ? (
-              <Button
-                form="createComment"
-                data-cy="create-comment"
-                variant="primary"
-                size="md"
-                loading={commentMutation.isLoading}
-                disabled={!isDirty || !!errors.commentContent}
-              >
-                Post
-              </Button>
-            ) : (
-              // TODO: Add login modal. it sucks having to redirect to login page.
-              <Button
-                onClick={() => router.push("/signin")}
-                loading={commentMutation.isLoading}
-                disabled={!isDirty || !!errors.commentContent}
-                variant="primary"
-                size="md"
-              >
-                Post
-              </Button>
-            )}
-          </div>
-        </section>
+            <form
+              id="createComment"
+              className="flex flex-col gap-2 mb-3"
+              onSubmit={handleSubmit(createComment)}
+            >
+              <div className="flex justify-between items-center flex-wrap text-sm">
+                <MarkdownTipsModal />
+                {errors.commentContent?.message && (
+                  <span data-cy="form-error" className="text-alert">
+                    {errors.commentContent.message}
+                  </span>
+                )}
+              </div>
+              <TextareaAutosize
+                data-cy="comment-textarea"
+                id="comment"
+                placeholder="What are you thoughts?"
+                minHeight={150}
+                register={register("commentContent")}
+              />
+            </form>
+            <div className="flex justify-end">
+              {session?.user ? (
+                <Button
+                  form="createComment"
+                  data-cy="create-comment"
+                  variant="primary"
+                  size="md"
+                  loading={commentMutation.isLoading}
+                  disabled={!isDirty || !!errors.commentContent}
+                >
+                  Post
+                </Button>
+              ) : (
+                // TODO: Add login modal. it sucks having to redirect to login page.
+                <Button
+                  onClick={() => router.push("/signin")}
+                  loading={commentMutation.isLoading}
+                  disabled={!isDirty || !!errors.commentContent}
+                  variant="primary"
+                  size="md"
+                >
+                  Post
+                </Button>
+              )}
+            </div>
+          </section>
+        </div>
 
-        <section className="rounded-md flex flex-col gap-3">
+        <section className="rounded-md flex flex-col gap-3 mt-6">
           {commentQuery.isLoading &&
             Array(13)
               .fill(0)
               .map((skeleton, idx) => <CommentSkeleton key={idx} />)}
           {commentQuery.data?.comments.map((comment) => (
-            // TODO: move isMod, isAdmin check to api layer maybe? if not maybe move them to the
-            // comment component similarly to how we're doing it on the Post component
             <Comment
               key={comment.id}
               {...comment}

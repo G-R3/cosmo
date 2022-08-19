@@ -14,10 +14,7 @@ const MarkdownTipsModal: FC = () => {
         className="flex items-center justify-center gap-2 text-grayAlt cursor-pointer w-fit"
       >
         Markdown Supported
-        <AiOutlineQuestion
-          size={15}
-          className="border rounded-full border-grayAlt"
-        />
+        <AiOutlineQuestion className="border rounded-full border-grayAlt" />
       </button>
       <AnimatePresence>
         {isOpen && (
