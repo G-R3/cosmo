@@ -296,7 +296,10 @@ const Post: NextPage<{
             <span>
               Posted to{" "}
               <Link href={`/c/${postQuery.data.post.community.name}`}>
-                <a className="text-highlight font-semibold">
+                <a
+                  data-cy="post-community"
+                  className="text-highlight font-semibold"
+                >
                   {postQuery.data.post.community.name}
                 </a>
               </Link>{" "}
@@ -350,7 +353,10 @@ const Post: NextPage<{
                   <AiOutlineHeart size={20} />
                 </span>
               )}
-              <span className={`${isLikedByUser ? "text-red-500" : ""}`}>
+              <span
+                data-cy="likes"
+                className={`${isLikedByUser ? "text-red-500" : ""}`}
+              >
                 {postQuery.data.post.likes.length}
               </span>
             </button>

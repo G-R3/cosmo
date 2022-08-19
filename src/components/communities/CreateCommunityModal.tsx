@@ -114,6 +114,7 @@ const CreateCommunityModal: React.FC = () => {
                       <label htmlFor="community-name">Name</label>
                       <div className="flex flex-col gap-2">
                         <input
+                          data-cy="community-name"
                           id="community-name"
                           defaultValue=""
                           {...register("communityName")}
