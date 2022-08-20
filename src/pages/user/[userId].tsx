@@ -36,7 +36,6 @@ const Profile: NextPage = () => {
     );
   }
 
-  console.log(communitiesQuery.data);
   return (
     <>
       <CustomHead title={`${userQuery.data.user?.name} | Cosmo`} />
