@@ -77,7 +77,7 @@ const BannerBackground: FC<{ userId: string }> = ({ userId }) => {
   return (
     <>
       <div
-        className={`h-44 w-full absolute top-0 left-0 rounded-md flex justify-end items-start transition-colors duration-300 py-3 px-5`}
+        className="absolute top-0 left-0 w-full h-36 rounded-md flex justify-end items-start transition-colors duration-300 py-3 px-5"
         style={{
           backgroundColor: `#${banneColor}`,
         }}
@@ -86,12 +86,15 @@ const BannerBackground: FC<{ userId: string }> = ({ userId }) => {
           {({ open }) => (
             <>
               {userId === session?.user.id && (
-                <Popover.Button className="group">
+                <Popover.Button
+                  as={motion.button}
+                  whileHover={{
+                    scale: 1.14,
+                  }}
+                  transition={{ type: "spring", stiffness: 350, damping: 10 }}
+                >
                   <span className="sr-only">Menu</span>
-                  <BsGear
-                    size={20}
-                    className="group-hover:rotate-180 transition-transform duration-700 text-darkTwo"
-                  />
+                  <BsGear size={20} />
                 </Popover.Button>
               )}
 
@@ -144,7 +147,7 @@ const UserBanner: FC<Props> = ({ id, image, name, role }) => {
   return (
     <div className="relative py-5">
       <BannerBackground userId={id} />
-      <div className="relative top-24 flex items-center gap-4 px-5">
+      <div className="mt-20 flex gap-5 items-center px-5">
         <Image
           src={image}
           alt={`${name}'s Avatar`}
