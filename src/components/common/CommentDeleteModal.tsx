@@ -47,7 +47,9 @@ const DeleteCommentModal: FC<{ commentId: string }> = ({ commentId }) => {
                   exit={{ opacity: 0, y: -100, transition: { duration: 0.2 } }}
                   className="flex flex-col w-full max-w-xl rounded bg-white dark:bg-darkOne px-10 py-8"
                 >
-                  <Dialog.Title className="text-2xl">Delete Post</Dialog.Title>
+                  <Dialog.Title className="text-2xl">
+                    Delete Comment
+                  </Dialog.Title>
                   <Dialog.Description className="mt-2">
                     Deleting a comment can&apos;t be undone. Are you sure you
                     want to continue?

@@ -62,7 +62,7 @@ const UserTabs: FC<{ user: string }> = ({ user }) => {
           </Tab>
         )}
       </Tab.List>
-      <Tab.Panels>
+      <Tab.Panels as={Fragment}>
         <Tab.Panel className="flex flex-col gap-3 mt-6">
           <UserPosts user={user} isSelected={selectedTab === 0} />
         </Tab.Panel>

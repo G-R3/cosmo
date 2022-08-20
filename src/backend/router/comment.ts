@@ -45,7 +45,12 @@ export const commentRouter = createRouter()
     return next({
       ctx: {
         ...ctx,
-        user: ctx.session.user,
+        session: {
+          ...ctx.session,
+          user: {
+            ...ctx.session.user,
+          },
+        },
       },
     });
   })
@@ -71,7 +76,7 @@ export const commentRouter = createRouter()
       await prisma.comment.create({
         data: {
           content: input.content,
-          authorId: ctx.user.id,
+          authorId: ctx.session.user.id,
           postId: input.postId,
         },
       });
@@ -101,6 +106,22 @@ export const commentRouter = createRouter()
         });
       }
 
+      const comment = await prisma.comment.findUnique({
+        where: {
+          id: input.commentId,
+        },
+        select: {
+          authorId: true,
+        },
+      });
+
+      if (!comment || comment.authorId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not authorized",
+        });
+      }
+
       const updatedComment = await prisma.comment.update({
         where: {
           id: input.commentId,
@@ -120,6 +141,47 @@ export const commentRouter = createRouter()
       commentId: z.string(),
     }),
     async resolve({ input, ctx }) {
+      const comment = await prisma.comment.findUnique({
+        where: {
+          id: input.commentId,
+        },
+        select: {
+          authorId: true,
+          post: {
+            select: {
+              community: {
+                select: {
+                  moderators: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!comment) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Comment not found",
+        });
+      }
+
+      const isModerator = comment.post.community.moderators.some(
+        (mod) => mod.userId === ctx.session.user.id,
+      );
+      const isAdmin = ctx.session.user.role === "ADMIN";
+
+      if (
+        comment.authorId !== ctx.session.user.id &&
+        !isModerator &&
+        !isAdmin
+      ) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not authorized",
+        });
+      }
+
       const deletedComment = await prisma.comment.delete({
         where: {
           id: input.commentId,

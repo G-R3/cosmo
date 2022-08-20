@@ -162,6 +162,16 @@ export const userRouter = createRouter()
               id: true,
               name: true,
               image: true,
+              role: true,
+            },
+          },
+          post: {
+            select: {
+              community: {
+                select: {
+                  moderators: true,
+                },
+              },
             },
           },
         },

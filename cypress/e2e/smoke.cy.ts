@@ -12,7 +12,9 @@ describe("smoke test", () => {
     cy.wait("@session");
 
     // create community
-    cy.get("[data-cy='create-community-modal']").click();
+    cy.get("[data-cy='create-community-modal']").click({
+      waitForAnimations: false,
+    });
     cy.get("[data-cy=community-name]").type(communityName);
     cy.get("[data-cy=confirm-create]").click();
 
@@ -33,11 +35,12 @@ describe("smoke test", () => {
     cy.get("[data-cy='post-title']").type(postTitle);
     cy.get("[data-cy='post-body']").type(postBody);
     cy.get("[data-cy='submit']").click().should("be.disabled");
-    cy.get("h1").should("have.text", postTitle);
+    cy.url().should("contain", `/${postSlug}`);
+    cy.get("[data-cy='post-title']").should("contain", postTitle);
     cy.get("[data-cy='post-community']").should("contain.text", communityName);
 
     // like/unlike post
-    let likes;
+    let likes: string;
     cy.get("[data-cy='likes']").should(($span) => {
       likes = $span.text();
     });
