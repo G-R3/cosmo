@@ -5,94 +5,40 @@ import { BiErrorCircle } from "react-icons/bi";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { FiEdit2 } from "react-icons/fi";
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import {
-  GetServerSidePropsContext,
-  InferGetServerSidePropsType,
-  NextPage,
-} from "next";
+import { NextPage } from "next";
 import { useRouter } from "next/router";
-import superjson from "superjson";
-import { DehydratedState } from "react-query";
-import { appRouter } from "src/backend/router/_app";
-import { createContext } from "src/backend/context";
-import { createSSGHelpers } from "@trpc/react/ssg";
 import { trpc } from "@/utils/trpc";
 import Markdown from "@/components/common/Markdown";
 import Comment from "@/components/common/Comment";
 import CommentSkeleton from "@/components/common/CommentSkeleton";
-import MarkdownTipsModal from "@/components/common/MarkdownTipsModal";
-import TextareaAutosize from "@/components/common/TextareaAutosize";
 import CustomHead from "@/components/common/CustomHead";
-import Button from "@/components/common/Button";
 import Alert from "@/components/common/Alert";
 import Preloader from "@/components/common/Preloader";
 import spaceTwo from "../../../../../assets/space-2.svg";
 import NotFound from "@/components/common/NotFound";
+import CreateCommentForm from "@/components/post/CreateCommentForm";
 
-type Inputs = {
-  postId: string;
-  commentContent: string;
-};
-
-const schema = z.object({
-  postId: z.string(),
-  commentContent: z
-    .string()
-    .trim()
-    .min(1, { message: "Comment can't be empty" })
-    .max(500, { message: "Comment must be less than 500 characters" }),
-});
-
-/**
- * This is cursed
- */
-
-const Post: NextPage<{
-  trpcState: DehydratedState;
-  slug: string;
-  postId: string;
-}> = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const Post: NextPage = () => {
   const router = useRouter();
-  const { postId, slug } = props;
+  const id = router.query.postId as string;
+  const slug = router.query.slug as string;
   const { data: session } = useSession();
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isDirty },
-  } = useForm<Inputs>({
-    defaultValues: { commentContent: "", postId },
-    resolver: zodResolver(schema),
-  });
   const utils = trpc.useContext();
-  const postQuery = trpc.useQuery(["post.get-by-id", { slug, id: postId }]);
-  const commentQuery = trpc.useQuery(["comment.get-by-postId", { postId }], {
-    enabled: !!postQuery.data?.post.id,
-  });
-  const commentMutation = trpc.useMutation("comment.create", {
-    onSuccess(data, variables, context) {
-      utils.invalidateQueries(["post.get-by-id", { slug, id: postId }]);
-      utils.invalidateQueries(["comment.get-by-postId"]);
-      reset({
-        commentContent: "",
-        postId: postId,
-      });
+  const postQuery = trpc.useQuery(["post.get-by-id", { slug, id }]);
+  const commentQuery = trpc.useQuery(
+    ["comment.get-by-postId", { postId: id }],
+    {
+      enabled: !!id,
     },
-  });
+  );
 
   const likeMutation = trpc.useMutation(["post.like"], {
     onMutate: async (likedPost) => {
-      await utils.cancelQuery(["post.get-by-id", { slug, id: postId }]);
-      const previousData = utils.getQueryData([
-        "post.get-by-id",
-        { slug, id: postId },
-      ]);
+      await utils.cancelQuery(["post.get-by-id", { slug, id }]);
+      const previousData = utils.getQueryData(["post.get-by-id", { slug, id }]);
 
       if (previousData) {
-        utils.setQueryData(["post.get-by-id", { slug, id: postId }], {
+        utils.setQueryData(["post.get-by-id", { slug, id }], {
           ...previousData,
           post: {
             ...previousData.post,
@@ -112,7 +58,7 @@ const Post: NextPage<{
     onError: (err, data, context) => {
       if (context?.previousData) {
         utils.setQueryData(
-          ["post.get-by-id", { slug, id: postId }],
+          ["post.get-by-id", { slug, id }],
           context?.previousData,
         );
       }
@@ -120,14 +66,11 @@ const Post: NextPage<{
   });
   const unlikeMutation = trpc.useMutation(["post.unlike"], {
     onMutate: async (unLikedPost) => {
-      await utils.cancelQuery(["post.get-by-id", { slug, id: postId }]);
-      const previousData = utils.getQueryData([
-        "post.get-by-id",
-        { slug, id: postId },
-      ]);
+      await utils.cancelQuery(["post.get-by-id", { slug, id }]);
+      const previousData = utils.getQueryData(["post.get-by-id", { slug, id }]);
 
       if (previousData) {
-        utils.setQueryData(["post.get-by-id", { slug, id: postId }], {
+        utils.setQueryData(["post.get-by-id", { slug, id }], {
           ...previousData,
           post: {
             ...previousData.post,
@@ -143,7 +86,7 @@ const Post: NextPage<{
     onError: (err, data, context) => {
       if (context?.previousData) {
         utils.setQueryData(
-          ["post.get-by-id", { slug, id: postId }],
+          ["post.get-by-id", { slug, id }],
           context?.previousData,
         );
       }
@@ -152,14 +95,11 @@ const Post: NextPage<{
 
   const saveMutation = trpc.useMutation(["post.save"], {
     onMutate: async (savedPost) => {
-      await utils.cancelQuery(["post.get-by-id", { slug, id: postId }]);
-      const previousData = utils.getQueryData([
-        "post.get-by-id",
-        { slug, id: postId },
-      ]);
+      await utils.cancelQuery(["post.get-by-id", { slug, id }]);
+      const previousData = utils.getQueryData(["post.get-by-id", { slug, id }]);
 
       if (previousData) {
-        utils.setQueryData(["post.get-by-id", { slug, id: postId }], {
+        utils.setQueryData(["post.get-by-id", { slug, id }], {
           ...previousData,
           post: {
             ...previousData.post,
@@ -179,7 +119,7 @@ const Post: NextPage<{
     onError: (err, data, context) => {
       if (context?.previousData) {
         utils.setQueryData(
-          ["post.get-by-id", { slug, id: postId }],
+          ["post.get-by-id", { slug, id }],
           context?.previousData,
         );
       }
@@ -187,14 +127,11 @@ const Post: NextPage<{
   });
   const unSaveMutation = trpc.useMutation(["post.unsave"], {
     onMutate: async (unSavedPost) => {
-      await utils.cancelQuery(["post.get-by-id", { slug, id: postId }]);
-      const previousData = utils.getQueryData([
-        "post.get-by-id",
-        { slug, id: postId },
-      ]);
+      await utils.cancelQuery(["post.get-by-id", { slug, id }]);
+      const previousData = utils.getQueryData(["post.get-by-id", { slug, id }]);
 
       if (previousData) {
-        utils.setQueryData(["post.get-by-id", { slug, id: postId }], {
+        utils.setQueryData(["post.get-by-id", { slug, id }], {
           ...previousData,
           post: {
             ...previousData.post,
@@ -210,7 +147,7 @@ const Post: NextPage<{
     onError: (err, data, context) => {
       if (context?.previousData) {
         utils.setQueryData(
-          ["post.get-by-id", { slug, id: postId }],
+          ["post.get-by-id", { slug, id }],
           context?.previousData,
         );
       }
@@ -238,13 +175,6 @@ const Post: NextPage<{
       </div>
     );
   }
-
-  const createComment: SubmitHandler<Inputs> = (data) => {
-    commentMutation.mutate({
-      postId: data.postId,
-      content: data.commentContent,
-    });
-  };
 
   const onLike = (postId: string) => {
     likeMutation.mutate({ postId });
@@ -392,64 +322,7 @@ const Post: NextPage<{
               </div>
             </div>
           </section>
-
-          <section className="mt-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between">
-              <h2 className="text-md">Post a comment</h2>
-              {commentMutation.error && (
-                <Alert type="error">
-                  <BiErrorCircle size={22} />
-                  <span>Oh no! change a few things up and try again</span>
-                </Alert>
-              )}
-            </div>
-            <form
-              id="createComment"
-              className="flex flex-col gap-2 mb-3"
-              onSubmit={handleSubmit(createComment)}
-            >
-              <div className="flex justify-between items-center flex-wrap text-sm">
-                <MarkdownTipsModal />
-                {errors.commentContent?.message && (
-                  <span data-cy="form-error" className="text-alert">
-                    {errors.commentContent.message}
-                  </span>
-                )}
-              </div>
-              <TextareaAutosize
-                data-cy="comment-textarea"
-                id="comment"
-                placeholder="What are you thoughts?"
-                minHeight={150}
-                register={register("commentContent")}
-              />
-            </form>
-            <div className="flex justify-end">
-              {session?.user ? (
-                <Button
-                  form="createComment"
-                  data-cy="create-comment"
-                  variant="primary"
-                  size="md"
-                  loading={commentMutation.isLoading}
-                  disabled={!isDirty || !!errors.commentContent}
-                >
-                  Post
-                </Button>
-              ) : (
-                // TODO: Add login modal. it sucks having to redirect to login page.
-                <Button
-                  onClick={() => router.push("/signin")}
-                  loading={commentMutation.isLoading}
-                  disabled={!isDirty || !!errors.commentContent}
-                  variant="primary"
-                  size="md"
-                >
-                  Post
-                </Button>
-              )}
-            </div>
-          </section>
+          <CreateCommentForm postId={id} />
         </div>
 
         <section className="rounded-md flex flex-col gap-3 mt-6">
@@ -484,29 +357,6 @@ const Post: NextPage<{
       </div>
     </>
   );
-};
-
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext,
-) => {
-  const ssg = await createSSGHelpers({
-    router: appRouter,
-    ctx: await createContext(),
-    transformer: superjson,
-  });
-
-  const postId = context.params?.postId as string;
-  const slug = context.params?.slug as string;
-
-  await ssg.fetchQuery("post.get-by-id", { slug, id: postId });
-
-  return {
-    props: {
-      trpcState: ssg.dehydrate(),
-      slug,
-      postId,
-    },
-  };
 };
 
 export default Post;
