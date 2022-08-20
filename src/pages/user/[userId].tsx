@@ -12,8 +12,9 @@ const Profile: NextPage = () => {
   const router = useRouter();
   const userId = router.query.userId as string;
   const userQuery = trpc.useQuery(["user.get-by-id", { userId }]);
+  const communitiesQuery = trpc.useQuery(["user.get-communities", { userId }]);
 
-  if (userQuery.isLoading) {
+  if (userQuery.isLoading || communitiesQuery.isLoading) {
     return <Preloader />;
   }
 
@@ -35,6 +36,7 @@ const Profile: NextPage = () => {
     );
   }
 
+  console.log(communitiesQuery.data);
   return (
     <>
       <CustomHead title={`${userQuery.data.user?.name} | Cosmo`} />
@@ -50,8 +52,19 @@ const Profile: NextPage = () => {
             <UserTabs user={userQuery.data.user?.id!} />
           </div>
         </div>
-        <div className="hidden md:block md:col-start-10 md:col-span-full">
-          <h2 className="font-bold p-5 text-grayAlt">Joined Communities</h2>
+        <div className="hidden md:flex md:flex-col md:gap-y-3 md:col-start-10 md:col-span-full">
+          <div className="bg-darkOne p-5 rounded-md">
+            <h2 className="font-semibold mb-2">Communities Moderating</h2>
+            {communitiesQuery.data?.communities.map((community) => (
+              <div key={community.id}>
+                <Link href={`/c/${community.title}`}>
+                  <a className=" font-semibold text-highlight">
+                    {community.title}
+                  </a>
+                </Link>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </>
