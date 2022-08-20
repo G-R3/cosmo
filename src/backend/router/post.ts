@@ -60,16 +60,6 @@ export const basePost = {
   },
 };
 
-/**
- * get-by-id
- * get-by-community
- * feed
- * create
- * edit
- * like
- * unlike
- *
- */
 export const postRouter = createRouter()
   .query("get-by-id", {
     input: z.object({
@@ -79,11 +69,12 @@ export const postRouter = createRouter()
     async resolve({ input }) {
       const post = await prisma.post.findUnique({
         where: {
-          id: input.id,
+          post: {
+            id: input.id,
+            slug: input.slug,
+          },
         },
-        select: {
-          ...basePost,
-        },
+        select: basePost,
       });
 
       if (!post) {

@@ -52,7 +52,7 @@ model Moderator {
 }
 
 model Post {
-  id          String    @id @default(cuid())
+  id          String    @unique @default(cuid())
   title       String
   content     String?   @db.Text()
   createdAt   DateTime  @default(now())
@@ -66,6 +66,8 @@ model Post {
   community   Community @relation(fields: [communityId], references: [id])
   communityId String
   savedBy     Save[]
+
+  @@id([id, slug], name: "post")
 }
 
 model Comment {
