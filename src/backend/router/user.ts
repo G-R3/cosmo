@@ -216,7 +216,7 @@ export const userRouter = createRouter()
         },
         select: {
           id: true,
-          title: true,
+          name: true,
         },
       });
 

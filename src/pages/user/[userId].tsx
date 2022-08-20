@@ -56,9 +56,9 @@ const Profile: NextPage = () => {
             <h2 className="font-semibold mb-2">Communities Moderating</h2>
             {communitiesQuery.data?.communities.map((community) => (
               <div key={community.id}>
-                <Link href={`/c/${community.title}`}>
+                <Link href={`/c/${community.name}`}>
                   <a className=" font-semibold text-highlight">
-                    {community.title}
+                    {community.name}
                   </a>
                 </Link>
               </div>
