@@ -20,11 +20,14 @@ import CreateCommentForm from "@/components/post/CreateCommentForm";
 
 const Post: NextPage = () => {
   const router = useRouter();
+  const community = router.query.community as string;
   const id = router.query.postId as string;
   const slug = router.query.slug as string;
   const { data: session } = useSession();
   const utils = trpc.useContext();
-  const postQuery = trpc.useQuery(["post.get-by-id", { slug, id }]);
+  const postQuery = trpc.useQuery(["post.get-by-id", { slug, id }], {
+    refetchOnWindowFocus: false,
+  });
   const commentQuery = trpc.useQuery(
     ["comment.get-by-postId", { postId: id }],
     {
@@ -166,9 +169,9 @@ const Post: NextPage = () => {
             heading="Ooops"
             text="It seems this post has been lost. Try again or check back later."
           />
-          <Link href={"/"}>
+          <Link href={`/c/${community}`}>
             <a className="bg-highlight text-whiteAlt h-10 p-4 w-full rounded-md flex items-center justify-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all">
-              Return Home
+              Return to {community}
             </a>
           </Link>
         </div>
