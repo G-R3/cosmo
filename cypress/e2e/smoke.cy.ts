@@ -12,7 +12,7 @@ describe("smoke test", () => {
     cy.wait("@session");
 
     // create community
-    cy.get("[data-cy='create-community-modal']").click();
+    cy.get("[data-cy='create-community-modal']").click({ force: true });
     cy.get("[data-cy=community-name]").type(communityName);
     cy.get("[data-cy=confirm-create]").click();
 
