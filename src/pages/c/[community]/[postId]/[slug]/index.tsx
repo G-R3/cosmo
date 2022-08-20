@@ -224,7 +224,9 @@ const Post: NextPage = () => {
         )}
         <div className="p-5 bg-whiteAlt dark:bg-darkOne rounded-md">
           <section className="">
-            <h1 className="text-2xl">{postQuery.data.post.title}</h1>
+            <h1 data-cy="post-title" className="text-2xl">
+              {postQuery.data.post.title}
+            </h1>
 
             <div className="mb-3 text-grayAlt text-xs">
               Posted to{" "}
