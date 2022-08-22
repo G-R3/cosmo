@@ -33,6 +33,11 @@ export const communityRouter = createRouter()
               },
             },
           },
+          creator: {
+            select: {
+              id: true,
+            },
+          },
           tags: {
             select: {
               id: true,
