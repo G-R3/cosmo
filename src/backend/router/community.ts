@@ -180,7 +180,7 @@ export const communityRouter = createRouter()
   })
   .mutation("join", {
     input: z.object({
-      communityId: z.string().trim().min(1).max(25),
+      communityId: z.string().trim().min(1),
     }),
     async resolve({ input, ctx }) {
       const isMember = await prisma.communityMember.findFirst({
@@ -219,7 +219,7 @@ export const communityRouter = createRouter()
   })
   .mutation("leave", {
     input: z.object({
-      id: z.string().trim().min(1).max(25),
+      id: z.string().trim().min(1),
     }),
     async resolve({ input, ctx }) {
       const isMember = await prisma.communityMember.findFirst({
