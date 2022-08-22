@@ -33,13 +33,6 @@ export const communityRouter = createRouter()
               },
             },
           },
-          creator: {
-            select: {
-              id: true,
-              image: true,
-              name: true,
-            },
-          },
           tags: {
             select: {
               id: true,
@@ -62,23 +55,19 @@ export const communityRouter = createRouter()
         });
       }
 
-      const isMember = await prisma.communityMember.findFirst({
-        where: {
-          communityId: community.id,
-          userId: ctx.session?.user.id,
-        },
-        select: {
-          id: true,
-        },
-      });
+      const isMember = community.members.some(
+        (member) => member.userId === ctx.session?.user.id,
+      );
+
+      const isModerator = community.moderators.some(
+        (moderator) => moderator.user.id === ctx.session?.user.id,
+      );
 
       return {
         community,
-        isModerator: community.moderators.find(
-          (moderator) => moderator.user.id === ctx.session?.user.id,
-        ),
-        isCreator: community.creator.id === ctx.session?.user.id,
-        isMember: isMember ? isMember.id : "",
+        isModerator,
+        isMember,
+        isAdmin: ctx.session?.user.role === "ADMIN",
       };
     },
   })
@@ -219,12 +208,13 @@ export const communityRouter = createRouter()
   })
   .mutation("leave", {
     input: z.object({
-      id: z.string().trim().min(1),
+      communityId: z.string().trim().min(1),
     }),
     async resolve({ input, ctx }) {
       const isMember = await prisma.communityMember.findFirst({
         where: {
-          id: input.id,
+          communityId: input.communityId,
+          userId: ctx.session.user.id,
         },
       });
 
@@ -237,7 +227,10 @@ export const communityRouter = createRouter()
 
       await prisma.communityMember.delete({
         where: {
-          id: input.id,
+          communityMemberId: {
+            communityId: input.communityId,
+            userId: ctx.session.user.id,
+          },
         },
       });
 

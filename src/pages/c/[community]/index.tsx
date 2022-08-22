@@ -63,12 +63,11 @@ const Community: NextPage = () => {
   const joinCommunity = (communityId: string) => {
     joinMutation.mutate({ communityId });
   };
-  const leaveCommunity = (id: string) => {
-    leaveMutation.mutate({ id });
+  const leaveCommunity = (communityId: string) => {
+    leaveMutation.mutate({ communityId });
   };
 
-  const { isModerator } = communityQuery.data;
-  const isAdmin = session?.user.role === "ADMIN";
+  const { community, isModerator, isAdmin, isMember } = communityQuery.data;
 
   return (
     <>
@@ -99,12 +98,12 @@ const Community: NextPage = () => {
               </a>
             </Link>
           )}
-          {communityQuery.data?.isMember && (
+          {isMember && (
             <Button
               variant="primary"
               size="md"
               loading={leaveMutation.isLoading}
-              onClick={() => leaveCommunity(communityQuery.data?.isMember)}
+              onClick={() => leaveCommunity(communityQuery.data.community.id)}
             >
               Leave Community
             </Button>
