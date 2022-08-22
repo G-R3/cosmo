@@ -79,21 +79,34 @@ const Community: NextPage = () => {
         }
       />
       <section className="flex flex-col items-start gap-3 md:flex-row md:justify-between md:items-center mb-10">
-        <div className="flex flex-col gap-3">
-          <h1 className="text-3xl sm:text-5xl font-bold">
+        <div className="flex flex-col">
+          <h1 className="text-4xl font-bold">
             {communityQuery.data?.community.name}
           </h1>
-          <p className="text-grayAlt font-semibold ">
+          <p className="text-grayAlt font-semibold mt-2">
             {!!communityQuery.data?.community.title
               ? communityQuery.data?.community.title
               : communityQuery.data?.community.name}
           </p>
+
+          <div className="flex gap-3 text-grayAlt mt-2">
+            <span>
+              Created{" "}
+              {communityQuery.data.community.createdAt.toLocaleDateString()}
+            </span>
+            <span>
+              {communityQuery.data.community.members.length}{" "}
+              {communityQuery.data.community.members.length === 1
+                ? "Member"
+                : "Members"}
+            </span>
+          </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex flex-col w-full md:w-auto sm:flex-row gap-3 ">
           {(isModerator || isAdmin) && (
             <Link href={`/c/${communityQuery.data?.community.name}/settings`}>
-              <a className="px-3 py-[6px] border rounded-md border-grayAlt">
+              <a className="text-center px-3 py-[6px] border rounded-md border-grayAlt">
                 Community settings
               </a>
             </Link>
