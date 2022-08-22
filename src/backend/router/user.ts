@@ -228,7 +228,7 @@ export const userRouter = createRouter()
           description: true,
         },
       });
-      console.log(communities);
+
       return {
         communities,
       };
