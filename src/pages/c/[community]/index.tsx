@@ -50,7 +50,7 @@ const Community: NextPage = () => {
             heading="Woah there!"
             text="Nothing seems to exists on this side of the universe"
           />
-          <Link href={"/submit"}>
+          <Link href={"/"}>
             <a className="bg-highlight text-whiteAlt h-10 p-4 w-full rounded-md flex items-center justify-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all">
               Return Home
             </a>
@@ -67,7 +67,7 @@ const Community: NextPage = () => {
     leaveMutation.mutate({ communityId });
   };
 
-  const { community, isModerator, isAdmin, isMember } = communityQuery.data;
+  const { isModerator, isAdmin, isMember } = communityQuery.data;
 
   return (
     <>

@@ -1,4 +1,3 @@
-// a loading svg component
 import React from "react";
 
 const Loader = () => {
