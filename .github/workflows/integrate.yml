@@ -3,7 +3,7 @@ name: main
 on: pull_request
 
 jobs:
-  eslint:
+  integrate:
     name: Integrate
     runs-on: ubuntu-latest
 
@@ -14,11 +14,12 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
 
-      - name: Cypress run
+      - name: Cypress run with env
         uses: cypress-io/github-action@v4
         with:
           start: npm run dev
           browser: chrome
           headed: true
         env:
+          CYPRESS_token: ${{ secrets.TOKEN }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
