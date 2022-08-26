@@ -12,8 +12,22 @@ const Profile: NextPage = () => {
   const router = useRouter();
   const userId = router.query.userId as string;
   const userQuery = trpc.useQuery(["user.get-by-id", { userId }]);
+  // these two queries hit the same endpoint, by not providing the type of communities we want
+  // isMember isModerator, the data gets gets messed up
+  const communitiesQuery = trpc.useQuery([
+    "user.get-communities",
+    { userId, isModerator: true },
+  ]);
+  const followingCommunitiesQuery = trpc.useQuery([
+    "user.get-communities",
+    { userId, isMember: true },
+  ]);
 
-  if (userQuery.isLoading) {
+  if (
+    userQuery.isLoading ||
+    communitiesQuery.isLoading ||
+    followingCommunitiesQuery.isLoading
+  ) {
     return <Preloader />;
   }
 
@@ -38,7 +52,7 @@ const Profile: NextPage = () => {
   return (
     <>
       <CustomHead title={`${userQuery.data.user?.name} | Cosmo`} />
-      <div className="grid grid-cols-12 gap-2">
+      <div className="grid grid-cols-12 gap-5">
         <div className="col-span-full md:col-start-1 md:col-end-10">
           <UserBanner
             id={userQuery.data.user.id}
@@ -50,9 +64,50 @@ const Profile: NextPage = () => {
             <UserTabs user={userQuery.data.user?.id!} />
           </div>
         </div>
-        <div className="hidden md:block md:col-start-10 md:col-span-full">
-          <h2 className="font-bold p-5 text-grayAlt">Joined Communities</h2>
-        </div>
+        {(communitiesQuery.data || followingCommunitiesQuery.data) && (
+          <div className="hidden md:flex md:flex-col md:gap-y-3 md:col-start-10 md:col-span-full">
+            {!!communitiesQuery.data?.communities.length && (
+              <div className="bg-darkOne p-5 rounded-md">
+                <h2 className="font-semibold mb-2">Communities Moderating</h2>
+                <div className="space-y-3">
+                  {communitiesQuery.data?.communities.map((community) => (
+                    <div key={community.id} className="flex flex-col">
+                      <Link href={`/c/${community.name}`}>
+                        <a className=" font-semibold text-grayAlt">
+                          {community.name}
+                        </a>
+                      </Link>
+                      <span className="truncate">{community.description}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {!!followingCommunitiesQuery.data?.communities.length && (
+              <div className="bg-darkOne p-5 rounded-md">
+                <h2 className="font-semibold mb-2">
+                  Member of these Communities
+                </h2>
+                <div className="space-y-3">
+                  {followingCommunitiesQuery.data?.communities.map(
+                    (community) => (
+                      <div key={community.id} className="flex flex-col">
+                        <Link href={`/c/${community.name}`}>
+                          <a className=" font-semibold text-grayAlt">
+                            {community.name}
+                          </a>
+                        </Link>
+                        <span className="truncate">
+                          {community.description}
+                        </span>
+                      </div>
+                    ),
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </>
   );

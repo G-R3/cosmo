@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { trpc } from "@/utils/trpc";
+import { GiPartyPopper } from "react-icons/gi";
 import useLikePost from "@/hooks/useLikePost";
 import useSavePost from "@/hooks/useSavePost";
 import Post from "@/components/common/Post";
@@ -13,12 +14,25 @@ import CustomHead from "@/components/common/CustomHead";
 import Preloader from "@/components/common/Preloader";
 import spaceOne from "../../../assets/space-1.svg";
 import NotFound from "@/components/common/NotFound";
+import Button from "@/components/common/Button";
+import Alert from "@/components/common/Alert";
 
 const Community: NextPage = () => {
   const { data: session } = useSession();
   const query = useRouter().query.community as string;
+  const utils = trpc.useContext();
   const communityQuery = trpc.useQuery(["community.get", { query }], {
     refetchOnWindowFocus: false,
+  });
+  const joinMutation = trpc.useMutation(["community.join"], {
+    onSuccess(data, variables, context) {
+      utils.invalidateQueries(["community.get"]);
+    },
+  });
+  const leaveMutation = trpc.useMutation(["community.leave"], {
+    onSuccess(data, variables, context) {
+      utils.invalidateQueries(["community.get"]);
+    },
   });
   const postQuery = trpc.useQuery(["post.get-by-community", { query }]);
   const { onLike, onUnlike } = useLikePost("post.get-by-community", { query });
@@ -36,7 +50,7 @@ const Community: NextPage = () => {
             heading="Woah there!"
             text="Nothing seems to exists on this side of the universe"
           />
-          <Link href={"/submit"}>
+          <Link href={"/"}>
             <a className="bg-highlight text-whiteAlt h-10 p-4 w-full rounded-md flex items-center justify-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all">
               Return Home
             </a>
@@ -46,8 +60,14 @@ const Community: NextPage = () => {
     );
   }
 
-  const { isModerator } = communityQuery.data;
-  const isAdmin = session?.user.role === "ADMIN";
+  const joinCommunity = (communityId: string) => {
+    joinMutation.mutate({ communityId });
+  };
+  const leaveCommunity = (communityId: string) => {
+    leaveMutation.mutate({ communityId });
+  };
+
+  const { isModerator, isAdmin, isMember } = communityQuery.data;
 
   return (
     <>
@@ -58,28 +78,77 @@ const Community: NextPage = () => {
             : communityQuery.data?.community.name
         }
       />
-      <div className="flex flex-col gap-3 mb-10">
-        <div className="flex justify-between">
-          <h1 className="text-3xl sm:text-5xl font-bold">
+      <section className="flex flex-col items-start gap-3 md:flex-row md:justify-between md:items-center mb-10">
+        <div className="flex flex-col">
+          <h1 className="text-4xl font-bold">
+            {communityQuery.data?.community.name}
+          </h1>
+          <p className="text-grayAlt font-semibold mt-2">
             {!!communityQuery.data?.community.title
               ? communityQuery.data?.community.title
               : communityQuery.data?.community.name}
-          </h1>
+          </p>
+
+          <div className="flex gap-3 text-grayAlt mt-2">
+            <span>
+              Created{" "}
+              {communityQuery.data.community.createdAt.toLocaleDateString()}
+            </span>
+            <span>
+              {communityQuery.data.community.members.length}{" "}
+              {communityQuery.data.community.members.length === 1
+                ? "Member"
+                : "Members"}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex flex-col w-full md:w-auto sm:flex-row gap-3 ">
           {(isModerator || isAdmin) && (
             <Link href={`/c/${communityQuery.data?.community.name}/settings`}>
-              <a className="self-start px-3 py-[6px] border rounded-md border-grayAlt">
+              <a className="text-center px-3 py-[6px] border rounded-md border-grayAlt">
                 Community settings
               </a>
             </Link>
           )}
+          {isMember && (
+            <Button
+              variant="primary"
+              size="md"
+              loading={leaveMutation.isLoading}
+              onClick={() => leaveCommunity(communityQuery.data.community.id)}
+            >
+              Leave Community
+            </Button>
+          )}
         </div>
-        <p className="text-grayAlt font-semibold ">
-          {communityQuery.data.community.name}
-        </p>
-      </div>
+      </section>
 
-      <div className="grid grid-cols-12 gap-6">
-        <div className="col-span-9 flex flex-col gap-3">
+      <section className="grid grid-cols-12 gap-6">
+        {!communityQuery.data.isMember && (
+          <div className="col-span-full md:col-span-9">
+            <Alert>
+              <div className="w-full flex flex-col gap-3 sm:flex-row sm:justify-center sm:items-center px-2">
+                <p className="flex-grow font-bold">
+                  Become a community member!
+                </p>
+
+                <Button
+                  variant="primary"
+                  size="md"
+                  icon={<GiPartyPopper size={20} />}
+                  loading={joinMutation.isLoading}
+                  onClick={() =>
+                    joinCommunity(communityQuery.data?.community.id)
+                  }
+                >
+                  Join Community
+                </Button>
+              </div>
+            </Alert>
+          </div>
+        )}
+        <div className="col-span-full md:col-span-9 flex flex-col gap-3">
           {postQuery.isLoading &&
             Array(13)
               .fill(0)
@@ -117,7 +186,7 @@ const Community: NextPage = () => {
             </div>
           )}
         </div>
-        <div className="col-span-3 flex flex-col gap-y-3">
+        <div className="hidden md:col-span-3 md:flex md:flex-col md:gap-y-3">
           <div className="bg-whiteAlt dark:bg-darkOne p-4 rounded-md flex flex-col gap-2">
             <h2 className="text-grayAlt font-semibold mb-3">About Community</h2>
             <p>
@@ -182,7 +251,7 @@ const Community: NextPage = () => {
             </div>
           )}
         </div>
-      </div>
+      </section>
     </>
   );
 };

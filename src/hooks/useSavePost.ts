@@ -1,8 +1,6 @@
 import { useSession } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 
-// this is a cursed hook O.o
-
 type Paths =
   | "post.feed"
   | "post.get-by-community"

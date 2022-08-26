@@ -36,14 +36,18 @@ export const communityRouter = createRouter()
           creator: {
             select: {
               id: true,
-              image: true,
-              name: true,
             },
           },
           tags: {
             select: {
               id: true,
               name: true,
+            },
+          },
+          members: {
+            select: {
+              id: true,
+              userId: true,
             },
           },
         },
@@ -56,12 +60,19 @@ export const communityRouter = createRouter()
         });
       }
 
+      const isMember = community.members.some(
+        (member) => member.userId === ctx.session?.user.id,
+      );
+
+      const isModerator = community.moderators.some(
+        (moderator) => moderator.user.id === ctx.session?.user.id,
+      );
+
       return {
         community,
-        isModerator: community.moderators.find(
-          (moderator) => moderator.user.id === ctx.session?.user.id,
-        ),
-        isCreator: community.creator.id === ctx.session?.user.id,
+        isModerator,
+        isMember,
+        isAdmin: ctx.session?.user.role === "ADMIN",
       };
     },
   })
@@ -159,6 +170,79 @@ export const communityRouter = createRouter()
       });
 
       return community;
+    },
+  })
+  .mutation("join", {
+    input: z.object({
+      communityId: z.string().trim().min(1),
+    }),
+    async resolve({ input, ctx }) {
+      const isMember = await prisma.communityMember.findFirst({
+        where: {
+          communityId: input.communityId,
+          userId: ctx.session.user.id,
+        },
+      });
+
+      if (isMember) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "You are already a member of this community",
+        });
+      }
+
+      const member = await prisma.communityMember.create({
+        data: {
+          communityId: input.communityId,
+          userId: ctx.session.user.id,
+        },
+        select: {
+          community: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+
+      return {
+        success: true,
+        message: `Welcome to ${member.community.name}!`,
+      };
+    },
+  })
+  .mutation("leave", {
+    input: z.object({
+      communityId: z.string().trim().min(1),
+    }),
+    async resolve({ input, ctx }) {
+      const isMember = await prisma.communityMember.findFirst({
+        where: {
+          communityId: input.communityId,
+          userId: ctx.session.user.id,
+        },
+      });
+
+      if (!isMember) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "You are not a member of this community",
+        });
+      }
+
+      await prisma.communityMember.delete({
+        where: {
+          communityMemberId: {
+            communityId: input.communityId,
+            userId: ctx.session.user.id,
+          },
+        },
+      });
+
+      return {
+        success: true,
+        message: "You have left the community.",
+      };
     },
   })
   .middleware(async ({ ctx, next }) => {

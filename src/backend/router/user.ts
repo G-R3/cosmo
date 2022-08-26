@@ -199,4 +199,38 @@ export const userRouter = createRouter()
         users,
       };
     },
+  })
+  .query("get-communities", {
+    input: z.object({
+      userId: z.string(),
+      isModerator: z.boolean().default(false),
+      isMember: z.boolean().default(false),
+    }),
+    async resolve({ input }) {
+      const communities = await prisma.community.findMany({
+        where: {
+          // return communities where every moderators matches the userId(??)
+          ...(input.isModerator && {
+            moderators: { every: { userId: input.userId } },
+          }),
+          // return communities that the user is a member of(??)
+          ...(input.isMember && {
+            members: {
+              some: {
+                userId: input.userId,
+              },
+            },
+          }),
+        },
+        select: {
+          id: true,
+          name: true,
+          description: true,
+        },
+      });
+
+      return {
+        communities,
+      };
+    },
   });
