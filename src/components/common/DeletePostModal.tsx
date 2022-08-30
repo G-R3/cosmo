@@ -12,7 +12,7 @@ const DeletePostModal: FC<{ postId: string }> = ({ postId }) => {
   const deleteMutation = trpc.useMutation("post.delete", {
     onSuccess(data, variables, context) {
       setIsOpen(false);
-      router.push(`/c/${data.post.community.name}`);
+      router.push(`/community/${data.post.community.name}`);
     },
   });
 

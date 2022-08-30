@@ -117,7 +117,7 @@ const SearchCommunity: React.FC<Props> = ({ setValue, reset }) => {
               <FiX />
             </button>
           </div>
-          <Link href={`/c/${selectedCommunity.name}`}>
+          <Link href={`/community/${selectedCommunity.name}`}>
             <a className="text-highlight font-semibold">
               {selectedCommunity.name}
             </a>

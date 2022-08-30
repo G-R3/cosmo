@@ -72,7 +72,7 @@ const Post: React.FC<Props> = ({
         className="mb-3 text-grayAlt text-xs"
       >
         Posted to{" "}
-        <Link href={`/c/${community.name}`}>
+        <Link href={`/community/${community.name}`}>
           <a className="text-highlight font-semibold">{community.name}</a>
         </Link>{" "}
         by{" "}
@@ -132,7 +132,7 @@ const Post: React.FC<Props> = ({
             {isSavedByUser ? "Unsave" : "Save"}
           </button>
           {(isAuthor || isModerator || isAdmin) && (
-            <Link href={`/c/${community.name}/${id}/${slug}/edit`}>
+            <Link href={`/post/${id}/edit`}>
               <a
                 data-cy="post-edit-link"
                 className="py-1 px-2 flex items-center gap-[6px] hover:text-blue-400 focus:text-blue-400 transition-colors"
@@ -143,7 +143,7 @@ const Post: React.FC<Props> = ({
             </Link>
           )}
 
-          <Link href={`/c/${community.name}/${id}/${slug}`}>
+          <Link href={`/post/${id}/`}>
             <a data-cy="post-link">
               {_count.comments}{" "}
               {_count.comments > 1 || _count.comments === 0
