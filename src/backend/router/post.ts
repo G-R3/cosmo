@@ -63,16 +63,12 @@ export const basePost = {
 export const postRouter = createRouter()
   .query("get-by-id", {
     input: z.object({
-      slug: z.string(),
       id: z.string(),
     }),
     async resolve({ input }) {
       const post = await prisma.post.findUnique({
         where: {
-          post: {
-            id: input.id,
-            slug: input.slug,
-          },
+          id: input.id,
         },
         select: basePost,
       });
