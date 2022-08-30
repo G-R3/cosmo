@@ -105,7 +105,9 @@ const Community: NextPage = () => {
 
         <div className="flex flex-col w-full md:w-auto sm:flex-row gap-3 ">
           {(isModerator || isAdmin) && (
-            <Link href={`/c/${communityQuery.data?.community.name}/settings`}>
+            <Link
+              href={`/community/${communityQuery.data?.community.name}/settings`}
+            >
               <a className="text-center px-3 py-[6px] border rounded-md border-grayAlt">
                 Community settings
               </a>
