@@ -14,18 +14,16 @@ import CommentSkeleton from "@/components/common/CommentSkeleton";
 import CustomHead from "@/components/common/CustomHead";
 import Alert from "@/components/common/Alert";
 import Preloader from "@/components/common/Preloader";
-import spaceTwo from "../../../../../assets/space-2.svg";
+import spaceTwo from "../../../assets/space-2.svg";
 import NotFound from "@/components/common/NotFound";
 import CreateCommentForm from "@/components/post/CreateCommentForm";
 
 const Post: NextPage = () => {
   const router = useRouter();
-  const community = router.query.community as string;
   const id = router.query.postId as string;
-  const slug = router.query.slug as string;
   const { data: session } = useSession();
   const utils = trpc.useContext();
-  const postQuery = trpc.useQuery(["post.get-by-id", { slug, id }], {
+  const postQuery = trpc.useQuery(["post.get-by-id", { id }], {
     refetchOnWindowFocus: false,
   });
   const commentQuery = trpc.useQuery(
@@ -37,11 +35,11 @@ const Post: NextPage = () => {
 
   const likeMutation = trpc.useMutation(["post.like"], {
     onMutate: async (likedPost) => {
-      await utils.cancelQuery(["post.get-by-id", { slug, id }]);
-      const previousData = utils.getQueryData(["post.get-by-id", { slug, id }]);
+      await utils.cancelQuery(["post.get-by-id", { id }]);
+      const previousData = utils.getQueryData(["post.get-by-id", { id }]);
 
       if (previousData) {
-        utils.setQueryData(["post.get-by-id", { slug, id }], {
+        utils.setQueryData(["post.get-by-id", { id }], {
           ...previousData,
           post: {
             ...previousData.post,
@@ -60,20 +58,17 @@ const Post: NextPage = () => {
     },
     onError: (err, data, context) => {
       if (context?.previousData) {
-        utils.setQueryData(
-          ["post.get-by-id", { slug, id }],
-          context?.previousData,
-        );
+        utils.setQueryData(["post.get-by-id", { id }], context?.previousData);
       }
     },
   });
   const unlikeMutation = trpc.useMutation(["post.unlike"], {
     onMutate: async (unLikedPost) => {
-      await utils.cancelQuery(["post.get-by-id", { slug, id }]);
-      const previousData = utils.getQueryData(["post.get-by-id", { slug, id }]);
+      await utils.cancelQuery(["post.get-by-id", { id }]);
+      const previousData = utils.getQueryData(["post.get-by-id", { id }]);
 
       if (previousData) {
-        utils.setQueryData(["post.get-by-id", { slug, id }], {
+        utils.setQueryData(["post.get-by-id", { id }], {
           ...previousData,
           post: {
             ...previousData.post,
@@ -88,21 +83,18 @@ const Post: NextPage = () => {
     },
     onError: (err, data, context) => {
       if (context?.previousData) {
-        utils.setQueryData(
-          ["post.get-by-id", { slug, id }],
-          context?.previousData,
-        );
+        utils.setQueryData(["post.get-by-id", { id }], context?.previousData);
       }
     },
   });
 
   const saveMutation = trpc.useMutation(["post.save"], {
     onMutate: async (savedPost) => {
-      await utils.cancelQuery(["post.get-by-id", { slug, id }]);
-      const previousData = utils.getQueryData(["post.get-by-id", { slug, id }]);
+      await utils.cancelQuery(["post.get-by-id", { id }]);
+      const previousData = utils.getQueryData(["post.get-by-id", { id }]);
 
       if (previousData) {
-        utils.setQueryData(["post.get-by-id", { slug, id }], {
+        utils.setQueryData(["post.get-by-id", { id }], {
           ...previousData,
           post: {
             ...previousData.post,
@@ -121,20 +113,17 @@ const Post: NextPage = () => {
     },
     onError: (err, data, context) => {
       if (context?.previousData) {
-        utils.setQueryData(
-          ["post.get-by-id", { slug, id }],
-          context?.previousData,
-        );
+        utils.setQueryData(["post.get-by-id", { id }], context?.previousData);
       }
     },
   });
   const unSaveMutation = trpc.useMutation(["post.unsave"], {
     onMutate: async (unSavedPost) => {
-      await utils.cancelQuery(["post.get-by-id", { slug, id }]);
-      const previousData = utils.getQueryData(["post.get-by-id", { slug, id }]);
+      await utils.cancelQuery(["post.get-by-id", { id }]);
+      const previousData = utils.getQueryData(["post.get-by-id", { id }]);
 
       if (previousData) {
-        utils.setQueryData(["post.get-by-id", { slug, id }], {
+        utils.setQueryData(["post.get-by-id", { id }], {
           ...previousData,
           post: {
             ...previousData.post,
@@ -149,10 +138,7 @@ const Post: NextPage = () => {
     },
     onError: (err, data, context) => {
       if (context?.previousData) {
-        utils.setQueryData(
-          ["post.get-by-id", { slug, id }],
-          context?.previousData,
-        );
+        utils.setQueryData(["post.get-by-id", { id }], context?.previousData);
       }
     },
   });
@@ -169,9 +155,9 @@ const Post: NextPage = () => {
             heading="Ooops"
             text="It seems this post has been lost. Try again or check back later."
           />
-          <Link href={`/c/${community}`}>
+          <Link href={`/`}>
             <a className="bg-highlight text-whiteAlt h-10 p-4 w-full rounded-md flex items-center justify-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all">
-              Return to {community}
+              Return home
             </a>
           </Link>
         </div>
@@ -230,7 +216,7 @@ const Post: NextPage = () => {
 
             <div className="mb-3 text-grayAlt text-xs">
               Posted to{" "}
-              <Link href={`/c/${postQuery.data.post.community.name}`}>
+              <Link href={`/community/${postQuery.data.post.community.name}`}>
                 <a
                   data-cy="post-community"
                   className="text-highlight font-semibold"
@@ -306,9 +292,7 @@ const Post: NextPage = () => {
                   {isSavedByUser ? "Unsave" : "Save"}
                 </button>
                 {(isPostAuthor || isModerator || isAdmin) && (
-                  <Link
-                    href={`/c/${postQuery.data.post.community.name}/${postQuery.data.post.id}/${postQuery.data.post.slug}/edit`}
-                  >
+                  <Link href={`/post/${postQuery.data.post.id}/edit`}>
                     <a
                       data-cy="post-edit-link"
                       className="py-1 px-2 flex items-center gap-[6px] hover:text-blue-400 focus:text-blue-400"

@@ -72,7 +72,7 @@ const Profile: NextPage = () => {
                 <div className="space-y-3">
                   {communitiesQuery.data?.communities.map((community) => (
                     <div key={community.id} className="flex flex-col">
-                      <Link href={`/c/${community.name}`}>
+                      <Link href={`/community/${community.name}`}>
                         <a className=" font-semibold text-grayAlt">
                           {community.name}
                         </a>
@@ -92,7 +92,7 @@ const Profile: NextPage = () => {
                   {followingCommunitiesQuery.data?.communities.map(
                     (community) => (
                       <div key={community.id} className="flex flex-col">
-                        <Link href={`/c/${community.name}`}>
+                        <Link href={`/community/${community.name}`}>
                           <a className=" font-semibold text-grayAlt">
                             {community.name}
                           </a>

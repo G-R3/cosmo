@@ -48,9 +48,7 @@ const Submit: NextPageWithAuth = () => {
   const createPostMutation = trpc.useMutation("post.create", {
     onSuccess(data) {
       reset();
-      router.push(
-        `/c/${data.post.community.name}/${data.post.id}/${data.post.slug}`,
-      );
+      router.push(`/post/${data.post.id}`);
     },
   });
 

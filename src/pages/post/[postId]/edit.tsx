@@ -16,7 +16,7 @@ import MarkdownTipsModal from "@/components/common/MarkdownTipsModal";
 import { trpc } from "@/utils/trpc";
 import DeletePostModal from "@/components/common/DeletePostModal";
 import TextareaAutosize from "@/components/common/TextareaAutosize";
-import { prisma } from "../../../../../backend/clients/client";
+import { prisma } from "../../../backend/clients/client";
 import CustomHead from "@/components/common/CustomHead";
 import Button from "@/components/common/Button";
 import Alert from "@/components/common/Alert";
@@ -59,7 +59,7 @@ const Edit: NextPage = ({
           post: data.post,
         },
       );
-      router.push(`/c/${post.communityName}/${post.id}/${post.slug}`);
+      router.push(`/post/${post.id}`);
     },
   });
 
@@ -88,7 +88,7 @@ const Edit: NextPage = ({
           <div className="flex justify-between items-center flex-wrap">
             <p className="mr-5 mb-2 md:mb-0">
               Posted to{" "}
-              <Link href={`/c/${post.community.name}`}>
+              <Link href={`/community/${post.community.name}`}>
                 <a
                   data-cy="post-community"
                   className="text-highlight font-semibold"

@@ -79,7 +79,7 @@ const EditCommunity: NextPageWithAuth = () => {
 
   useEffect(() => {
     if (data && !data.isModerator && !isAdmin) {
-      router.push(`/c/${data.community.name}`);
+      router.push(`/community/${data.community.name}`);
     }
   }, [data, router, isAdmin]);
 
