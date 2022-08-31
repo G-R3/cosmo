@@ -3,6 +3,7 @@ import {
   generateCommunity,
   generatePost,
 } from "../support/generate";
+
 describe("smoke test", () => {
   it("should handle normal app flow", () => {
     const { communityName, communityDescription } = generateCommunity();
@@ -17,6 +18,8 @@ describe("smoke test", () => {
     });
     cy.get("[data-cy=community-name]").type(communityName);
     cy.get("[data-cy=confirm-create]").click();
+    cy.visit(`/community/${communityName}`);
+    cy.url().should("include", communityName);
 
     cy.get("[data-cy='create-community-modal']").click();
     cy.get("[data-cy=community-name]").type(communityName);
@@ -24,7 +27,7 @@ describe("smoke test", () => {
     cy.get("[data-cy='alert']").should("be.visible");
 
     // create post
-    const { postTitle, postBody, postSlug } = generatePost();
+    const { postTitle, postBody } = generatePost();
     cy.visit("/submit");
     cy.get("[data-cy='search-communities']").type(communityName);
     cy.get("ul")
@@ -35,7 +38,6 @@ describe("smoke test", () => {
     cy.get("[data-cy='post-title']").type(postTitle);
     cy.get("[data-cy='post-body']").type(postBody);
     cy.get("[data-cy='submit']").click().should("be.disabled");
-    cy.url().should("contain", `/${postSlug}`);
     cy.get("[data-cy='post-title']").should("contain", postTitle);
     cy.get("[data-cy='post-community']").should("contain.text", communityName);
 
