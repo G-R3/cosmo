@@ -23,7 +23,7 @@ const buttonSizes = {
   lg: "h-12 min-h-[32px] min-w-[60px] py-1 px-4",
 };
 
-const getGhostButton = ({
+const getGhostButtonStyles = ({
   variant,
   size = "md",
   disabled = false,
@@ -45,7 +45,7 @@ const getGhostButton = ({
   );
 };
 
-const getButtonColors = ({
+export const getButtonStyles = ({
   variant,
   size = "md",
   fullWidth,
@@ -54,7 +54,7 @@ const getButtonColors = ({
   className,
 }: ButtonProps) => {
   if (ghost) {
-    return getGhostButton({ variant, size, disabled });
+    return getGhostButtonStyles({ variant, size, disabled });
   }
 
   return clx(
@@ -88,7 +88,7 @@ const Button: FC<ButtonProps> = ({
   className,
   ...props
 }) => {
-  const buttonStyles = getButtonColors({
+  const buttonStyles = getButtonStyles({
     variant,
     size,
     ghost,
@@ -98,11 +98,7 @@ const Button: FC<ButtonProps> = ({
   });
 
   return (
-    <button
-      disabled={disabled || loading}
-      className={`${buttonStyles}`}
-      {...props}
-    >
+    <button disabled={disabled || loading} className={buttonStyles} {...props}>
       {loading ? (
         <>
           <Loader />
