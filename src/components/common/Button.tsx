@@ -1,5 +1,6 @@
 import { FC, ComponentPropsWithRef } from "react";
 import Loader from "./Loader";
+import clx from "@/lib/classnames";
 
 interface ButtonProps extends ComponentPropsWithRef<"button"> {
   variant?:
@@ -9,7 +10,6 @@ interface ButtonProps extends ComponentPropsWithRef<"button"> {
     | "danger"
     | "warning"
     | "success";
-
   size?: "sm" | "md" | "lg";
   icon?: React.ReactNode;
   loading?: boolean;
@@ -17,90 +17,102 @@ interface ButtonProps extends ComponentPropsWithRef<"button"> {
   ghost?: boolean;
 }
 
-const classes = {
-  base: "relative rounded-md flex justify-center items-center gap-2 text-sm font-medium transition-colors duration-200",
-  size: {
-    sm: "h-8 min-h-[32px] min-w-[60px] py-1 px-4",
-    md: "h-10 min-h-[32px] min-w-[60px] py-1 px-4",
-    lg: "h-12 min-h-[32px] min-w-[60px] py-1 px-4",
-  },
+const buttonSizes = {
+  sm: "h-8 min-h-[32px] min-w-[60px] py-1 px-4",
+  md: "h-10 min-h-[32px] min-w-[60px] py-1 px-4",
+  lg: "h-12 min-h-[32px] min-w-[60px] py-1 px-4",
 };
 
-const getAltButtonColors = (variant: ButtonProps["variant"]) => {
-  const altColors = {
-    default: "border",
-    primary:
+const getGhostButton = ({
+  variant,
+  size = "md",
+  disabled = false,
+}: ButtonProps) => {
+  return clx(
+    buttonSizes[size],
+    "relative rounded-md flex justify-center items-center gap-2 text-sm font-medium transition-colors duration-200",
+    variant === "primary" &&
       "text-highlight border border-highlight hover:text-white hover:bg-highlight active:bg-highlightActive",
-    secondary:
+    variant === "secondary" &&
       "border border-secondary hover:text-white hover:bg-secondary active:bg-secondaryActive",
-    success: "border border-success hover:bg-success active:bg-successActive",
-    danger:
+    variant === "success" &&
+      "border border-success hover:bg-success active:bg-successActive",
+    variant === "danger" &&
       "text-alert border border-alert hover:text-white hover:bg-alert active:bg-alertActive",
-    warning:
+    variant === "warning" &&
       "text-warning border border-warning hover:text-white hover:bg-warning active:bg-warningActive",
-  };
-
-  return altColors[variant || "default"];
+    disabled && "opacity-50 cursor-not-allowed",
+  );
 };
 
-const getButtonColors = (
-  variant: ButtonProps["variant"],
-  ghost: boolean,
-  disabled: boolean,
-) => {
-  const colors = {
-    default: "",
-    primary:
-      "border border-transparent bg-highlight text-white hover:bg-highlightHover active:bg-highlightActive",
-    secondary:
-      "border border-transparent bg-secondary text-white hover:bg-secondaryHover active:bg-secondaryActive",
-    success:
-      "border border-transparent bg-success text-white hover:bg-successHover active:bg-successActive",
-    danger: "bg-alert text-white hover:bg-alertHover active:bg-alertActive",
-    warning:
-      "border border-transparent bg-warning text-white hover:bg-warningHover active:bg-warningActive",
-  };
-
-  if (disabled) {
-    return "border border-grayAlt opacity-30 cursor-not-allowed";
-  }
-
+const getButtonColors = ({
+  variant,
+  size = "md",
+  fullWidth,
+  disabled = false,
+  ghost,
+  className,
+}: ButtonProps) => {
   if (ghost) {
-    return getAltButtonColors(variant);
+    return getGhostButton({ variant, size, disabled });
   }
 
-  return colors[variant || "default"];
+  return clx(
+    buttonSizes[size],
+    "relative rounded-md flex justify-center items-center gap-2 text-sm font-medium transition-colors duration-200",
+    variant === "primary" &&
+      "border border-transparent bg-highlight text-white hover:bg-highlightHover active:bg-highlightActive",
+    variant === "secondary" &&
+      "border border-transparent bg-secondary text-white hover:bg-secondaryHover active:bg-secondaryActive",
+    variant === "success" &&
+      "border border-transparent bg-success text-white hover:bg-successHover active:bg-successActive",
+    variant === "danger" &&
+      "bg-alert text-white hover:bg-alertHover active:bg-alertActive",
+    variant === "warning" &&
+      "border border-transparent bg-warning text-white hover:bg-warningHover active:bg-warningActive",
+    fullWidth ? "w-full" : "w-auto",
+    disabled && "opacity-50 cursor-not-allowed",
+    className ? className : "",
+  );
 };
 
 const Button: FC<ButtonProps> = ({
   variant = "default",
-  size = "sm",
+  size = "md",
   children,
   icon,
-  loading,
-  fullWidth,
-  ghost = false,
+  loading = false,
+  fullWidth = false,
   disabled = false,
+  ghost = false,
+  className,
   ...props
 }) => {
-  const buttonStyles = getButtonColors(variant, ghost, disabled);
+  const buttonStyles = getButtonColors({
+    variant,
+    size,
+    ghost,
+    disabled,
+    fullWidth,
+    className,
+  });
 
   return (
     <button
       disabled={disabled || loading}
-      className={`${buttonStyles} ${classes.base} ${classes.size[size]} ${
-        fullWidth ? "w-full" : "w-auto"
-      }`}
+      className={`${buttonStyles}`}
       {...props}
     >
-      {icon && <span className="flex justify-center items-center">{icon}</span>}
       {loading ? (
         <>
           <Loader />
           <span className="invisible">{children}</span>
         </>
       ) : (
-        children
+        <>
+          {icon && <span className="flex items-center">{icon}</span>}
+          {children}
+        </>
       )}
     </button>
   );
