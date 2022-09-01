@@ -16,6 +16,7 @@ import CustomHead from "@/components/common/CustomHead";
 import Button from "@/components/common/Button";
 import Preloader from "@/components/common/Preloader";
 import NotFound from "@/components/common/NotFound";
+import ButtonLink from "@/components/common/ButtonLink";
 
 type Inputs = {
   communityId: string;
@@ -99,16 +100,15 @@ const EditCommunity: NextPageWithAuth = () => {
   if (error || !data) {
     return (
       <div className="flex justify-center">
-        <div className="flex flex-col gap-8 justify-center items-center">
+        <div className="flex flex-col gap-5 justify-center items-center">
           <NotFound
             heading="Woah there!"
             text="Nothing seems to exists on this side of the universe"
           />
-          <Link href={"/submit"}>
-            <a className="bg-highlight text-whiteAlt h-10 p-4 w-full rounded-md flex items-center justify-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all">
-              Return Home
-            </a>
-          </Link>
+
+          <ButtonLink href="/" variant="primary">
+            Return home
+          </ButtonLink>
         </div>
       </div>
     );

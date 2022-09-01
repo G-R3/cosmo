@@ -17,6 +17,7 @@ import Preloader from "@/components/common/Preloader";
 import spaceTwo from "../../../assets/space-2.svg";
 import NotFound from "@/components/common/NotFound";
 import CreateCommentForm from "@/components/post/CreateCommentForm";
+import ButtonLink from "@/components/common/ButtonLink";
 
 const Post: NextPage = () => {
   const router = useRouter();
@@ -150,16 +151,14 @@ const Post: NextPage = () => {
   if (postQuery.error || !postQuery.data) {
     return (
       <div className="flex justify-center">
-        <div className="flex flex-col gap-8 justify-center items-center">
+        <div className="flex flex-col gap-5 justify-center items-center">
           <NotFound
             heading="Ooops"
             text="It seems this post has been lost. Try again or check back later."
           />
-          <Link href={`/`}>
-            <a className="bg-highlight text-whiteAlt h-10 p-4 w-full rounded-md flex items-center justify-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all">
-              Return home
-            </a>
-          </Link>
+          <ButtonLink href="/" variant="primary">
+            Return home
+          </ButtonLink>
         </div>
       </div>
     );

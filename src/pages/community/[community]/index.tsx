@@ -16,6 +16,7 @@ import spaceOne from "../../../assets/space-1.svg";
 import NotFound from "@/components/common/NotFound";
 import Button from "@/components/common/Button";
 import Alert from "@/components/common/Alert";
+import ButtonLink from "@/components/common/ButtonLink";
 
 const Community: NextPage = () => {
   const { data: session } = useSession();
@@ -45,16 +46,14 @@ const Community: NextPage = () => {
   if (communityQuery.error || !communityQuery.data) {
     return (
       <div className="flex justify-center">
-        <div className="flex flex-col gap-8 justify-center items-center">
+        <div className="flex flex-col gap-5 justify-center items-center">
           <NotFound
             heading="Woah there!"
             text="Nothing seems to exists on this side of the universe"
           />
-          <Link href={"/"}>
-            <a className="bg-highlight text-whiteAlt h-10 p-4 w-full rounded-md flex items-center justify-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all">
-              Return Home
-            </a>
-          </Link>
+          <ButtonLink href="/" variant="primary" fullWidth>
+            Return Home
+          </ButtonLink>
         </div>
       </div>
     );
@@ -105,13 +104,12 @@ const Community: NextPage = () => {
 
         <div className="flex flex-col w-full md:w-auto sm:flex-row gap-3 ">
           {(isModerator || isAdmin) && (
-            <Link
+            <ButtonLink
               href={`/community/${communityQuery.data?.community.name}/settings`}
+              variant="secondary"
             >
-              <a className="text-center px-3 py-[6px] border rounded-md border-grayAlt">
-                Community settings
-              </a>
-            </Link>
+              Community settings
+            </ButtonLink>
           )}
           {isMember && (
             <Button
@@ -168,22 +166,15 @@ const Community: NextPage = () => {
             ))}
           {postQuery.data?.posts.length === 0 && (
             <div className="flex flex-col gap-5 justify-center items-center h-full">
-              <div className="flex flex-col justify-center gap-10">
-                <Image src={spaceOne} alt="Space Illustration" />
-                <div className="flex flex-col justify-center items-center max-w-lg mx-auto">
-                  <h1 className="text-highlight font-bold text-3xl text-center">
-                    Hang on
-                  </h1>
-                  <p className="text-grayAlt">
-                    There doesn&apos;t seem to be anything on this side of the
-                    universe
-                  </p>
-                  <Link href={"/submit"}>
-                    <a className="mt-5 bg-highlight text-whiteAlt self-end h-10 p-4 w-full rounded-md flex items-center justify-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all">
-                      Create Post
-                    </a>
-                  </Link>
-                </div>
+              <div className="flex flex-col gap-5 justify-center items-center">
+                <NotFound
+                  heading="Hang on"
+                  text=" There doesn't seem to be anything on this side of the
+            universe."
+                />
+                <ButtonLink href="/submit" variant="primary">
+                  Create Post
+                </ButtonLink>
               </div>
             </div>
           )}
@@ -201,11 +192,9 @@ const Community: NextPage = () => {
               {communityQuery.data?.community.createdAt.toLocaleString()}
             </p>
             {/* TODO: stats */}
-            <Link href="/submit">
-              <a className="border border-grayAlt px-4 py-2 text-center rounded-md">
-                Create Post
-              </a>
-            </Link>
+            <ButtonLink href="/submit" variant="secondary">
+              Create Post
+            </ButtonLink>
           </div>
           <div className="bg-whiteAlt dark:bg-darkOne p-4 rounded-md flex flex-col gap-2">
             <div className="flex items-center justify-between mb-3">
