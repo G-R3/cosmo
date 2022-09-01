@@ -40,7 +40,7 @@ const Profile: NextPage = () => {
             heading="Woah!"
             text="No user was found in this current timeline"
           />
-          <ButtonLink href="/" variant="primary" fullWidth>
+          <ButtonLink href="/" variant="primary">
             Return Home
           </ButtonLink>
         </div>

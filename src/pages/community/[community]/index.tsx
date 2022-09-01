@@ -51,7 +51,7 @@ const Community: NextPage = () => {
             heading="Woah there!"
             text="Nothing seems to exists on this side of the universe"
           />
-          <ButtonLink href="/" variant="primary" fullWidth>
+          <ButtonLink href="/" variant="primary">
             Return Home
           </ButtonLink>
         </div>

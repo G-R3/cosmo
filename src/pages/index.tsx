@@ -64,7 +64,9 @@ const Home: NextPage = () => {
                     universe"
               />
 
-              <ButtonLink href="/submit">Create Post</ButtonLink>
+              <ButtonLink href="/submit" variant="primary">
+                Create Post
+              </ButtonLink>
             </div>
           )}
         </motion.div>
