@@ -68,7 +68,7 @@ const PanelItem: FC<{
 
   return (
     <>
-      <div className="flex justify-between">
+      <div className="flex justify-between gap-2">
         <div className="max-w-[97%] overflow-hidden text-ellipsis text-grayAlt">
           <Link href={`/community/${name}`}>
             <a className="text-sm font-semibold">{name}</a>
