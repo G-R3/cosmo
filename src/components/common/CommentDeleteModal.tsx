@@ -22,14 +22,14 @@ const DeleteCommentModal: FC<{ commentId: string }> = ({ commentId }) => {
 
   return (
     <>
-      <Button
+      <button
         data-cy="comment-delete"
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 text-grayAlt hover:text-alert"
+        className="flex items-center gap-1 text-grayAlt hover:text-alert focus:text-alert"
       >
         <FiTrash2 />
         Delete
-      </Button>
+      </button>
       <AnimatePresence>
         {isOpen && (
           <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
