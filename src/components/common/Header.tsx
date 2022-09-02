@@ -62,7 +62,7 @@ const Header: React.FC = () => {
                   <>
                     <CreateCommunityModal />
                     <ButtonLink href="/submit" variant="primary" size="sm">
-                      <FiPlus />
+                      <FiPlus size={16} />
                       Create Post
                     </ButtonLink>
                   </>

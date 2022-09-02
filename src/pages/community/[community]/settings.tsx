@@ -190,14 +190,15 @@ const EditCommunity: NextPageWithAuth = () => {
             <Button
               form="editCommunity"
               data-cy="confirm-edit"
+              variant="primary"
+              size="md"
               disabled={
                 (watch("communityDescription") === data.community.description &&
                   watch("communityTitle") === data.community.title) ||
                 Object.keys(errors).length > 0 ||
                 !isDirty
               }
-              variant="primary"
-              size="md"
+              loading={editMutation.isLoading}
             >
               Save
             </Button>
@@ -335,7 +336,12 @@ const TagInput: FC<{
         />
 
         <div className="flex justify-end">
-          <Button disabled={!isDirty || !isValid} variant="primary" size="md">
+          <Button
+            disabled={!isDirty || !isValid}
+            loading={addMutation.isLoading}
+            variant="primary"
+            size="md"
+          >
             Add community tag
           </Button>
         </div>
