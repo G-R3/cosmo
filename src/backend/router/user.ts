@@ -225,7 +225,16 @@ export const userRouter = createRouter()
         select: {
           id: true,
           name: true,
-          description: true,
+          members: {
+            select: {
+              userId: true,
+            },
+          },
+          _count: {
+            select: {
+              members: true,
+            },
+          },
         },
       });
 
