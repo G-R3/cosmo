@@ -61,15 +61,15 @@ export const getButtonStyles = ({
     buttonSizes[size],
     "relative rounded-md flex justify-center items-center gap-2 text-sm font-medium transition-colors duration-200",
     variant === "primary" &&
-      "border border-transparent bg-highlight text-white hover:bg-highlightHover active:bg-highlightActive",
+      "bg-highlight text-white hover:bg-highlightHover active:bg-highlightActive focus-visible:bg-highlightHover",
     variant === "secondary" &&
-      "border border-transparent bg-secondary text-white hover:bg-secondaryHover active:bg-secondaryActive",
+      "bg-secondary text-white hover:bg-secondaryHover active:bg-secondaryActive focus-visible:bg-secondaryHover",
     variant === "success" &&
-      "border border-transparent bg-success text-white hover:bg-successHover active:bg-successActive",
+      "bg-success text-white hover:bg-successHover active:bg-successActive focus-visible:bg-successHover",
     variant === "danger" &&
-      "bg-alert text-white hover:bg-alertHover active:bg-alertActive",
+      "bg-alert text-white hover:bg-alertHover active:bg-alertActive focus-visible:bg-alertHover",
     variant === "warning" &&
-      "border border-transparent bg-warning text-white hover:bg-warningHover active:bg-warningActive",
+      "bg-warning text-white hover:bg-warningHover active:bg-warningActive focus-visible:bg-warningHover",
     fullWidth ? "w-full" : "w-auto",
     disabled && "opacity-50 cursor-not-allowed",
     className ? className : "",
