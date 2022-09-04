@@ -49,8 +49,6 @@ const CreateCommentForm: FC<{ postId: string }> = ({ postId }) => {
     },
   });
 
-  console.log(errors);
-
   const createComment: SubmitHandler<Inputs> = (data) => {
     commentMutation.mutate({
       postId: data.postId,
