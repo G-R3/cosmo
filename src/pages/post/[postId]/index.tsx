@@ -19,11 +19,13 @@ import NotFound from "@/components/common/NotFound";
 import CreateCommentForm from "@/components/post/CreateCommentForm";
 import ButtonLink from "@/components/common/ButtonLink";
 import clx from "@/lib/classnames";
+import useIsMobile from "@/hooks/useIsMobile";
 
 const Post: NextPage = () => {
   const router = useRouter();
   const id = router.query.postId as string;
   const { data: session } = useSession();
+  const isMobile = useIsMobile();
   const utils = trpc.useContext();
   const postQuery = trpc.useQuery(["post.get-by-id", { id }], {
     refetchOnWindowFocus: false,
@@ -227,7 +229,7 @@ const Post: NextPage = () => {
               by{" "}
               <Link href={`/user/${postQuery.data.post.author.id}`}>
                 <a className="text-darkOne dark:text-foreground hover:underline hover:underline-offset-1">
-                  {postQuery.data.post.author.name}
+                  {postQuery.data.post.author.name}{" "}
                 </a>
               </Link>
               {isAuthorAdmin ? (
@@ -296,7 +298,7 @@ const Post: NextPage = () => {
                   ) : (
                     <BsBookmark size={16} />
                   )}
-                  {isSavedByUser ? "Unsave" : "Save"}
+                  {!isMobile && <>{isSavedByUser ? "Unsave" : "Save"}</>}
                 </button>
                 {(isPostAuthor || isModerator || isAdmin) && (
                   <Link href={`/post/${postQuery.data.post.id}/edit`}>
@@ -305,16 +307,20 @@ const Post: NextPage = () => {
                       className="py-1 px-2 flex items-center gap-2 rounded hover:bg-blue-400/20 hover:text-blue-400 focus-visible:bg-blue-400/20 focus-visible:text-blue-400 focus:outline-none transition-colors"
                     >
                       <FiEdit2 size={16} />
-                      Edit
+                      {!isMobile && "Edit"}
                     </a>
                   </Link>
                 )}
                 <span className="flex items-center gap-2 py-1 px-2 rounded hover:bg-foreground hover:text-darkOne hover:dark:bg-secondary hover:dark:text-whiteAlt/80 focus-visible:bg-foreground focus-visible:text-darkOne focus-visible:dark:text-whiteAlt/80 focus-visible:dark:bg-secondary focus:outline-none transition-colors">
                   <AiOutlineComment size={18} />
                   {postQuery.data.post._count.comments}{" "}
-                  {postQuery.data.post._count.comments === 1
-                    ? "comment"
-                    : "comments"}
+                  {!isMobile && (
+                    <>
+                      {postQuery.data.post._count.comments === 1
+                        ? "comment"
+                        : "comments"}
+                    </>
+                  )}
                 </span>
               </div>
             </div>

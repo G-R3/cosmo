@@ -6,6 +6,7 @@ import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 import { useSession } from "next-auth/react";
 import Markdown from "./Markdown";
 import clx from "@/lib/classnames";
+import useIsMobile from "@/hooks/useIsMobile";
 
 interface Props {
   id: string;
@@ -44,6 +45,7 @@ const Post: React.FC<Props> = ({
   onUnsave,
 }) => {
   const { data: session } = useSession();
+  const isMobile = useIsMobile();
   const isLikedByUser = likes.find((like) => like.userId === session?.user.id);
   const isSavedByUser = savedBy.find(
     (save) => save.userId === session?.user.id,
@@ -79,7 +81,7 @@ const Post: React.FC<Props> = ({
         by{" "}
         <Link href={`/user/${author.id}`}>
           <a className="text-darkOne dark:text-foreground hover:underline hover:underline-offset-1">
-            {author.name}
+            {author.name}{" "}
           </a>
         </Link>
         {isAuthorAdmin ? (
@@ -129,7 +131,7 @@ const Post: React.FC<Props> = ({
             {likes.length}
           </span>
         </button>
-        <div className="text-sm flex items-center gap-2 text-grayAlt">
+        <div className="text-sm flex items-center gap-1 text-grayAlt">
           <button
             onClick={isSavedByUser ? () => onUnsave(id) : () => onSave(id)}
             className="flex items-center gap-2 py-1 px-2 rounded group hover:bg-foreground hover:text-darkOne hover:dark:bg-secondary hover:dark:text-whiteAlt/80 focus-visible:bg-foreground focus-visible:text-darkOne focus-visible:dark:text-whiteAlt/80 focus-visible:dark:bg-secondary focus:outline-none transition-colors"
@@ -139,7 +141,7 @@ const Post: React.FC<Props> = ({
             ) : (
               <BsBookmark size={16} />
             )}
-            {isSavedByUser ? "Unsave" : "Save"}
+            {!isMobile && <>{isSavedByUser ? "Unsave" : "Save"}</>}
           </button>
           {(isAuthor || isModerator || isAdmin) && (
             <Link href={`/post/${id}/edit`}>
@@ -148,7 +150,7 @@ const Post: React.FC<Props> = ({
                 className="py-1 px-2 flex items-center gap-2 rounded hover:bg-blue-400/20 hover:text-blue-400 focus-visible:bg-blue-400/20 focus-visible:text-blue-400 focus:outline-none transition-colors"
               >
                 <FiEdit2 size={16} />
-                Edit
+                {!isMobile && "Edit"}
               </a>
             </Link>
           )}
@@ -159,7 +161,9 @@ const Post: React.FC<Props> = ({
             >
               <AiOutlineComment size={18} />
               {_count.comments}
-              {_count.comments === 1 ? " Comment" : " Comments"}
+              {!isMobile && (
+                <>{_count.comments === 1 ? " Comment" : " Comments"}</>
+              )}
             </a>
           </Link>
         </div>
