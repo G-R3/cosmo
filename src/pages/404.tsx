@@ -1,9 +1,8 @@
 import { NextPage } from "next";
-import Link from "next/link";
+import ButtonLink from "@/components/common/ButtonLink";
 
 const NotFound: NextPage = () => {
   return (
-    // TODO: its not exactly centered on page because layout padding top. adding -mt-16 fixes it i think
     <div className="flex flex-col justify-center items-center gap-10 h-full">
       <div className="flex flex-col md:flex-row gap-x-6">
         <h1 className="text-7xl font-bold text-highlight">404</h1>
@@ -16,11 +15,9 @@ const NotFound: NextPage = () => {
           </p>
         </div>
       </div>
-      <Link href={"/"}>
-        <a className="bg-highlight text-whiteAlt h-10 p-4 rounded-md flex items-center justify-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all">
-          Return Home
-        </a>
-      </Link>
+      <ButtonLink href="/" variant="primary">
+        Return Home
+      </ButtonLink>
     </div>
   );
 };

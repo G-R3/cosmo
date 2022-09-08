@@ -31,6 +31,7 @@ const RemoveModModal: FC<{
         loading={removeMutation.isLoading}
         onClick={() => setIsOpen(true)}
         variant="danger"
+        size="sm"
         icon={<FiUserX />}
         ghost
       >
@@ -72,7 +73,7 @@ const RemoveModModal: FC<{
                       variant="danger"
                       size="md"
                     >
-                      {removeMutation.isLoading ? "Removing..." : "Remove"}
+                      Remove
                     </Button>
                   </div>
                 </Dialog.Panel>

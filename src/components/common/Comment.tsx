@@ -92,110 +92,106 @@ const Comment: React.FC<Props> = ({
   const isAdmin = session?.user.role === "ADMIN";
 
   return (
-    <div className="py-3 px-5 rounded-md bg-darkOne">
-      <div className="flex flex-col gap-3 w-full">
-        <div className="flex gap-6">
-          <div className="bg-foreground dark:bg-darkTwo min-h-full min-w-[4px] rounded-full"></div>
-          <div className="flex flex-col flex-grow">
-            <div className="flex flex-col justify-between md:flex-row">
-              <Link href={`/user/${author.id}`}>
-                <a className="w-fit group">
-                  <div className="flex items-center gap-3 group">
-                    <Image
-                      src={author?.image ?? ""}
-                      alt={author.name ? author.name : `${author.name} Avatar`}
-                      width={28}
-                      height={28}
-                      className="rounded-full"
-                      priority
-                    />
-                    <div>
-                      <span className="text-darkOne dark:text-grayAlt group-hover:underline group-hover:underline-offset-1">
-                        {author.name}
-                      </span>
+    <div className="pt-4 px-5">
+      <div className="flex items-start gap-3 border-b border-b-grayAlt dark:border-b-secondary pb-3">
+        <Link href={`/user/${author.id}`}>
+          <a>
+            <Image
+              src={author?.image ?? ""}
+              alt={author.name ? author.name : `${author.name} Avatar`}
+              width={28}
+              height={28}
+              className="rounded-full"
+              priority
+              quality={100}
+            />
+          </a>
+        </Link>
 
-                      {isAuthorAdmin ? (
-                        <span className="text-xs text-highlight font-bold">
-                          {" "}
-                          ADMIN
-                        </span>
-                      ) : isAuthorMod ? (
-                        <span className="text-xs text-green-500 font-bold">
-                          {" "}
-                          MOD
-                        </span>
-                      ) : null}
-                    </div>
-                  </div>
+        <div className="w-full">
+          <div className="flex items-center text-grayAlt dark:text-grayAlt">
+            <div className="flex items-center gap-1 mr-1">
+              <Link href={`/user/${author.id}`}>
+                <a className="flex items-center gap-3 hover:dark:text-white hover:text-darkOne hover:underline hover:underline-offset-2">
+                  {author.name}
                 </a>
               </Link>
-              {commentEditMutation.error && (
-                <Alert type="error">
-                  <BiErrorCircle size={22} />
-                  <span>Oh no! change a few things up and try again</span>
-                </Alert>
-              )}
-            </div>
-            <div className="mt-4">
-              {isEditing ? (
-                <form
-                  id="commentEditForm"
-                  className="flex flex-col gap-2 mb-3"
-                  onSubmit={handleSubmit(editComment)}
-                >
-                  <div className="flex justify-between items-center flex-wrap">
-                    <MarkdownTipsModal />
-                    {errors.commentContent?.message && (
-                      <span className="text-alert">
-                        {errors.commentContent.message}
-                      </span>
-                    )}
-                  </div>
-                  <TextareaAutosize
-                    data-cy="comment-edit-textarea"
-                    placeholder="What are your thoughts?"
-                    minHeight={100}
-                    register={register("commentContent")}
-                  />
-                </form>
-              ) : (
-                <Markdown content={content} />
-              )}
-            </div>
-          </div>
-        </div>
 
-        {(isCommentAuthor || isModerator || isAdmin) && (
-          <div className="flex justify-end gap-5 items-center">
-            <CommentDeleteModal commentId={id} />
-            {isCommentAuthor && (
-              <button
-                data-cy="comment-edit"
-                onClick={() => {
-                  setIsEditing((prev) => !prev);
-                }}
-                className="py-1 px-2 flex items-center gap-[6px] text-grayAlt hover:text-blue-400 focus:text-blue-400"
-              >
-                <FiEdit2 />
-                {isEditing ? "Cancel Edit" : "Edit"}
-              </button>
-            )}
-            {isCommentAuthor && isEditing && (
-              <Button
-                loading={commentEditMutation.isLoading}
-                disabled={
-                  watch("commentContent") === content || !isValid || !isDirty
-                }
-                form="commentEditForm"
-                data-cy="save-comment-edit"
-                variant="success"
-                size="md"
-              >
-                Save
-              </Button>
-            )}
+              {isAuthorAdmin ? (
+                <span className="text-xs text-highlight font-bold">ADMIN</span>
+              ) : isAuthorMod ? (
+                <span className="text-xs text-green-500 font-bold">MOD</span>
+              ) : null}
+            </div>
+            <span className="text-xs before:content-['•'] before:mr-1">
+              10h ago
+            </span>
           </div>
-        )}
+          {isEditing ? (
+            <form
+              id="commentEditForm"
+              className="flex flex-col gap-2 mb-3"
+              onSubmit={handleSubmit(editComment)}
+            >
+              <div className="flex justify-between items-center flex-wrap">
+                <MarkdownTipsModal />
+                <div className="flex flex-col gap-2">
+                  {errors.commentContent?.message && (
+                    <span className="text-alert">
+                      {errors.commentContent.message}
+                    </span>
+                  )}
+                  {commentEditMutation.error && (
+                    <Alert type="error">
+                      <BiErrorCircle />
+                      <span>Oh no! change a few things up and try again</span>
+                    </Alert>
+                  )}
+                </div>
+              </div>
+              <TextareaAutosize
+                data-cy="comment-edit-textarea"
+                placeholder="What are your thoughts?"
+                minHeight={100}
+                register={register("commentContent")}
+              />
+            </form>
+          ) : (
+            <Markdown content={content} />
+          )}
+
+          {(isCommentAuthor || isModerator || isAdmin) && (
+            <div className="flex justify-end gap-5 items-center mt-3">
+              <CommentDeleteModal commentId={id} />
+              {isCommentAuthor && (
+                <button
+                  data-cy="comment-edit"
+                  onClick={() => {
+                    setIsEditing((prev) => !prev);
+                  }}
+                  className="flex items-center gap-1 text-grayAlt hover:text-blue-400 focus:text-blue-400"
+                >
+                  <FiEdit2 />
+                  {isEditing ? "Cancel Edit" : "Edit"}
+                </button>
+              )}
+              {isCommentAuthor && isEditing && (
+                <Button
+                  loading={commentEditMutation.isLoading}
+                  disabled={
+                    watch("commentContent") === content || !isValid || !isDirty
+                  }
+                  form="commentEditForm"
+                  data-cy="save-comment-edit"
+                  variant="success"
+                  size="md"
+                >
+                  Save
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

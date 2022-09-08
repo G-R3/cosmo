@@ -1,5 +1,6 @@
 import { ChangeEvent, ComponentPropsWithRef, useEffect, useRef } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
+import clx from "@/lib/classnames";
 
 type customProps = {
   register: UseFormRegisterReturn<string>;
@@ -53,7 +54,7 @@ const TextareaAutosize = ({
         ref(e);
         textareaRef.current = e;
       }}
-      className={`${baseStyles} ${className ? className : ""}`}
+      className={clx(baseStyles, !!className && className)}
       onChange={handleChange}
       style={{
         ...props.style,

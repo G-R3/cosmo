@@ -1,5 +1,4 @@
 import { NextPage } from "next";
-import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { trpc } from "@/utils/trpc";
@@ -10,6 +9,7 @@ import useLikePost from "@/hooks/useLikePost";
 import useSavePost from "@/hooks/useSavePost";
 import spaceOne from "../assets/space-1.svg";
 import NotFound from "@/components/common/NotFound";
+import ButtonLink from "@/components/common/ButtonLink";
 
 const Home: NextPage = () => {
   const postQuery = trpc.useQuery(["post.feed"]);
@@ -57,18 +57,16 @@ const Home: NextPage = () => {
             ))}
 
           {postQuery.data?.posts.length === 0 && (
-            <div className="flex flex-col gap-8 justify-center items-center">
+            <div className="flex flex-col gap-5 justify-center items-center">
               <NotFound
                 heading="Hang On"
                 text="There doesn't seem to be anything on this side of the
                     universe"
               />
 
-              <Link href={"/submit"}>
-                <a className="bg-highlight text-whiteAlt self-end h-10 p-4 w-full rounded-md flex items-center justify-center disabled:opacity-50 animate-popIn active:hover:animate-none active:focus:animate-none active:focus:scale-95 active:hover:scale-95 transition-all">
-                  Create Post
-                </a>
-              </Link>
+              <ButtonLink href="/submit" variant="primary">
+                Create Post
+              </ButtonLink>
             </div>
           )}
         </motion.div>
