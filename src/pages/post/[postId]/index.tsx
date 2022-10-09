@@ -20,6 +20,7 @@ import CreateCommentForm from "@/components/post/CreateCommentForm";
 import ButtonLink from "@/components/common/ButtonLink";
 import clx from "@/lib/classnames";
 import useIsMobile from "@/hooks/useIsMobile";
+import formatDate from "@/utils/formatTime";
 
 const Post: NextPage = () => {
   const router = useRouter();
@@ -237,7 +238,7 @@ const Post: NextPage = () => {
               ) : isAuthorMod ? (
                 <span className="text-xs text-green-500 font-bold"> MOD </span>
               ) : null}
-              10 hrs ago
+              {formatDate(postQuery.data.post.createdAt)}
             </div>
 
             <div className="mt-6 mb-10">
