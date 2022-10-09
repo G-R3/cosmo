@@ -18,10 +18,13 @@ interface ButtonProps extends ComponentPropsWithRef<"button"> {
 }
 
 const buttonSizes = {
-  sm: "h-8 min-h-[32px] min-w-[60px] py-1 px-4",
-  md: "h-10 min-h-[32px] min-w-[60px] py-1 px-4",
-  lg: "h-12 min-h-[32px] min-w-[60px] py-1 px-4",
+  sm: "h-8 min-h-[32px] min-w-[60px] px-3 py-1",
+  md: "h-10 min-h-[32px] min-w-[60px] px-4 py-2",
+  lg: "h-12 min-h-[32px] min-w-[60px] px-5 py-3",
 };
+
+const baseStyles =
+  "relative leading-5 rounded-md flex justify-center items-center gap-2 text-sm font-semibold transition-colors duration-200";
 
 const getGhostButtonStyles = ({
   variant,
@@ -29,8 +32,8 @@ const getGhostButtonStyles = ({
   disabled = false,
 }: ButtonProps) => {
   return clx(
+    baseStyles,
     buttonSizes[size],
-    "relative rounded-md flex justify-center items-center gap-2 text-sm font-medium transition-colors duration-200",
     variant === "primary" &&
       "text-highlight border border-highlight hover:text-white hover:bg-highlight active:bg-highlightActive",
     variant === "secondary" &&
@@ -58,8 +61,8 @@ export const getButtonStyles = ({
   }
 
   return clx(
+    baseStyles,
     buttonSizes[size],
-    "relative rounded-md flex justify-center items-center gap-2 text-sm font-medium transition-colors duration-200",
     variant === "primary" &&
       "bg-highlight text-white hover:bg-highlightHover active:bg-highlightActive focus-visible:bg-highlightHover",
     variant === "secondary" &&
@@ -102,7 +105,7 @@ const Button: FC<ButtonProps> = ({
       {loading ? (
         <>
           <Loader />
-          <span className="invisible">{children}</span>
+          <span className="invisible ">{children}</span>
         </>
       ) : (
         <>
