@@ -3,6 +3,7 @@ import { FC, useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
 import { Dialog } from "@headlessui/react";
 import { AnimatePresence, motion } from "framer-motion";
+import { modalBounceIn } from "@/lib/animations";
 import { useRouter } from "next/router";
 import Button from "./Button";
 
@@ -47,9 +48,10 @@ const DeletePostModal: FC<{ postId: string }> = ({ postId }) => {
               <div data-cy="delete-modal" className="flex justify-center p-4">
                 <Dialog.Panel
                   as={motion.div}
-                  initial={{ opacity: 0, y: -100 }}
-                  animate={{ opacity: 1, y: 0, transition: { type: "tween" } }}
-                  exit={{ opacity: 0, y: -100, transition: { duration: 0.2 } }}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={modalBounceIn}
                   className="flex flex-col w-full max-w-xl rounded bg-white dark:bg-darkOne px-10 py-8"
                 >
                   <Dialog.Title className="text-2xl">Delete Post</Dialog.Title>

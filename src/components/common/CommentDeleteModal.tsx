@@ -3,6 +3,7 @@ import { FC, useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
 import { Dialog } from "@headlessui/react";
 import { AnimatePresence, motion } from "framer-motion";
+import { modalBounceIn } from "@/lib/animations";
 import Button from "../common/Button";
 
 const DeleteCommentModal: FC<{ commentId: string }> = ({ commentId }) => {
@@ -22,14 +23,14 @@ const DeleteCommentModal: FC<{ commentId: string }> = ({ commentId }) => {
 
   return (
     <>
-      <button
+      <Button
         data-cy="comment-delete"
         onClick={() => setIsOpen(true)}
         className="flex items-center gap-1 text-grayAlt hover:text-alert focus:text-alert"
       >
         <FiTrash2 />
         Delete
-      </button>
+      </Button>
       <AnimatePresence>
         {isOpen && (
           <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
@@ -42,9 +43,10 @@ const DeleteCommentModal: FC<{ commentId: string }> = ({ commentId }) => {
               <div data-cy="delete-modal" className="flex justify-center p-4">
                 <Dialog.Panel
                   as={motion.div}
-                  initial={{ opacity: 0, y: -100 }}
-                  animate={{ opacity: 1, y: 0, transition: { type: "tween" } }}
-                  exit={{ opacity: 0, y: -100, transition: { duration: 0.2 } }}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={modalBounceIn}
                   className="flex flex-col w-full max-w-xl rounded bg-white dark:bg-darkOne px-10 py-8"
                 >
                   <Dialog.Title className="text-2xl">
