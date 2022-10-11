@@ -9,8 +9,8 @@ const modalBounceIn = {
     scale: 1,
     transition: {
       type: "spring",
-      damping: 20,
-      stiffness: 500,
+      bounce: 0.35,
+      duration: 0.5,
     },
   },
   exit: {
