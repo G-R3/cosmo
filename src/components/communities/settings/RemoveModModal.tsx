@@ -4,6 +4,7 @@ import { FiUserX } from "react-icons/fi";
 import { Dialog } from "@headlessui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import Button from "@/components/common/Button";
+import { modalBounceIn } from "@/lib/animations";
 
 const RemoveModModal: FC<{
   userId: string;
@@ -50,9 +51,10 @@ const RemoveModModal: FC<{
               <div data-cy="delete-modal" className="flex justify-center p-4">
                 <Dialog.Panel
                   as={motion.div}
-                  initial={{ opacity: 0, y: -100 }}
-                  animate={{ opacity: 1, y: 0, transition: { type: "tween" } }}
-                  exit={{ opacity: 0, y: -100, transition: { duration: 0.2 } }}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={modalBounceIn}
                   className="flex flex-col w-full max-w-xl rounded bg-white dark:bg-darkOne px-10 py-8"
                 >
                   <Dialog.Title className="text-2xl">
