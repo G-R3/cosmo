@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Dialog } from "@headlessui/react";
 import { AiOutlineQuestion } from "react-icons/ai";
 import Markdown from "./Markdown";
-import { modalBounceIn } from "@/lib/animations";
+import { fadeIn, modalBounceIn } from "@/lib/animations";
 
 const MarkdownTipsModal: FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -21,9 +21,10 @@ const MarkdownTipsModal: FC = () => {
         {isOpen && (
           <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1, transition: { duration: 0.1 } }}
-              exit={{ opacity: 0, transition: { duration: 0.2 } }}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={fadeIn}
               className="fixed inset-0 overflow-y-auto bg-background py-10 bg-opacity-80 z-10"
             >
               <div className="flex justify-center p-4">

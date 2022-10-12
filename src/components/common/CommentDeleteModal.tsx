@@ -3,7 +3,7 @@ import { FC, useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
 import { Dialog } from "@headlessui/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { modalBounceIn } from "@/lib/animations";
+import { fadeIn, modalBounceIn } from "@/lib/animations";
 import Button from "../common/Button";
 
 const DeleteCommentModal: FC<{ commentId: string }> = ({ commentId }) => {
@@ -35,9 +35,10 @@ const DeleteCommentModal: FC<{ commentId: string }> = ({ commentId }) => {
         {isOpen && (
           <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1, transition: { duration: 0.1 } }}
-              exit={{ opacity: 0, transition: { duration: 0.2 } }}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={fadeIn}
               className="fixed inset-0 bg-background py-10 bg-opacity-80 z-10"
             >
               <div data-cy="delete-modal" className="flex justify-center p-4">
