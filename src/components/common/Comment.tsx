@@ -14,6 +14,7 @@ import TextareaAutosize from "./TextareaAutosize";
 import Button from "./Button";
 import Alert from "./Alert";
 import { BiErrorCircle } from "react-icons/bi";
+import formatDate from "@/utils/formatTime";
 
 type Inputs = {
   commentId: string;
@@ -124,7 +125,7 @@ const Comment: React.FC<Props> = ({
               ) : null}
             </div>
             <span className="text-xs before:content-['•'] before:mr-1">
-              10h ago
+              {formatDate(createdAt)}
             </span>
           </div>
           {isEditing ? (

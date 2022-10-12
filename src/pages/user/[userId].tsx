@@ -64,26 +64,25 @@ const Profile: NextPage = () => {
             <UserTabs user={userQuery.data.user?.id!} />
           </div>
         </div>
-        {(communitiesQuery.data || followingCommunitiesQuery.data) && (
-          <div className="col-start-10 col-span-full space-y-5">
-            <>
+        <div className="hidden md:block md:col-start-10 md:col-span-full">
+          {(communitiesQuery.data || followingCommunitiesQuery.data) && (
+            <div className="md:space-y-5">
               {!!communitiesQuery.data?.communities.length && (
                 <CommunitiesPanel
                   title="Communities Moderating"
                   data={communitiesQuery.data}
                 />
               )}
-            </>
-            <>
+
               {!!followingCommunitiesQuery.data?.communities.length && (
                 <CommunitiesPanel
                   title="Member of these Communities"
                   data={followingCommunitiesQuery.data}
                 />
               )}
-            </>
-          </div>
-        )}
+            </div>
+          )}
+        </div>
       </div>
     </>
   );

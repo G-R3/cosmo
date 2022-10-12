@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import Markdown from "./Markdown";
 import clx from "@/lib/classnames";
 import useIsMobile from "@/hooks/useIsMobile";
+import formatDate from "@/utils/formatTime";
 
 interface Props {
   id: string;
@@ -22,6 +23,7 @@ interface Props {
   likes: { postId: string; userId: string }[];
   community: { id: string; name: string; moderators: { userId: string }[] };
   savedBy: { postId: string; userId: string }[];
+  createdAt: Date;
   _count: { comments: number };
   onLike: (postId: string) => void;
   onUnlike: (postId: string) => void;
@@ -38,6 +40,7 @@ const Post: React.FC<Props> = ({
   likes,
   community,
   savedBy,
+  createdAt,
   _count,
   onLike,
   onUnlike,
@@ -89,7 +92,7 @@ const Post: React.FC<Props> = ({
         ) : isAuthorMod ? (
           <span className="text-green-500 font-bold"> MOD </span>
         ) : null}
-        10 hrs ago
+        {formatDate(createdAt)}
       </motion.div>
       <motion.div
         initial={{ opacity: 0 }}

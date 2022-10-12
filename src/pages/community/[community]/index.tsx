@@ -17,6 +17,7 @@ import NotFound from "@/components/common/NotFound";
 import Button from "@/components/common/Button";
 import Alert from "@/components/common/Alert";
 import ButtonLink from "@/components/common/ButtonLink";
+import formatDate from "@/utils/formatDate";
 
 const Community: NextPage = () => {
   const { data: session } = useSession();
@@ -90,8 +91,7 @@ const Community: NextPage = () => {
 
           <div className="flex gap-3 text-grayAlt mt-2">
             <span>
-              Created{" "}
-              {communityQuery.data.community.createdAt.toLocaleDateString()}
+              Created on {formatDate(communityQuery.data.community.createdAt)}
             </span>
             <span>
               {communityQuery.data.community.members.length}{" "}
@@ -188,8 +188,7 @@ const Community: NextPage = () => {
                 : `The ${communityQuery.data?.community.name} community`}
             </p>
             <p>
-              <span>Created on </span>
-              {communityQuery.data?.community.createdAt.toLocaleString()}
+              Created on {formatDate(communityQuery.data.community.createdAt)}
             </p>
             {/* TODO: stats */}
             <ButtonLink href="/submit" variant="secondary">
